@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>3D Globe with Seismic Waves</title>
+    <style>
+        body { margin: 0; overflow: hidden; }
+        canvas { display: block; }
+    </style>
+</head>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+    <script>
+        let scene, camera, renderer, globe;
+        let waves = [];
+
+        function init() {
+            // Scene setup
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            // Camera position
+            camera.position.z = 2;
+
+            // Add controls
+            const controls = new THREE.OrbitControls(camera, renderer.domElement);
+            controls.enableDamping = true;
+            controls.dampingFactor = 0.05;
+
+            // Create globe
+            createGlobe();
+
+            // Add ambient light
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+            scene.add(ambientLight);
+
+            // Add directional light
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
+            directionalLight.position.set(5, 3, 5);
+            scene.add(directionalLight);
+
+            // Generate seismic waves periodically
+            setInterval(createSeismicWave, 2000);
+
+            // Handle window resize
+            window.addEventListener('resize', onWindowResize, false);
+
+            animate();
+        }
+
+        function createGlobe() {
+            const geometry = new THREE.SphereGeometry(1, 64, 64);
+            const textureLoader = new THREE.TextureLoader();
+            
+            const materials = [
+                new THREE.MeshPhongMaterial({
+                    map: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_atmos_2048.jpg'),
+                    normalMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_normal_2048.jpg'),
+                    normalScale: new THREE.Vector2(0.85, 0.85),
+                    specularMap: textureLoader.load('https://raw.githubusercontent.com/mrdoob/three.js/master/examples/textures/planets/earth_specular_2048.jpg'),
+                    specular: new THREE.Color('grey'),
+                })
+            ];
+
+            globe = new THREE.Mesh(geometry, materials);
+            scene.add(globe);
+        }
+
+        function createSeismicWave() {
+            const geometry = new THREE.BufferGeometry();
+            const positions = [];
+            const radius = 1.02;
+            const waveIntensity = 0.02;
+
+            // Create random point on sphere
+            const phi = Math.random() * Math.PI;
+            const theta = Math.random() * Math.PI * 2;
+            const spherical = new THREE.Spherical(radius, phi, theta);
+            const position = new THREE.Vector3();
+            position.setFromSpherical(spherical);
+
+            // Create wave geometry
+            for (let i = 0; i < 64; i++) {
+                const angle = (i / 64) * Math.PI * 2;
+                const x = position.x + Math.cos(angle) * waveIntensity;
+                const y = position.y + Math.sin(angle) * waveIntensity;
+                const z = position.z;
+                positions.push(x, y, z);
+            }
+
+            geometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+
+            const material = new THREE.PointsMaterial({
+                color: 0xff0000,
+                size: 0.02,
+                transparent: true,
+                opacity: 1
+            });
+
+            const wave = new THREE.Points(geometry, material);
+            wave.position.copy(position);
+            wave.userData = { life: 1 };
+            scene.add(wave);
+            waves.push(wave);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            // Update waves
+            waves.forEach((wave, index) => {
+                wave.userData.life -= 0.01;
+                wave.material.opacity = wave.userData.life;
+                wave.scale.multiplyScalar(1.02);
+
+                if (wave.userData.life <= 0) {
+                    scene.remove(wave);
+                    waves.splice(index, 1);
+                }
+            });
+
+            // Rotate globe
+            globe.rotation.y += 0.001;
+
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        init();
+    </script>
+</body>
+</html>

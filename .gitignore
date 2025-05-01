@@ -17,3 +17,6 @@ ml_models/*.pkl
 .vscode/
 .idea/
 .DS_Store
+
+# Dev
+dev.md

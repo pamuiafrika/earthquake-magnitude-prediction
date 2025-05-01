@@ -1,0 +1,69 @@
+<!-- register.html -->
+{% extends "auth/base.html" %}
+{% block title %}Register - Earthquake Prediction{% endblock %}
+{% block content %}
+<div class="animate__animated animate__slideInUp bg-white p-6 mx-6 rounded-2xl shadow-md">
+  <form method="post" novalidate>
+    {% csrf_token %}
+    <div class="space-y-4">
+      <div>
+        <label for="id_username" class="block text-sm font-medium text-gray-700">Username</label>
+        {{ form.username }}
+        {% if form.username.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.username.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="id_email" class="block text-sm font-medium text-gray-700">Email</label>
+        {{ form.email }}
+        {% if form.email.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.email.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="id_password1" class="block text-sm font-medium text-gray-700">Password</label>
+        <div class="relative">
+          {{ form.password1 }}
+          <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer" onclick="toggleVisibility('id_password1')">
+            <!-- Eye Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </span>
+        </div>
+        {% if form.password1.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.password1.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <div>
+        <label for="id_password2" class="block text-sm font-medium text-gray-700">Confirm Password</label>
+        <div class="relative">
+          {{ form.password2 }}
+          <span class="absolute inset-y-0 right-3 flex items-center cursor-pointer" onclick="toggleVisibility('id_password2')">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+            </svg>
+          </span>
+        </div>
+        {% if form.password2.errors %}
+          <p class="text-red-600 text-sm mt-1">{{ form.password2.errors.0 }}</p>
+        {% endif %}
+      </div>
+      <button type="submit" class="w-full py-4 px-4 bg-blue-600 text-white rounded-lg hover:bg-#002244 transition">Register</button>
+    </div>
+  </form>
+  <p class="mt-4 text-center text-sm">
+    Already have an account? <a href="{% url 'users:login' %}" class="text-#3E8E41 hover:underline">Login</a>
+  </p>
+</div>
+{% endblock %}
+{% block extra_scripts %}
+<script>
+  function toggleVisibility(fieldId) {
+    const field = document.getElementById(fieldId);
+    field.type = field.type === 'password' ? 'text' : 'password';
+  }
+</script>
+{% endblock %}

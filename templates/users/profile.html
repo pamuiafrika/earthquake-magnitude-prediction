@@ -1,0 +1,99 @@
+{% extends 'prediction/base.html' %}
+
+{% block title %}My Profile{% endblock %}
+
+{% block content %}
+<div class="w-full mx-auto bg-white rounded-lg shadow-lg p-8">
+    <h2 class="text-2xl font-bold mb-6">My Profile</h2>
+    
+    <div class="flex items-start mb-8">
+        <div class="w-32 h-32 mr-6">
+            {% if user.profile_picture %}
+                <img src="{{ user.profile_picture.url }}" alt="Profile Picture" class="w-full h-full object-cover rounded-full">
+            {% else %}
+                <div class="w-full h-full bg-gray-300 rounded-full flex items-center justify-center">
+                    <span class="text-3xl text-gray-600">{{ user.username.0|upper }}</span>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div>
+            <h3 class="text-xl font-semibold">{{ user.username }}</h3>
+            <p class="text-gray-600">{{ user.email }}</p>
+            {% if user.bio %}
+                <p class="mt-2">{{ user.bio }}</p>
+            {% endif %}
+            {% if user.date_of_birth %}
+                <p class="text-sm text-gray-500 mt-1">Born: {{ user.date_of_birth|date:"F j, Y" }}</p>
+            {% endif %}
+            {% if user.created_at %}
+                <p class="text-sm text-gray-500 mt-1">Member Since: {{ user.created_at|date:"F j, Y" }}</p>
+            {% endif %}
+        </div>
+    </div>
+    
+    <div class="border-t pt-6">
+        <h3 class="text-lg font-semibold mb-4">Update Profile</h3>
+        
+        <form method="post" enctype="multipart/form-data" class="space-y-4">
+            {% csrf_token %}
+            
+            <div class="space-y-2">
+                <label for="{{ form.username.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Username
+                </label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.username.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.email.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Email Address
+                </label>
+                {{ form.email }}
+                {% if form.email.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.email.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.profile_picture.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Profile Picture
+                </label>
+                {{ form.profile_picture }}
+                {% if form.profile_picture.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.profile_picture.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.date_of_birth.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Date of Birth
+                </label>
+                {{ form.date_of_birth }}
+                {% if form.date_of_birth.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.date_of_birth.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div class="space-y-2">
+                <label for="{{ form.bio.id_for_label }}" class="block text-sm font-medium text-gray-700">
+                    Bio
+                </label>
+                {{ form.bio }}
+                {% if form.bio.errors %}
+                    <p class="text-red-500 text-xs mt-1">{{ form.bio.errors.0 }}</p>
+                {% endif %}
+            </div>
+            
+            <div>
+                <button type="submit" class="bg-indigo-600 text-white py-4 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500">
+                    Update Profile
+                </button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

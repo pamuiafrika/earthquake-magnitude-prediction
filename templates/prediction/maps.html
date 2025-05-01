@@ -1,0 +1,223 @@
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}Maps & Visualizations - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="mb-8">
+    <h2 class="text-3xl font-bold text-primary mb-2 animate__animated animate__fadeIn">Maps & Visualizations</h2>
+    <p class="text-gray-600">Interactive visualizations of seismic activity and prediction models</p>
+</div>
+
+<!-- Control Panel -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
+    <div class="flex flex-wrap gap-4 items-end">
+        <div class="flex-grow">
+            <label for="visualization_type" class="block text-sm font-medium text-gray-700 mb-1">Visualization Type</label>
+            <select id="visualization_type" name="visualization_type" 
+                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="heatmap" selected>Seismic Hazard Heatmap</option>
+                <option value="fault_lines">3D Fault Lines</option>
+                <option value="wave_propagation">Seismic Wave Propagation</option>
+                <option value="risk_zones">Risk Zones</option>
+            </select>
+        </div>
+        <div class="flex-grow">
+            <label for="time_period" class="block text-sm font-medium text-gray-700 mb-1">Time Period</label>
+            <select id="time_period" name="time_period" 
+                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="recent">Recent Activity (Past 30 days)</option>
+                <option value="yearly">Past Year</option>
+                <option value="decade">Past Decade</option>
+                <option value="century">Historical (Last 100 Years)</option>
+            </select>
+        </div>
+        <div class="flex-grow md:flex-grow-0">
+            <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+            <select id="region" name="region" 
+                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="global">Global</option>
+                <option value="pacific_ring">Dodoma</option>
+            </select>
+        </div>
+        <div>
+            <button id="update_visualization" type="button" class="bg-primary text-white py-4 px-6 rounded-lg hover:bg-[#002244] transition duration-300">
+                Update View
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Main Visualization Area -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
+    <h3 class="text-xl font-semibold text-primary mb-4">Seismic Hazard Heatmap</h3>
+    <div id="visualization-container" class="w-full h-[500px] bg-gray-50 rounded-lg relative">
+        <!-- Visualization will be rendered here via JavaScript -->
+        <div class="flex items-center justify-center h-full text-gray-500">
+            <p>Loading visualization...</p>
+        </div>
+        
+        <!-- Controls Overlay -->
+        <div class="absolute bottom-4 right-4 bg-white bg-opacity-90 p-3 rounded-lg shadow-md">
+            <div class="flex items-center space-x-4">
+                <div>
+                    <label for="zoom" class="block text-xs font-medium text-gray-700 mb-1">Zoom</label>
+                    <input type="range" id="zoom" min="1" max="10" value="5" class="w-32">
+                </div>
+                <div>
+                    <label for="opacity" class="block text-xs font-medium text-gray-700 mb-1">Overlay Opacity</label>
+                    <input type="range" id="opacity" min="0" max="100" value="70" class="w-32">
+                </div>
+                <div>
+                    <button id="reset_view" type="button" class="bg-gray-200 text-gray-800 py-1 px-3 rounded text-sm hover:bg-gray-300 transition duration-300">
+                        Reset View
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Legend -->
+    <div class="mt-4 flex flex-wrap gap-4 items-center">
+        <div class="font-medium text-gray-700">Risk Level:</div>
+        <div class="flex items-center">
+            <span class="inline-block w-4 h-4 bg-green-500 rounded-sm mr-1"></span>
+            <span class="text-sm">Low</span>
+        </div>
+        <div class="flex items-center">
+            <span class="inline-block w-4 h-4 bg-yellow-200 rounded-sm mr-1"></span>
+            <span class="text-sm">Moderate</span>
+        </div>
+        <div class="flex items-center">
+            <span class="inline-block w-4 h-4 bg-yellow-500 rounded-sm mr-1"></span>
+            <span class="text-sm">High</span>
+        </div>
+        <div class="flex items-center">
+            <span class="inline-block w-4 h-4 bg-red-600 rounded-sm mr-1"></span>
+            <span class="text-sm">Very High</span>
+        </div>
+    </div>
+</div>
+
+<!-- 3D Fault Line Viewer -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
+    <h3 class="text-xl font-semibold text-primary mb-4">3D Fault Line Visualization</h3>
+    <div id="fault-line-viewer" class="w-full h-96 bg-gray-50 rounded-lg">
+        <!-- 3D Visualization will be rendered here via JavaScript -->
+        <div class="flex items-center justify-center h-full text-gray-500">
+            <p>Select "3D Fault Lines" in the visualization type dropdown to activate this view</p>
+        </div>
+    </div>
+</div>
+
+<!-- Seismic Wave Propagation -->
+<div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+    <h3 class="text-xl font-semibold text-primary mb-4">Seismic Wave Propagation Animation</h3>
+    <div id="wave-propagation" class="w-full h-96 bg-gray-50 rounded-lg">
+        <!-- Animation will be rendered here via JavaScript -->
+        <div class="flex items-center justify-center h-full text-gray-500">
+            <p>Select "Seismic Wave Propagation" in the visualization type dropdown to activate this view</p>
+        </div>
+    </div>
+    
+    <!-- Wave Propagation Controls -->
+    <div class="mt-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div>
+            <label for="earthquake_magnitude" class="block text-sm font-medium text-gray-700 mb-1">Magnitude</label>
+            <input type="range" id="earthquake_magnitude" min="1" max="9" value="6" step="0.1" class="w-full">
+            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>1.0</span>
+                <span>9.0</span>
+            </div>
+        </div>
+        <div>
+            <label for="earthquake_depth" class="block text-sm font-medium text-gray-700 mb-1">Depth (km)</label>
+            <input type="range" id="earthquake_depth" min="0" max="700" value="30" step="5" class="w-full">
+            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>0 km</span>
+                <span>700 km</span>
+            </div>
+        </div>
+        <div>
+            <label for="simulation_speed" class="block text-sm font-medium text-gray-700 mb-1">Simulation Speed</label>
+            <input type="range" id="simulation_speed" min="1" max="10" value="5" class="w-full">
+            <div class="flex justify-between text-xs text-gray-500 mt-1">
+                <span>Slow</span>
+                <span>Fast</span>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Simulation Controls -->
+    <div class="mt-4 flex flex-wrap gap-2">
+        <button id="start_simulation" type="button" class="bg-[#3E8E41] text-white py-2 px-4 rounded-lg hover:bg-[#2D6A30] transition duration-300">
+            Start Simulation
+        </button>
+        <button id="pause_simulation" type="button" class="bg-gray-500 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition duration-300">
+            Pause
+        </button>
+        <button id="reset_simulation" type="button" class="bg-gray-300 text-gray-800 py-2 px-4 rounded-lg hover:bg-gray-400 transition duration-300">
+            Reset
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Placeholder for visualization initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Initialize default visualization
+        console.log('Initializing default visualization');
+        
+        // Event listeners for UI controls
+        document.getElementById('update_visualization').addEventListener('click', function() {
+            const visualizationType = document.getElementById('visualization_type').value;
+            const timePeriod = document.getElementById('time_period').value;
+            const region = document.getElementById('region').value;
+            
+            console.log(`Updating visualization with: ${visualizationType}, ${timePeriod}, ${region}`);
+            
+            // Update visualization containers visibility based on selected type
+            if (visualizationType === 'fault_lines') {
+                document.querySelector('h3').textContent = '3D Fault Line Visualization';
+                // Show/hide appropriate containers...
+            } else if (visualizationType === 'wave_propagation') {
+                document.querySelector('h3').textContent = 'Seismic Wave Propagation Animation';
+                // Show/hide appropriate containers...
+            } else if (visualizationType === 'risk_zones') {
+                document.querySelector('h3').textContent = 'Earthquake Risk Zones';
+                // Show/hide appropriate containers...
+            } else {
+                document.querySelector('h3').textContent = 'Seismic Hazard Heatmap';
+                // Show/hide appropriate containers...
+            }
+        });
+        
+        // Reset view button
+        document.getElementById('reset_view').addEventListener('click', function() {
+            console.log('Resetting view');
+            document.getElementById('zoom').value = 5;
+            document.getElementById('opacity').value = 70;
+            // Additional reset logic would go here
+        });
+        
+        // Simulation controls
+        document.getElementById('start_simulation').addEventListener('click', function() {
+            console.log('Starting simulation');
+        });
+        
+        document.getElementById('pause_simulation').addEventListener('click', function() {
+            console.log('Pausing simulation');
+        });
+        
+        document.getElementById('reset_simulation').addEventListener('click', function() {
+            console.log('Resetting simulation');
+            document.getElementById('earthquake_magnitude').value = 6;
+            document.getElementById('earthquake_depth').value = 30;
+            document.getElementById('simulation_speed').value = 5;
+        });
+    });
+</script>
+{% endblock %}

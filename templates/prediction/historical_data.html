@@ -1,0 +1,204 @@
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}Historical Data - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+<!-- Page Header -->
+<div class="mb-8">
+    <h2 class="text-3xl font-bold text-primary mb-2 animate__animated animate__fadeIn">Historical Earthquake Data</h2>
+    <p class="text-gray-600">Analyze past seismic events to identify patterns and trends</p>
+</div>
+
+<!-- Date Range Selector -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
+    <h3 class="text-xl font-semibold text-primary mb-4">Select Time Period</h3>
+    <form method="get" action="{% url 'prediction:historical_data' %}" class="flex flex-wrap gap-4 items-end">
+        <div class="flex-grow">
+            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+            <input type="date" id="start_date" name="start_date" value="{{ start_date|default:'' }}" 
+                   class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="flex-grow">
+            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+            <input type="date" id="end_date" name="end_date" value="{{ end_date|default:'' }}"
+                   class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+        </div>
+        <div class="flex-grow md:flex-grow-0">
+            <label for="min_magnitude" class="block text-sm font-medium text-gray-700 mb-1">Min Magnitude</label>
+            <select id="min_magnitude" name="min_magnitude" 
+                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="0" {% if min_magnitude == 0 %}selected{% endif %}>All</option>
+                <option value="2" {% if min_magnitude == 2 %}selected{% endif %}>2.0+</option>
+                <option value="3" {% if min_magnitude == 3 %}selected{% endif %}>3.0+</option>
+                <option value="4" {% if min_magnitude == 4 %}selected{% endif %}>4.0+</option>
+                <option value="5" {% if min_magnitude == 5 %}selected{% endif %}>5.0+</option>
+                <option value="6" {% if min_magnitude == 6 %}selected{% endif %}>6.0+</option>
+                <option value="7" {% if min_magnitude == 7 %}selected{% endif %}>7.0+</option>
+            </select>
+        </div>
+        <div class="flex-grow md:flex-grow-0">
+            <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
+            <select id="region" name="region" 
+                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
+                <option value="all" {% if region == 'all' %}selected{% endif %}>All</option>
+                <option value="dodoma" {% if region == 'dodoma' %}selected{% endif %}>Dodoma</option>
+            </select>
+        </div>
+        <div>
+            <button type="submit" class="bg-primary text-white py-4 px-6 rounded-lg hover:bg-[#002244] transition duration-300">
+                Apply Filters
+            </button>
+        </div>
+    </form>
+</div>
+
+<!-- Charts & Stats -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <!-- Timeline Chart -->
+    <div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+        <h3 class="text-xl font-semibold text-primary mb-4">Earthquake Frequency Over Time</h3>
+        <div id="timeline-chart" class="w-full h-64 bg-gray-50 rounded-lg">
+            <!-- Chart will be rendered here via JavaScript -->
+            <div class="flex items-center justify-center h-full text-gray-500">
+                <p>Chart loading...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Magnitude Distribution Chart -->
+    <div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+        <h3 class="text-xl font-semibold text-primary mb-4">Magnitude Distribution</h3>
+        <div id="magnitude-chart" class="w-full h-64 bg-gray-50 rounded-lg">
+            <!-- Chart will be rendered here via JavaScript -->
+            <div class="flex items-center justify-center h-full text-gray-500">
+                <p>Chart loading...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Heatmap -->
+<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
+    <h3 class="text-xl font-semibold text-primary mb-4">Regional Earthquake Density</h3>
+    <div id="heatmap" class="w-full h-96 bg-gray-50 rounded-lg">
+        <!-- Heatmap will be rendered here via JavaScript -->
+        <div class="flex items-center justify-center h-full text-gray-500">
+            <p>Heatmap loading...</p>
+        </div>
+    </div>
+</div>
+
+<!-- Data Table -->
+<div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+    <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-semibold text-primary">Detailed Historical Data</h3>
+        <div>
+            <button class="bg-[#3E8E41] text-white py-2 px-4 rounded-lg hover:bg-[#2D6A30] transition duration-300 mr-2">
+                <span class="flex items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                    </svg>
+                    Export CSV
+                </span>
+            </button>
+        </div>
+    </div>
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white">
+            <thead class="bg-gray-100">
+                <tr>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Date/Time</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Location</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Lat/Lon</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Depth</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Magnitude</th>
+                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Tectonic Plate</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for quake in historical_data %}
+                <tr class="border-b hover:bg-gray-50">
+                    <td class="py-3 px-4 text-sm">{{ quake.datetime }}</td>
+                    <td class="py-3 px-4 text-sm">{{ quake.location }}</td>
+                    <td class="py-3 px-4 text-sm">{{ quake.latitude }}, {{ quake.longitude }}</td>
+                    <td class="py-3 px-4 text-sm">{{ quake.depth }} km</td>
+                    <td class="py-3 px-4 text-sm">
+                        <span class="px-2 py-1 rounded-full text-white font-medium
+                        {% if quake.magnitude >= 7.0 %}bg-red-600
+                        {% elif quake.magnitude >= 5.0 %}bg-orange-500
+                        {% elif quake.magnitude >= 3.0 %}bg-yellow-500
+                        {% else %}bg-green-500{% endif %}">
+                            {{ quake.magnitude }}
+                        </span>
+                    </td>
+                    <td class="py-3 px-4 text-sm">{{ quake.tectonic_plate }}</td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="6" class="py-4 px-4 text-gray-500 text-center">No data available for the selected filters</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    
+    <!-- Pagination -->
+    {% if historical_data.has_other_pages %}
+    <div class="flex justify-center mt-6">
+        <nav class="inline-flex rounded-md shadow">
+            {% if historical_data.has_previous %}
+            <a href="?page={{ historical_data.previous_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
+               class="py-2 px-4 border border-r-0 border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Previous
+            </a>
+            {% else %}
+            <span class="py-2 px-4 border border-r-0 border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
+                Previous
+            </span>
+            {% endif %}
+            
+            {% for i in historical_data.paginator.page_range %}
+                {% if historical_data.number == i %}
+                <span class="py-2 px-4 border border-r-0 border-blue-600 bg-primary text-sm font-medium text-white">
+                    {{ i }}
+                </span>
+                {% else %}
+                <a href="?page={{ i }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
+                   class="py-2 px-4 border border-r-0 border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                    {{ i }}
+                </a>
+                {% endif %}
+            {% endfor %}
+            
+            {% if historical_data.has_next %}
+            <a href="?page={{ historical_data.next_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
+               class="py-2 px-4 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                Next
+            </a>
+            {% else %}
+            <span class="py-2 px-4 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
+                Next
+            </span>
+            {% endif %}
+        </nav>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Placeholder for chart initialization
+    document.addEventListener('DOMContentLoaded', function() {
+        // Timeline chart initialization would go here
+        console.log('Timeline chart initialization would occur here');
+        
+        // Magnitude distribution chart initialization would go here
+        console.log('Magnitude chart initialization would occur here');
+        
+        // Heatmap initialization would go here
+        console.log('Heatmap initialization would occur here');
+    });
+</script>
+{% endblock %}

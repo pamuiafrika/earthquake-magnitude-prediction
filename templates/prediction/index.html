@@ -1,0 +1,141 @@
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}Home - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+
+<div class="w-full mx-auto p-6 bg-white rounded-2xl shadow-lg animate__animated animate__fadeIn mb-8">
+
+<!-- Hero Section -->
+<section class="mb-8 bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+    <div class="flex flex-col lg:flex-row items-center">
+        <div class="lg:w-1/2 mb-6 lg:mb-0 lg:pr-6">
+            <h2 class="text-3xl font-bold text-primary mb-4">Earthquake Magnitude Prediction </h2>
+            <p class="text-gray-600 mb-6 text-primary">
+                Our advanced system combines historical seismic data with machine learning models to predict 
+                earthquake magnitudes with unprecedented accuracy. Monitor seismic activity, analyze 
+                historical patterns, and stay ahead with our predictive insights.
+            </p>
+            <div class="flex flex-wrap gap-3">
+                <a href="" class="bg-blue-600 py-4 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                    Make Prediction
+                </a>
+            </div>
+        </div>
+        <div class="lg:w-1/2 animate__animated animate__fadeInRight">
+            <div class="bg-gray-100 rounded-lg p-4 relative overflow-hidden h-64">
+                <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="seismic-wave animate__animated animate__pulse animate__infinite">
+                        <img src="{% static 'images/logo.png' %}" alt="Seismic Wave" class="h-full w-full" onerror="this.src='images/logo.png'; this.onerror=null;">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats -->
+<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+    <div class="bg-white rounded-xl shadow-md p-4">
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Total Earthquakes Today</h4>
+        <p class="text-2xl font-bold text-primary">2{{ stats.total_today }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4">
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Significant Events (M4.5+)</h4>
+        <p class="text-2xl font-bold text-gray-500">3{{ stats.significant }}</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4">
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Predictions Accuracy</h4>
+        <p class="text-2xl font-bold text-secondary">97{{ stats.accuracy }}%</p>
+    </div>
+    <div class="bg-white rounded-xl shadow-md p-4">
+        <h4 class="text-sm font-medium text-gray-500 mb-1">Active Alerts</h4>
+        <p class="text-2xl font-bold text-blue-500">5{{ stats.active_alerts }}</p>
+    </div>
+</div>
+
+<!-- Dashboard Grid -->
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+    <!-- Interactive Map -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-4 bg-gray-50 border-b">
+            <h3 class="text-xl font-semibold text-primary">Global Seismic Activity</h3>
+        </div>
+        <div id="map" class="h-96 w-full bg-gray-100">
+            <!-- Map will be rendered here via JavaScript -->
+            <div class="h-full w-full flex items-center justify-center">
+                <p class="text-gray-500">Loading map data...</p>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Recent Earthquakes -->
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+            <h3 class="text-xl font-semibold text-primary">Recent Earthquakes</h3>
+            <span class="px-3 py-1 bg-[#3E8E41] text-white text-sm rounded-full">Live</span>
+        </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Depth</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Magnitude</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for earthquake in recent_earthquakes %}
+                    <tr class="{% if earthquake.magnitude >= 5.0 %}bg-red-50{% endif %} hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ earthquake.timestamp }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            {{ earthquake.location }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ earthquake.depth }} km
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap">
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                {% if earthquake.magnitude < 3.0 %}bg-green-100 text-green-800
+                                {% elif earthquake.magnitude < 5.0 %}bg-yellow-100 text-yellow-800
+                                {% else %}bg-red-100 text-red-800{% endif %}">
+                                {{ earthquake.magnitude }}
+                            </span>
+                        </td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
+                            No recent earthquake data available
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+        <div class="p-4 border-t">
+            <a href="" class="text-primary hover:text-blue-700 text-sm font-medium">
+                View all records →
+            </a>
+        </div>
+    </div>
+</div>
+
+</div>
+
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Map initialization would go here
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log('Map initialization would happen here');
+        // In a real implementation, you'd initialize your map library here
+    });
+</script>
+{% endblock %}

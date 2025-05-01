@@ -1,0 +1,36 @@
+<!-- base.html -->
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-100">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}Earthquake Prediction System{% endblock %}</title>
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Animate.css CDN -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+  <style>
+    body { font-family: 'Roboto', sans-serif; color: #333333; }
+    h1,h2,h3,h4,h5,h6 { font-family: 'Inter', sans-serif; }
+  </style>
+  {% block extra_head %}{% endblock %}
+</head>
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+  <div class="w-full max-w-md">
+    <!-- Logo / Title -->
+    <div class="text-center mb-8 animate__animated animate__fadeInDown">
+
+      <div class="flex flex-col items-center">
+        <img src="{% static 'images/logo-transparent.png' %}" alt="Logo" class="h-24 w-24">
+        <h1 class="text-3xl font-bold text-#003366 mt-4">Earthquake Prediction System</h1>
+      </div>
+
+    </div>
+    {% block content %}{% endblock %}
+  </div>
+  {% block extra_scripts %}{% endblock %}
+</body>
+</html>

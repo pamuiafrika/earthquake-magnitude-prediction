@@ -1,0 +1,304 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Earthquake Magnitude Prediction System{% endblock %}</title>
+    
+    <!-- Tailwind CSS via CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    
+    <!-- Animate.css via CDN -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    
+    <!-- Google Fonts: Roboto and Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    
+    <!-- Custom Styles -->
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'IBM Plex Mono', sans-serif;
+        }
+
+        .font-primary {
+            font-family: 'IBM Plex Mono', sans-serif;
+        }
+
+        .text-primary {
+            color:  #003366;
+        }
+
+        .text-secondary {
+            color: #3E8E41;
+        }
+
+        .text-accent{
+            color: #FFC107;
+        }
+
+        .text-divider{
+            color: #B0BEC5;
+        }
+
+
+
+
+        .bg-primary {
+            background-color:  #003366;
+        }
+
+        .bg-secondary {
+            background-color: #3E8E41;
+        }
+
+        .bg-accent{
+            background-color: #FFC107;
+        }
+
+        .bg-divider{
+            background-color: #B0BEC5;
+        }
+
+
+       
+        .border-primary {
+            background-color:  #003366;
+            color:  #003366;
+        }
+
+        .border-secondary {
+            background-color: #3E8E41;
+        }
+
+        .border-accent{
+            background-color: #FFC107;
+        }
+
+        .border-divider{
+            background-color: #B0BEC5;
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
+<!-- Header -->
+    <header class="bg-gray-800 text-white shadow-md border-gray-300 border-b relative">
+        <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
+            <div class="flex items-center space-x-2 w-full md:w-auto mb-4 md:mb-0">
+                {% load static %}
+                <img src="{% static 'images/logo.png' %}" alt="Logo" class="h-12 w-12 md:h-16 md:w-16 flex-shrink-0">
+                <div class="flex flex-col">
+                    <h1 class="text-lg md:text-2xl font-bold leading-tight">Earthquake Magnitude Prediction System</h1>
+                    <p class="text-xs md:text-sm hidden md:block">Advanced seismic analysis and prediction</p>
+                </div>
+            </div>
+
+            <!-- Profile dropdown and mobile menu button -->
+            <div class="flex items-center space-x-4 w-full md:w-auto justify-between md:justify-end">
+                <!-- Profile dropdown -->
+                <div class="relative">
+                    <!-- Profile picture button -->
+                    <img
+                        src="{% if user.profile.picture %}{{ user.profile.picture.url }}{% else %}{% static 'images/default-avatar.jpg' %}{% endif %}"
+                        alt="Profile"
+                        id="profile-button"
+                        class="h-10 w-10 md:h-12 md:w-12 rounded-full cursor-pointer border-2 border-white"
+                    >
+
+                    <!-- Dropdown menu -->
+                    <div
+                        id="profile-menu"
+                        class="hidden absolute right-0 mt-2 w-56 md:w-64 bg-white text-gray-800 rounded-lg shadow-lg py-2 z-50"
+                    >
+                        <div class="px-4 py-2 border-b border-gray-200">
+                            <p class="font-semibold truncate">{{ user.get_full_name }}</p>
+                            <p class="text-xs md:text-sm text-gray-600 truncate">{{ user.email }}</p>
+                        </div>
+                        <a href="{% url 'users:profile' %}" class="block px-4 py-2 hover:bg-gray-100">Profile</a>
+                        <form method="POST" action="{% url 'users:logout' %}">
+                            {% csrf_token %}
+                            <button type="submit" class="w-full text-left px-4 py-2 hover:bg-gray-100">Logout</button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Mobile Menu Button -->
+                <button id="menu-toggle" class="md:hidden bg-primary p-2 rounded focus:outline-none ml-2">
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <!-- Toggle and click-outside script -->
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const btn = document.getElementById('profile-button');
+            const menu = document.getElementById('profile-menu');
+
+            // Toggle menu on button click
+            btn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                menu.classList.toggle('hidden');
+            });
+
+            // Hide when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!menu.classList.contains('hidden') && !menu.contains(e.target) && e.target !== btn) {
+                    menu.classList.add('hidden');
+                }
+            });
+        });
+        </script>
+    </header>
+  
+    
+    <div class="flex flex-grow">
+        <!-- Sidebar Navigation - Hidden on mobile by default -->
+        <aside id="sidebar" class="hidden md:block bg-white w-80 shadow-lg">
+            <nav class="p-4">
+                <ul>
+                    <li class="mb-2">
+                        <a href="{% url 'users:home' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'home' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path>
+                                </svg>
+                            </span>
+                            Home
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'prediction:prediction' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'prediction' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                            </span>
+                            Prediction Model
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'prediction:historical_data' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'historical_data' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                </svg>
+                            </span>
+                            Historical Data
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="{% url 'prediction:maps' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'maps' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 20l-5.447-2.724A1 1 0 013 16.382V5.618a1 1 0 011.447-.894L9 7m0 13l6-3m-6 3V7m6 10l4.553 2.276A1 1 0 0021 18.382V7.618a1 1 0 00-.553-.894L15 4m0 13V4m0 0L9 7"></path>
+                                </svg>
+                            </span>
+                            Maps & Visualizations
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'settings' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                </svg>
+                            </span>
+                            Settings
+                        </a>
+                    </li>
+                    <li class="mb-2">
+                        <a href="" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'about' %}bg-gray-300 font-medium{% endif %}">
+                            <span class="inline-block mr-2">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                </svg>
+                            </span>
+                            About
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- Alerts Section -->
+            {% include "prediction/_alert.html" %}
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="flex-grow p-4 md:p-6">
+            <div class="animate__animated animate__fadeIn">
+                {% if messages %}
+                <div class="space-y-2 my-4">
+                  {% for message in messages %}
+                  <div class="relative animate__animated animate__fadeIn px-4 py-3 rounded-lg {% if message.tags == 'success' %}bg-green-100 border border-green-300 text-green-800{% elif message.tags == 'error' %}bg-red-100 border border-red-300 text-red-800{% else %}bg-blue-100 border border-blue-300 text-blue-800{% endif %} shadow-sm" x-data="{ show: true }" x-show="show">
+                    <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700" aria-label="Close" onclick="this.parentElement.style.display='none'">
+                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                      </svg>
+                    </button>
+                    <div class="flex items-center">
+                    {% if message.tags == 'success' %}
+                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                    {% elif message.tags == 'error' %}
+                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    {% else %}
+                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                    {% endif %}
+                    <p class="font-semibold">{{ message }}</p>
+                    </div>
+                  </div>
+                  {% endfor %}
+                </div>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
+        </main>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-4 md:mb-0">
+                    <h3 class="text-lg font-semibold mb-2">Earthquake Magnitude Prediction System</h3>
+                    <p class="text-sm text-gray-300">Providing seismic data analysis and prediction since 2025</p>
+                </div>
+                <div>
+                    <h4 class="text-md font-medium mb-2">Quick Links</h4>
+                    <ul class="text-sm text-gray-300">
+                        <li class="mb-1"><a href="" class="hover:text-white">About</a></li>
+                        <li class="mb-1"><a href="" class="hover:text-white">Contact</a></li>
+                        <li class="mb-1"><a href="" class="hover:text-white">Terms & Privacy</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-6 pt-4 border-t border-gray-700 text-sm text-gray-400 text-center">
+                &copy; {% now "Y" %} Earthquake Magnitude Prediction System. All rights reserved.
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script>
+        // Mobile menu toggle
+        document.getElementById('menu-toggle').addEventListener('click', function() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

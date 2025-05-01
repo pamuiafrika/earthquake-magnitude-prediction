@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+venv/
+.env
+
+# Django
+*.sqlite3
+media/
+staticfiles/
+
+# ML artifacts
+ml_models/*.pkl
+
+# Editor / OS
+.vscode/
+.idea/
+.DS_Store

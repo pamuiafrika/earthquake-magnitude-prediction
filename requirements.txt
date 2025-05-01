@@ -1,0 +1,8 @@
+# requirements.txt
+Django
+djangorestframework           # If you expose an API endpoint
+scikit-learn                  # Your ML library
+numpy
+pandas
+python-dotenv                 # Env var loader
+gunicorn                      # Production WSGI server

@@ -1,0 +1,477 @@
+[ERROR] 2025-05-02 16:43:55,270 prediction_app.ml_models.data_processor (data_processor:246) - Error preprocessing prediction data: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+[ERROR] 2025-05-02 16:43:55,270 prediction_app.ml_models.predictor (predictor:153) - Error making prediction: This StandardScaler instance is not fitted yet. Call 'fit' with appropriate arguments before using this estimator.
+[ERROR] 2025-05-02 16:43:55,275 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 16:43:55,275 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 154
+[INFO] 2025-05-02 16:47:45,591 django.utils.autoreload (autoreload:265) - D:\FYP\src\prediction_app\ml_models\data_processor.py changed, reloading.
+[INFO] 2025-05-02 16:47:48,420 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 16:49:10,381 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 16:49:20,796 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 16:49:33,560 prediction_app.ml_models.data_processor (data_processor:39) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 16:49:33,574 prediction_app.ml_models.data_processor (data_processor:76) - Removed 0 duplicate entries
+[INFO] 2025-05-02 16:49:33,625 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 16:49:33,625 prediction_app.ml_models.predictor (predictor:81) - Prediction service components initialized successfully
+[WARNING] 2025-05-02 16:49:33,625 prediction_app.ml_models.predictor (predictor:153) - Scaler not fitted. Training temporary scaler on available data.
+[INFO] 2025-05-02 16:49:34,024 prediction_app.ml_models.predictor (predictor:192) - Scaler fitted on available data and saved
+[INFO] 2025-05-02 16:49:34,159 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.64 for location (-8.8245, 36.3219) at depth 10.0 km
+[INFO] 2025-05-02 16:49:34,180 prediction_app.ml_models.data_processor (data_processor:271) - Found 52 historical earthquakes within 1.0 degrees of (-8.8245, 36.3219)
+[INFO] 2025-05-02 16:49:34,209 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-02 16:50:12,976 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.56 for location (-5.8902, 34.6919) at depth 10.0 km
+[INFO] 2025-05-02 16:50:12,996 prediction_app.ml_models.data_processor (data_processor:271) - Found 84 historical earthquakes within 1.0 degrees of (-5.8902, 34.6919)
+[INFO] 2025-05-02 16:50:13,007 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-02 16:50:19,019 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.54 for location (-6.2418, 35.7888) at depth 10.0 km
+[INFO] 2025-05-02 16:50:19,037 prediction_app.ml_models.data_processor (data_processor:271) - Found 71 historical earthquakes within 1.0 degrees of (-6.2418, 35.7888)
+[INFO] 2025-05-02 16:50:19,048 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-02 16:50:41,737 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.36 for location (-1.4735, 31.0608) at depth 10.0 km
+[INFO] 2025-05-02 16:50:41,765 prediction_app.ml_models.data_processor (data_processor:271) - Found 17 historical earthquakes within 1.0 degrees of (-1.4735, 31.0608)
+[INFO] 2025-05-02 16:50:41,773 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-02 16:50:53,263 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.60 for location (-5.5841, 33.1135) at depth 10.0 km
+[INFO] 2025-05-02 16:50:53,291 prediction_app.ml_models.data_processor (data_processor:271) - Found 74 historical earthquakes within 1.0 degrees of (-5.5841, 33.1135)
+[INFO] 2025-05-02 16:50:53,305 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-02 16:51:50,817 django.utils.autoreload (autoreload:265) - D:\FYP\src\prediction_app\ml_models\data_processor.py changed, reloading.
+[INFO] 2025-05-02 16:51:52,188 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 16:52:04,354 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 16:52:18,054 prediction_app.ml_models.data_processor (data_processor:39) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 16:52:18,085 prediction_app.ml_models.data_processor (data_processor:76) - Removed 0 duplicate entries
+[INFO] 2025-05-02 16:52:18,101 prediction_app.ml_models.predictor (predictor:69) - Loaded fitted scaler from disk
+[INFO] 2025-05-02 16:52:18,200 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 16:52:18,200 prediction_app.ml_models.predictor (predictor:81) - Prediction service components initialized successfully
+[ERROR] 2025-05-02 16:52:18,854 prediction_app.ml_models.data_processor (data_processor:249) - Error preprocessing prediction data: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- DistanceToHotspot5
+- DistanceToHotspot6
+- DistanceToHotspot7
+
+[ERROR] 2025-05-02 16:52:18,854 prediction_app.ml_models.predictor (predictor:168) - Error making prediction: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- DistanceToHotspot5
+- DistanceToHotspot6
+- DistanceToHotspot7
+
+[ERROR] 2025-05-02 16:52:18,866 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 16:52:18,868 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 208
+[ERROR] 2025-05-02 16:52:37,699 prediction_app.ml_models.data_processor (data_processor:249) - Error preprocessing prediction data: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- DistanceToHotspot5
+- DistanceToHotspot6
+- DistanceToHotspot7
+
+[ERROR] 2025-05-02 16:52:37,699 prediction_app.ml_models.predictor (predictor:168) - Error making prediction: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- DistanceToHotspot5
+- DistanceToHotspot6
+- DistanceToHotspot7
+
+[ERROR] 2025-05-02 16:52:37,699 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 16:52:37,699 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 208
+[INFO] 2025-05-02 16:53:57,672 django.server (basehttp:213) - "GET /admin/users/customuser/ HTTP/1.1" 200 11696
+[INFO] 2025-05-02 16:53:57,780 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-02 16:54:31,309 django.server (basehttp:213) - "GET /ai/train-model/ HTTP/1.1" 200 14218
+[INFO] 2025-05-02 16:54:40,936 prediction_app.ml_models.data_processor (data_processor:196) - Data split into 1269 training samples and 424 testing samples
+[INFO] 2025-05-02 16:54:40,938 prediction_app.ml_models.model_trainer (model_trainer:84) - Training random_forest model...
+[INFO] 2025-05-02 16:54:42,613 prediction_app.ml_models.model_trainer (model_trainer:88) - random_forest model trained successfully
+[INFO] 2025-05-02 16:54:42,613 prediction_app.ml_models.model_trainer (model_trainer:84) - Training gradient_boosting model...
+[INFO] 2025-05-02 16:54:48,765 prediction_app.ml_models.model_trainer (model_trainer:88) - gradient_boosting model trained successfully
+[INFO] 2025-05-02 16:54:48,774 prediction_app.ml_models.model_trainer (model_trainer:84) - Training neural_network model...
+[INFO] 2025-05-02 16:54:53,250 prediction_app.ml_models.model_trainer (model_trainer:88) - neural_network model trained successfully
+[INFO] 2025-05-02 16:54:53,326 prediction_app.ml_models.model_trainer (model_trainer:133) - random_forest evaluation: RMSE=0.1537, MAE=0.1168, R²=0.3936
+[INFO] 2025-05-02 16:54:53,342 prediction_app.ml_models.model_trainer (model_trainer:133) - gradient_boosting evaluation: RMSE=0.1629, MAE=0.1232, R²=0.3184
+[INFO] 2025-05-02 16:54:53,351 prediction_app.ml_models.model_trainer (model_trainer:133) - neural_network evaluation: RMSE=0.2190, MAE=0.1723, R²=-0.2312
+[INFO] 2025-05-02 16:54:53,352 prediction_app.ml_models.model_trainer (model_trainer:141) - Best model: random_forest with RMSE=0.1537
+[INFO] 2025-05-02 16:54:55,605 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved random_forest model to D:\FYP\src\prediction_app/ml_models/models\random_forest_20250502_165455.pkl
+[INFO] 2025-05-02 16:54:55,638 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved gradient_boosting model to D:\FYP\src\prediction_app/ml_models/models\gradient_boosting_20250502_165455.pkl
+[INFO] 2025-05-02 16:54:55,670 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved neural_network model to D:\FYP\src\prediction_app/ml_models/models\neural_network_20250502_165455.pkl
+[INFO] 2025-05-02 16:54:55,832 prediction_app.ml_models.model_trainer (model_trainer:258) - Saved best model (random_forest) to D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 16:54:56,089 django.server (basehttp:213) - "POST /ai/train-model/ HTTP/1.1" 302 0
+[INFO] 2025-05-02 16:54:56,141 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 26770
+[INFO] 2025-05-02 16:55:01,456 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 26430
+[INFO] 2025-05-02 16:55:27,343 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 16:55:30,821 django.server (basehttp:213) - "GET /ai/ HTTP/1.1" 200 17536
+[INFO] 2025-05-02 16:55:31,298 django.server (basehttp:213) - "GET /ai/api/heatmap/ HTTP/1.1" 200 42288
+[INFO] 2025-05-02 16:55:33,510 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15290
+[INFO] 2025-05-02 16:55:36,058 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[ERROR] 2025-05-02 16:55:46,243 prediction_app.ml_models.data_processor (data_processor:249) - Error preprocessing prediction data: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 16:55:46,243 prediction_app.ml_models.predictor (predictor:168) - Error making prediction: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 16:55:46,243 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 16:55:46,243 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 155
+[INFO] 2025-05-02 16:56:09,479 django.utils.autoreload (autoreload:265) - D:\FYP\src\prediction_app\ml_models\data_processor.py changed, reloading.
+[INFO] 2025-05-02 16:56:40,157 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 16:56:44,002 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 16:56:59,484 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 16:56:59,492 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-02 16:56:59,512 prediction_app.ml_models.predictor (predictor:69) - Loaded fitted scaler from disk
+[INFO] 2025-05-02 16:56:59,654 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 16:56:59,654 prediction_app.ml_models.predictor (predictor:81) - Prediction service components initialized successfully
+[INFO] 2025-05-02 16:57:00,440 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.71 for location (-2.5599, 34.6507) at depth 4.2 km
+[INFO] 2025-05-02 16:57:00,462 prediction_app.ml_models.data_processor (data_processor:315) - Found 58 historical earthquakes within 1.0 degrees of (-2.5599, 34.6507)
+[INFO] 2025-05-02 16:57:00,496 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-02 16:57:21,061 prediction_app.ml_models.predictor (predictor:163) - Predicted magnitude 4.41 for location (-1.3285, 34.2716) at depth 9.4 km
+[INFO] 2025-05-02 16:57:21,082 prediction_app.ml_models.data_processor (data_processor:315) - Found 31 historical earthquakes within 1.0 degrees of (-1.3285, 34.2716)
+[INFO] 2025-05-02 16:57:21,109 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-02 16:57:26,432 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 16:57:54,169 django.utils.autoreload (autoreload:265) - D:\FYP\src\prediction_app\ml_models\predictor.py changed, reloading.
+[INFO] 2025-05-02 16:57:56,005 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 16:57:59,547 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 16:58:06,967 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 16:58:06,982 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-02 16:58:06,992 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-02 16:58:07,048 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 16:58:07,048 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-02 16:58:07,612 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.39 for location (-1.7255, 34.5628) at depth 10.0 km
+[INFO] 2025-05-02 16:58:07,628 prediction_app.ml_models.data_processor (data_processor:315) - Found 38 historical earthquakes within 1.0 degrees of (-1.7255, 34.5628)
+[INFO] 2025-05-02 16:58:07,645 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-02 17:37:42,505 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15290
+[INFO] 2025-05-02 17:37:59,041 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15290
+[INFO] 2025-05-02 17:38:00,973 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 17:38:03,107 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 17:38:12,098 django.server (basehttp:213) - "GET /ai/ HTTP/1.1" 200 17536
+[INFO] 2025-05-02 17:38:12,535 django.server (basehttp:213) - "GET /ai/api/heatmap/ HTTP/1.1" 200 42288
+[INFO] 2025-05-02 17:38:18,822 django.server (basehttp:213) - "GET /ai/ HTTP/1.1" 200 17536
+[INFO] 2025-05-02 17:38:19,103 django.server (basehttp:213) - "GET /ai/api/heatmap/ HTTP/1.1" 200 42288
+[INFO] 2025-05-02 17:38:21,638 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 17:38:23,190 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 26430
+[INFO] 2025-05-02 17:38:25,995 django.server (basehttp:213) - "GET /admin/users/customuser/ HTTP/1.1" 200 11696
+[INFO] 2025-05-02 17:38:29,592 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 12949
+[INFO] 2025-05-02 17:38:29,685 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-02 17:38:33,763 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 10994
+[INFO] 2025-05-02 17:38:33,847 django.server (basehttp:213) - "GET /static/admin/js/cancel.js HTTP/1.1" 304 0
+[INFO] 2025-05-02 17:38:34,970 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/ HTTP/1.1" 302 0
+[INFO] 2025-05-02 17:38:35,008 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 10022
+[INFO] 2025-05-02 17:38:35,084 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-02 17:38:43,352 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 17:38:44,952 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:38:47,059 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:38:56,907 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 17:39:03,405 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:39:05,819 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:39:09,967 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:39:11,699 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:39:16,339 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 17:39:28,565 django.server (basehttp:213) - "GET /ai/earthquake-data/?year=&min_mag=4.5 HTTP/1.1" 200 118637
+[INFO] 2025-05-02 17:39:42,021 django.server (basehttp:213) - "GET /ai/earthquake-data/?year=&min_mag=5.2 HTTP/1.1" 200 16394
+[INFO] 2025-05-02 17:39:46,951 django.server (basehttp:213) - "GET /ai/earthquake-data/?year=&min_mag=5.1 HTTP/1.1" 200 18080
+[INFO] 2025-05-02 17:39:49,986 prediction_app.ml_models.data_processor (data_processor:315) - Found 31 historical earthquakes within 1.0 degrees of (-6.4357, 37.6941)
+[INFO] 2025-05-02 17:39:50,040 django.server (basehttp:213) - "GET /ai/analytics/?latitude=-6.4357&longitude=37.6941&radius=1.0 HTTP/1.1" 200 15487
+[INFO] 2025-05-02 17:39:58,954 prediction_app.ml_models.data_processor (data_processor:315) - Found 1651 historical earthquakes within 10.0 degrees of (-6.4357, 37.6941)
+[INFO] 2025-05-02 17:39:59,029 django.server (basehttp:213) - "GET /ai/analytics/?latitude=-6.4357&longitude=37.6941&radius=10 HTTP/1.1" 200 15497
+[INFO] 2025-05-02 17:40:11,818 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15290
+[INFO] 2025-05-02 17:40:36,671 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 17:40:39,280 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:40:40,832 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[ERROR] 2025-05-02 17:40:49,107 prediction_app.ml_models.data_processor (data_processor:290) - Error preprocessing prediction data: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 17:40:49,107 prediction_app.ml_models.predictor (predictor:193) - Error making prediction: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 17:40:49,114 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 17:40:49,114 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 155
+[ERROR] 2025-05-02 17:44:00,969 prediction_app.ml_models.data_processor (data_processor:290) - Error preprocessing prediction data: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 17:44:00,969 prediction_app.ml_models.predictor (predictor:193) - Error making prediction: The feature names should match those that were passed during fit.
+Feature names unseen at fit time:
+- YearMonth
+
+[ERROR] 2025-05-02 17:44:00,976 django.request (log:248) - Internal Server Error: /ai/predict/
+[ERROR] 2025-05-02 17:44:00,976 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 500 155
+[INFO] 2025-05-02 17:44:04,711 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119140
+[INFO] 2025-05-02 17:44:10,267 django.server (basehttp:213) - "GET /ai/import-data/ HTTP/1.1" 200 24629
+[INFO] 2025-05-02 17:44:55,351 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 17:44:55,374 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-02 17:44:55,437 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-02 17:44:55,727 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 17:44:55,781 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-02 17:44:55,820 django.server (basehttp:213) - "POST /ai/import-data/ HTTP/1.1" 302 0
+[INFO] 2025-05-02 17:44:56,051 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 118108
+[INFO] 2025-05-02 17:45:33,861 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 12770
+[INFO] 2025-05-02 17:45:36,295 django.server (basehttp:213) - "GET /ai/train-model/ HTTP/1.1" 200 14218
+[INFO] 2025-05-02 17:46:51,874 prediction_app.ml_models.data_processor (data_processor:219) - Data split into 828 training samples and 207 testing samples
+[INFO] 2025-05-02 17:46:51,878 prediction_app.ml_models.predictor (predictor:125) - Saved 20 feature names
+[INFO] 2025-05-02 17:46:51,878 prediction_app.ml_models.model_trainer (model_trainer:84) - Training random_forest model...
+[INFO] 2025-05-02 17:46:52,507 prediction_app.ml_models.model_trainer (model_trainer:88) - random_forest model trained successfully
+[INFO] 2025-05-02 17:46:52,507 prediction_app.ml_models.model_trainer (model_trainer:84) - Training gradient_boosting model...
+[INFO] 2025-05-02 17:46:54,759 prediction_app.ml_models.model_trainer (model_trainer:88) - gradient_boosting model trained successfully
+[INFO] 2025-05-02 17:46:54,759 prediction_app.ml_models.model_trainer (model_trainer:84) - Training neural_network model...
+[INFO] 2025-05-02 17:46:57,760 prediction_app.ml_models.model_trainer (model_trainer:88) - neural_network model trained successfully
+[INFO] 2025-05-02 17:46:57,829 prediction_app.ml_models.model_trainer (model_trainer:133) - random_forest evaluation: RMSE=0.3482, MAE=0.2789, R²=0.3085
+[INFO] 2025-05-02 17:46:57,837 prediction_app.ml_models.model_trainer (model_trainer:133) - gradient_boosting evaluation: RMSE=0.3702, MAE=0.3011, R²=0.2184
+[INFO] 2025-05-02 17:46:57,840 prediction_app.ml_models.model_trainer (model_trainer:133) - neural_network evaluation: RMSE=0.4202, MAE=0.3330, R²=-0.0071
+[INFO] 2025-05-02 17:46:57,840 prediction_app.ml_models.model_trainer (model_trainer:141) - Best model: random_forest with RMSE=0.3482
+[INFO] 2025-05-02 17:47:50,664 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-02 17:48:00,080 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-02 17:48:00,159 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-02 17:48:00,180 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-02 17:48:00,188 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-02 17:48:00,197 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-02 17:48:00,311 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 17:48:00,311 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-02 17:48:00,993 prediction_app.ml_models.data_processor (data_processor:219) - Data split into 828 training samples and 207 testing samples
+[INFO] 2025-05-02 17:48:01,000 prediction_app.ml_models.predictor (predictor:125) - Saved 20 feature names
+[INFO] 2025-05-02 17:48:01,000 prediction_app.ml_models.model_trainer (model_trainer:84) - Training random_forest model...
+[INFO] 2025-05-02 17:48:02,167 prediction_app.ml_models.model_trainer (model_trainer:88) - random_forest model trained successfully
+[INFO] 2025-05-02 17:48:02,167 prediction_app.ml_models.model_trainer (model_trainer:84) - Training gradient_boosting model...
+[INFO] 2025-05-02 17:48:06,238 prediction_app.ml_models.model_trainer (model_trainer:88) - gradient_boosting model trained successfully
+[INFO] 2025-05-02 17:48:06,238 prediction_app.ml_models.model_trainer (model_trainer:84) - Training neural_network model...
+[INFO] 2025-05-02 17:48:11,192 prediction_app.ml_models.model_trainer (model_trainer:88) - neural_network model trained successfully
+[INFO] 2025-05-02 17:48:11,290 prediction_app.ml_models.model_trainer (model_trainer:133) - random_forest evaluation: RMSE=0.3482, MAE=0.2789, R²=0.3085
+[INFO] 2025-05-02 17:48:11,305 prediction_app.ml_models.model_trainer (model_trainer:133) - gradient_boosting evaluation: RMSE=0.3702, MAE=0.3011, R²=0.2184
+[INFO] 2025-05-02 17:48:11,315 prediction_app.ml_models.model_trainer (model_trainer:133) - neural_network evaluation: RMSE=0.4202, MAE=0.3330, R²=-0.0071
+[INFO] 2025-05-02 17:48:11,315 prediction_app.ml_models.model_trainer (model_trainer:141) - Best model: random_forest with RMSE=0.3482
+[INFO] 2025-05-02 17:48:13,401 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved random_forest model to D:\FYP\src\prediction_app/ml_models/models\random_forest_20250502_174813.pkl
+[INFO] 2025-05-02 17:48:13,425 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved gradient_boosting model to D:\FYP\src\prediction_app/ml_models/models\gradient_boosting_20250502_174813.pkl
+[INFO] 2025-05-02 17:48:13,472 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved neural_network model to D:\FYP\src\prediction_app/ml_models/models\neural_network_20250502_174813.pkl
+[INFO] 2025-05-02 17:48:13,632 prediction_app.ml_models.model_trainer (model_trainer:258) - Saved best model (random_forest) to D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-02 17:48:13,901 django.server (basehttp:213) - "POST /ai/train-model/ HTTP/1.1" 302 0
+[INFO] 2025-05-02 17:48:14,009 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 19811
+[INFO] 2025-05-02 17:48:27,296 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-02 17:48:43,549 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-02 17:48:43,679 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-2.9939, 33.428) at depth 8.0 km
+[INFO] 2025-05-02 17:48:43,704 prediction_app.ml_models.data_processor (data_processor:315) - Found 5 historical earthquakes within 1.0 degrees of (-2.9939, 33.428)
+[INFO] 2025-05-02 17:48:43,731 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 187
+[INFO] 2025-05-03 00:03:26,250 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:03:26,398 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.41 for location (-2.9939, 33.428) at depth 10.0 km
+[INFO] 2025-05-03 00:03:26,417 prediction_app.ml_models.data_processor (data_processor:315) - Found 5 historical earthquakes within 1.0 degrees of (-2.9939, 33.428)
+[INFO] 2025-05-03 00:03:26,447 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:03:36,042 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:03:36,137 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.50 for location (-2.7924, 32.1505) at depth 10.0 km
+[INFO] 2025-05-03 00:03:36,146 prediction_app.ml_models.data_processor (data_processor:315) - Found 5 historical earthquakes within 1.0 degrees of (-2.7924, 32.1505)
+[INFO] 2025-05-03 00:03:36,158 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:04:10,121 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:04:10,266 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.49 for location (-8.4681, 34.0162) at depth 10.0 km
+[INFO] 2025-05-03 00:04:10,283 prediction_app.ml_models.data_processor (data_processor:315) - Found 3 historical earthquakes within 1.0 degrees of (-8.4681, 34.0162)
+[INFO] 2025-05-03 00:04:10,298 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-03 00:04:18,055 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:04:18,176 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.57 for location (-8.8374, 34.8658) at depth 10.0 km
+[INFO] 2025-05-03 00:04:18,198 prediction_app.ml_models.data_processor (data_processor:315) - Found 1 historical earthquakes within 1.0 degrees of (-8.8374, 34.8658)
+[INFO] 2025-05-03 00:04:18,214 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:04:24,020 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:04:24,172 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.49 for location (-8.5984, 33.7876) at depth 10.0 km
+[INFO] 2025-05-03 00:04:24,196 prediction_app.ml_models.data_processor (data_processor:315) - Found 8 historical earthquakes within 1.0 degrees of (-8.5984, 33.7876)
+[INFO] 2025-05-03 00:04:24,220 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:04:38,468 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:04:38,597 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.24 for location (-6.2018, 35.7455) at depth 10.0 km
+[INFO] 2025-05-03 00:04:38,620 prediction_app.ml_models.data_processor (data_processor:315) - Found 84 historical earthquakes within 1.0 degrees of (-6.2018, 35.7455)
+[INFO] 2025-05-03 00:04:38,640 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:07:09,220 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:07:09,370 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.24 for location (-6.1258, 35.813) at depth 10.0 km
+[INFO] 2025-05-03 00:07:09,399 prediction_app.ml_models.data_processor (data_processor:315) - Found 87 historical earthquakes within 1.0 degrees of (-6.1258, 35.813)
+[INFO] 2025-05-03 00:07:09,410 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-03 00:07:24,570 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:07:24,690 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.24 for location (-6.2018, 35.6412) at depth 10.0 km
+[INFO] 2025-05-03 00:07:24,705 prediction_app.ml_models.data_processor (data_processor:315) - Found 88 historical earthquakes within 1.0 degrees of (-6.2018, 35.6412)
+[INFO] 2025-05-03 00:07:24,729 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:07:31,677 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:07:31,814 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.24 for location (-6.1581, 36.019) at depth 10.0 km
+[INFO] 2025-05-03 00:07:31,830 prediction_app.ml_models.data_processor (data_processor:315) - Found 85 historical earthquakes within 1.0 degrees of (-6.1581, 36.019)
+[INFO] 2025-05-03 00:07:31,845 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-03 00:07:37,455 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:07:37,594 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.24 for location (-6.0925, 35.6669) at depth 10.0 km
+[INFO] 2025-05-03 00:07:37,617 prediction_app.ml_models.data_processor (data_processor:315) - Found 97 historical earthquakes within 1.0 degrees of (-6.0925, 35.6669)
+[INFO] 2025-05-03 00:07:37,632 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:07:52,231 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:07:52,362 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.22 for location (-6.083, 35.1036) at depth 10.0 km
+[INFO] 2025-05-03 00:07:52,378 prediction_app.ml_models.data_processor (data_processor:315) - Found 96 historical earthquakes within 1.0 degrees of (-6.083, 35.1036)
+[INFO] 2025-05-03 00:07:52,394 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:08:00,748 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:08:00,871 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.33 for location (-5.9177, 32.8932) at depth 10.0 km
+[INFO] 2025-05-03 00:08:00,896 prediction_app.ml_models.data_processor (data_processor:315) - Found 1 historical earthquakes within 1.0 degrees of (-5.9177, 32.8932)
+[INFO] 2025-05-03 00:08:00,921 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 188
+[INFO] 2025-05-03 00:08:07,056 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:08:07,196 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.38 for location (-6.2782, 30.5897) at depth 10.0 km
+[INFO] 2025-05-03 00:08:07,215 prediction_app.ml_models.data_processor (data_processor:315) - Found 57 historical earthquakes within 1.0 degrees of (-6.2782, 30.5897)
+[INFO] 2025-05-03 00:08:07,238 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:08:29,123 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:08:29,243 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.30 for location (-10.3843, 37.8532) at depth 10.0 km
+[INFO] 2025-05-03 00:08:29,262 prediction_app.ml_models.data_processor (data_processor:315) - Found 0 historical earthquakes within 1.0 degrees of (-10.3843, 37.8532)
+[INFO] 2025-05-03 00:08:29,275 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 184
+[INFO] 2025-05-03 00:08:52,075 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:08:52,207 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.34 for location (-10.5159, 40.0067) at depth 10.0 km
+[INFO] 2025-05-03 00:08:52,223 prediction_app.ml_models.data_processor (data_processor:315) - Found 16 historical earthquakes within 1.0 degrees of (-10.5159, 40.0067)
+[INFO] 2025-05-03 00:08:52,239 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:09:02,943 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:09:03,068 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.28 for location (-11.1418, 40.2046) at depth 10.0 km
+[INFO] 2025-05-03 00:09:03,092 prediction_app.ml_models.data_processor (data_processor:315) - Found 21 historical earthquakes within 1.0 degrees of (-11.1418, 40.2046)
+[INFO] 2025-05-03 00:09:03,104 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:09:11,252 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:09:11,375 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.26 for location (-13.0389, 40.2879) at depth 10.0 km
+[INFO] 2025-05-03 00:09:11,395 prediction_app.ml_models.data_processor (data_processor:315) - Found 10 historical earthquakes within 1.0 degrees of (-13.0389, 40.2879)
+[INFO] 2025-05-03 00:09:11,411 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 191
+[INFO] 2025-05-03 00:09:20,695 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:09:20,805 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.26 for location (-11.3337, 49.156) at depth 10.0 km
+[INFO] 2025-05-03 00:09:20,834 prediction_app.ml_models.data_processor (data_processor:315) - Found 0 historical earthquakes within 1.0 degrees of (-11.3337, 49.156)
+[INFO] 2025-05-03 00:09:20,834 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 184
+[INFO] 2025-05-03 00:12:49,869 django.utils.autoreload (autoreload:265) - D:\FYP\src\prediction_app\views.py changed, reloading.
+[INFO] 2025-05-03 00:14:10,314 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-03 00:15:31,104 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-03 00:15:31,145 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-03 00:15:31,163 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-03 00:15:31,166 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-03 00:15:31,166 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-03 00:15:31,255 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-03 00:15:31,255 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-03 00:15:31,338 django.server (basehttp:213) - "GET /ai/ HTTP/1.1" 200 17534
+[INFO] 2025-05-03 00:15:31,699 django.server (basehttp:213) - "GET /ai/api/heatmap/ HTTP/1.1" 200 24428
+[INFO] 2025-05-03 00:15:35,496 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-03 00:16:16,058 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 19471
+[INFO] 2025-05-03 00:16:19,108 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15290
+[INFO] 2025-05-03 00:16:23,530 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21295
+[INFO] 2025-05-03 00:22:10,038 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:31:10,302 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:31:25,988 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 11928
+[INFO] 2025-05-03 00:31:26,167 django.server (basehttp:213) - "GET /static/admin/css/base.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,168 django.server (basehttp:213) - "GET /static/admin/css/dark_mode.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,241 django.server (basehttp:213) - "GET /static/admin/css/responsive.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,271 django.server (basehttp:213) - "GET /static/admin/js/theme.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,271 django.server (basehttp:213) - "GET /static/admin/js/vendor/jquery/jquery.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,364 django.server (basehttp:213) - "GET /static/admin/js/jquery.init.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,368 django.server (basehttp:213) - "GET /static/admin/js/admin/RelatedObjectLookups.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,386 django.server (basehttp:213) - "GET /static/admin/js/core.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,386 django.server (basehttp:213) - "GET /static/admin/css/nav_sidebar.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,455 django.server (basehttp:213) - "GET /static/admin/css/changelists.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,455 django.server (basehttp:213) - "GET /static/admin/js/actions.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,496 django.server (basehttp:213) - "GET /static/admin/js/urlify.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,502 django.server (basehttp:213) - "GET /static/admin/js/vendor/xregexp/xregexp.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,502 django.server (basehttp:213) - "GET /static/admin/js/prepopulate.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,565 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:31:26,630 django.server (basehttp:213) - "GET /static/admin/img/tooltag-add.svg HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,642 django.server (basehttp:213) - "GET /static/admin/img/icon-addlink.svg HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,689 django.server (basehttp:213) - "GET /static/admin/js/nav_sidebar.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:26,759 django.server (basehttp:213) - "GET /static/admin/js/filters.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:32,964 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 10425
+[INFO] 2025-05-03 00:31:33,004 django.server (basehttp:213) - "GET /static/admin/js/cancel.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:34,613 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:31:34,663 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 10022
+[INFO] 2025-05-03 00:31:34,767 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:31:34,795 django.server (basehttp:213) - "GET /static/admin/img/icon-yes.svg HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:31:37,530 django.server (basehttp:213) - "GET /admin/prediction_app/predictionlog/ HTTP/1.1" 200 19983
+[INFO] 2025-05-03 00:31:37,633 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:31:49,473 django.server (basehttp:213) - "POST /admin/prediction_app/predictionlog/ HTTP/1.1" 200 14952
+[INFO] 2025-05-03 00:31:53,088 django.server (basehttp:213) - "POST /admin/prediction_app/predictionlog/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:31:53,129 django.server (basehttp:213) - "GET /admin/prediction_app/predictionlog/ HTTP/1.1" 200 10031
+[INFO] 2025-05-03 00:31:53,221 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:32:58,667 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 13060
+[INFO] 2025-05-03 00:33:00,678 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 118072
+[INFO] 2025-05-03 00:33:26,472 django.server (basehttp:213) - "GET /ai/import-data/ HTTP/1.1" 200 24919
+[INFO] 2025-05-03 00:34:18,493 django.server (basehttp:213) - "GET /ai/import-data/ HTTP/1.1" 200 24919
+[INFO] 2025-05-03 00:35:14,829 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-03 00:35:14,846 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-03 00:35:14,846 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-03 00:35:14,846 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-03 00:35:14,861 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-03 00:35:14,896 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-03 00:35:14,896 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-03 00:35:14,913 django.server (basehttp:213) - "POST /ai/import-data/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:35:14,965 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 118398
+[INFO] 2025-05-03 00:35:45,785 django.server (basehttp:213) - "GET /ai/train-model/ HTTP/1.1" 200 14508
+[INFO] 2025-05-03 00:37:35,821 prediction_app.ml_models.data_processor (data_processor:219) - Data split into 828 training samples and 207 testing samples
+[INFO] 2025-05-03 00:37:35,823 prediction_app.ml_models.predictor (predictor:125) - Saved 20 feature names
+[INFO] 2025-05-03 00:37:35,823 prediction_app.ml_models.model_trainer (model_trainer:84) - Training random_forest model...
+[INFO] 2025-05-03 00:37:36,645 prediction_app.ml_models.model_trainer (model_trainer:88) - random_forest model trained successfully
+[INFO] 2025-05-03 00:37:36,645 prediction_app.ml_models.model_trainer (model_trainer:84) - Training gradient_boosting model...
+[INFO] 2025-05-03 00:37:38,779 prediction_app.ml_models.model_trainer (model_trainer:88) - gradient_boosting model trained successfully
+[INFO] 2025-05-03 00:37:38,779 prediction_app.ml_models.model_trainer (model_trainer:84) - Training neural_network model...
+[INFO] 2025-05-03 00:37:42,281 prediction_app.ml_models.model_trainer (model_trainer:88) - neural_network model trained successfully
+[INFO] 2025-05-03 00:37:42,335 prediction_app.ml_models.model_trainer (model_trainer:133) - random_forest evaluation: RMSE=0.3836, MAE=0.2888, R²=0.3377
+[INFO] 2025-05-03 00:37:42,341 prediction_app.ml_models.model_trainer (model_trainer:133) - gradient_boosting evaluation: RMSE=0.4108, MAE=0.3108, R²=0.2406
+[INFO] 2025-05-03 00:37:42,345 prediction_app.ml_models.model_trainer (model_trainer:133) - neural_network evaluation: RMSE=0.4740, MAE=0.3566, R²=-0.0110
+[INFO] 2025-05-03 00:37:42,345 prediction_app.ml_models.model_trainer (model_trainer:141) - Best model: random_forest with RMSE=0.3836
+[INFO] 2025-05-03 00:37:43,729 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved random_forest model to D:\FYP\src\prediction_app/ml_models/models\random_forest_20250503_003743.pkl
+[INFO] 2025-05-03 00:37:43,750 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved gradient_boosting model to D:\FYP\src\prediction_app/ml_models/models\gradient_boosting_20250503_003743.pkl
+[INFO] 2025-05-03 00:37:43,772 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved neural_network model to D:\FYP\src\prediction_app/ml_models/models\neural_network_20250503_003743.pkl
+[INFO] 2025-05-03 00:37:43,884 prediction_app.ml_models.model_trainer (model_trainer:258) - Saved best model (random_forest) to D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-03 00:37:44,021 django.server (basehttp:213) - "POST /ai/train-model/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:37:44,041 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 20101
+[INFO] 2025-05-03 00:38:45,968 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15580
+[INFO] 2025-05-03 00:38:50,804 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 19761
+[INFO] 2025-05-03 00:39:04,967 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:39:39,268 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:39:39,340 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.39 for location (-6.8346, 39.3059) at depth 10.0 km
+[INFO] 2025-05-03 00:39:39,351 prediction_app.ml_models.data_processor (data_processor:315) - Found 13 historical earthquakes within 1.0 degrees of (-6.8346, 39.3059)
+[INFO] 2025-05-03 00:39:39,368 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:40:15,294 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 118072
+[INFO] 2025-05-03 00:40:17,117 django.server (basehttp:213) - "GET /ai/import-data/ HTTP/1.1" 200 24919
+[INFO] 2025-05-03 00:41:01,081 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-03 00:41:01,099 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-03 00:41:01,101 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-03 00:41:01,102 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-03 00:41:01,102 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-03 00:41:01,127 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-03 00:41:01,127 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-03 00:41:01,143 django.server (basehttp:213) - "POST /ai/import-data/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:41:01,210 django.server (basehttp:213) - "GET /ai/earthquake-data/ HTTP/1.1" 200 119756
+[INFO] 2025-05-03 00:41:08,221 django.server (basehttp:213) - "GET /ai/train-model/ HTTP/1.1" 200 14508
+[INFO] 2025-05-03 00:41:13,450 prediction_app.ml_models.data_processor (data_processor:219) - Data split into 1354 training samples and 339 testing samples
+[INFO] 2025-05-03 00:41:13,453 prediction_app.ml_models.predictor (predictor:125) - Saved 20 feature names
+[INFO] 2025-05-03 00:41:13,454 prediction_app.ml_models.model_trainer (model_trainer:84) - Training random_forest model...
+[INFO] 2025-05-03 00:41:14,402 prediction_app.ml_models.model_trainer (model_trainer:88) - random_forest model trained successfully
+[INFO] 2025-05-03 00:41:14,402 prediction_app.ml_models.model_trainer (model_trainer:84) - Training gradient_boosting model...
+[INFO] 2025-05-03 00:41:17,760 prediction_app.ml_models.model_trainer (model_trainer:88) - gradient_boosting model trained successfully
+[INFO] 2025-05-03 00:41:17,760 prediction_app.ml_models.model_trainer (model_trainer:84) - Training neural_network model...
+[INFO] 2025-05-03 00:41:20,356 prediction_app.ml_models.model_trainer (model_trainer:88) - neural_network model trained successfully
+[INFO] 2025-05-03 00:41:20,403 prediction_app.ml_models.model_trainer (model_trainer:133) - random_forest evaluation: RMSE=0.1529, MAE=0.1171, R²=0.3839
+[INFO] 2025-05-03 00:41:20,410 prediction_app.ml_models.model_trainer (model_trainer:133) - gradient_boosting evaluation: RMSE=0.1650, MAE=0.1268, R²=0.2819
+[INFO] 2025-05-03 00:41:20,413 prediction_app.ml_models.model_trainer (model_trainer:133) - neural_network evaluation: RMSE=0.1963, MAE=0.1532, R²=-0.0165
+[INFO] 2025-05-03 00:41:20,414 prediction_app.ml_models.model_trainer (model_trainer:141) - Best model: random_forest with RMSE=0.1529
+[INFO] 2025-05-03 00:41:21,334 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved random_forest model to D:\FYP\src\prediction_app/ml_models/models\random_forest_20250503_004121.pkl
+[INFO] 2025-05-03 00:41:21,354 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved gradient_boosting model to D:\FYP\src\prediction_app/ml_models/models\gradient_boosting_20250503_004121.pkl
+[INFO] 2025-05-03 00:41:21,356 prediction_app.ml_models.model_trainer (model_trainer:248) - Saved neural_network model to D:\FYP\src\prediction_app/ml_models/models\neural_network_20250503_004121.pkl
+[INFO] 2025-05-03 00:41:21,441 prediction_app.ml_models.model_trainer (model_trainer:258) - Saved best model (random_forest) to D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-03 00:41:21,574 django.server (basehttp:213) - "POST /ai/train-model/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:41:21,623 django.server (basehttp:213) - "GET /ai/model-metrics/ HTTP/1.1" 200 27056
+[INFO] 2025-05-03 00:41:48,295 django.server (basehttp:213) - "GET /ai/train-model/ HTTP/1.1" 200 14508
+[INFO] 2025-05-03 00:41:51,888 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:41:59,589 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:41:59,668 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.76 for location (-7.4613, 37.6874) at depth 8.0 km
+[INFO] 2025-05-03 00:41:59,688 prediction_app.ml_models.data_processor (data_processor:315) - Found 31 historical earthquakes within 1.0 degrees of (-7.4613, 37.6874)
+[INFO] 2025-05-03 00:41:59,688 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 189
+[INFO] 2025-05-03 00:42:06,981 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15580
+[INFO] 2025-05-03 00:42:14,794 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:43:02,946 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15580
+[INFO] 2025-05-03 00:43:19,086 prediction_app.ml_models.data_processor (data_processor:315) - Found 1517 historical earthquakes within 10.0 degrees of (-6.8277, 39.3106)
+[INFO] 2025-05-03 00:43:19,135 django.server (basehttp:213) - "GET /ai/analytics/?latitude=-6.8277&longitude=39.3106&radius=10 HTTP/1.1" 200 15787
+[INFO] 2025-05-03 00:44:22,257 prediction_app.ml_models.data_processor (data_processor:315) - Found 14 historical earthquakes within 1.0 degrees of (-6.8277, 39.3106)
+[INFO] 2025-05-03 00:44:22,324 django.server (basehttp:213) - "GET /ai/analytics/?latitude=-6.8277&longitude=39.3106&radius=1 HTTP/1.1" 200 15787
+[INFO] 2025-05-03 00:45:04,254 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:45:25,332 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15580
+[INFO] 2025-05-03 00:45:35,476 prediction_app.ml_models.data_processor (data_processor:315) - Found 71 historical earthquakes within 1.0 degrees of (-6.1851, 35.7474)
+[INFO] 2025-05-03 00:45:35,524 django.server (basehttp:213) - "GET /ai/analytics/?latitude=-6.1851&longitude=35.7474&radius=1.0 HTTP/1.1" 200 15787
+[INFO] 2025-05-03 00:46:03,762 django.server (basehttp:213) - "GET /ai/predict/ HTTP/1.1" 200 21585
+[INFO] 2025-05-03 00:46:17,086 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 12949
+[INFO] 2025-05-03 00:46:17,198 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:21,581 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/24/change/ HTTP/1.1" 200 17242
+[INFO] 2025-05-03 00:46:21,683 django.server (basehttp:213) - "GET /static/admin/css/forms.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,691 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:21,696 django.server (basehttp:213) - "GET /static/admin/js/calendar.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,696 django.server (basehttp:213) - "GET /static/admin/css/widgets.css HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,702 django.server (basehttp:213) - "GET /static/admin/js/admin/DateTimeShortcuts.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,703 django.server (basehttp:213) - "GET /static/admin/js/prepopulate_init.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,719 django.server (basehttp:213) - "GET /static/admin/js/change_form.js HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,835 django.server (basehttp:213) - "GET /static/admin/img/icon-calendar.svg HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:21,835 django.server (basehttp:213) - "GET /static/admin/img/icon-clock.svg HTTP/1.1" 304 0
+[INFO] 2025-05-03 00:46:30,876 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/24/change/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:46:30,906 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 13202
+[INFO] 2025-05-03 00:46:30,996 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:33,371 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/19/change/ HTTP/1.1" 200 17239
+[INFO] 2025-05-03 00:46:33,459 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:35,918 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/19/change/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:46:35,961 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 13201
+[INFO] 2025-05-03 00:46:36,036 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:40,414 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/22/change/ HTTP/1.1" 200 17244
+[INFO] 2025-05-03 00:46:40,492 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:46:43,099 django.server (basehttp:213) - "POST /admin/prediction_app/modelmetrics/22/change/ HTTP/1.1" 302 0
+[INFO] 2025-05-03 00:46:43,130 django.server (basehttp:213) - "GET /admin/prediction_app/modelmetrics/ HTTP/1.1" 200 13201
+[INFO] 2025-05-03 00:46:43,212 django.server (basehttp:213) - "GET /admin/jsi18n/ HTTP/1.1" 200 3342
+[INFO] 2025-05-03 00:47:10,992 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-03 00:47:11,082 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.54 for location (-6.1851, 35.7474) at depth 10.0 km
+[INFO] 2025-05-03 00:47:11,102 prediction_app.ml_models.data_processor (data_processor:315) - Found 71 historical earthquakes within 1.0 degrees of (-6.1851, 35.7474)
+[INFO] 2025-05-03 00:47:11,106 django.server (basehttp:213) - "POST /ai/predict/ HTTP/1.1" 200 190
+[INFO] 2025-05-03 00:48:17,374 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader

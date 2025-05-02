@@ -31,6 +31,7 @@ INSTALLED_APPS = [
     # User Apps
     'apps.users',
     'apps.prediction',
+    'prediction_app',
 ]
 
 MIDDLEWARE = [
@@ -141,3 +142,57 @@ DEFAULT_FROM_EMAIL = 'noreply@yourdomain.com'
 AUTH_USER_MODEL = 'users.CustomUser'
 
 
+# LOGGER
+
+# Ensure logs directory exists
+def _ensure_log_dir():
+    log_dir = BASE_DIR / 'logs'
+    log_dir.mkdir(exist_ok=True)
+    return log_dir
+
+LOG_DIR = _ensure_log_dir()
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '[{levelname}] {asctime} {name} ({module}:{lineno}) - {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '[{levelname}] {message}',
+            'style': '{',
+        },
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'class': 'logging.FileHandler',
+            'filename': LOG_DIR / 'django.log',
+            'formatter': 'verbose',
+        },
+    },
+    'root': {
+        'handlers': ['console', 'file'],
+        'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+    },
+    'loggers': {
+        # Default Django logger
+        'django': {
+            'handlers': ['console', 'file'],
+            'level': os.getenv('DJANGO_LOG_LEVEL', 'INFO'),
+            'propagate': False,
+        },
+        # Application-specific logger
+        'prediction_app': {
+            'handlers': ['console', 'file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+    },
+}

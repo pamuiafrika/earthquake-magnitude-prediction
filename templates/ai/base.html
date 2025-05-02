@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Earthquake Prediction System{% endblock %}</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;700&family=Inter:wght@400;500&family=Merriweather:ital,wght@0,300;1,300&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@100..900&display=swap" rel="stylesheet">
+    <!-- Tailwind CSS -->
+
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        :root {
+            --primary: #003366;
+            --secondary: #3E8E41;
+            --alert: #D32F2F;
+            --accent: #FFC107;
+            --background: #F5F5F5;
+            --text: #333333;
+            --divider: #B0BEC5;
+        }
+        
+        body {
+            font-family: 'Inter', monospace;
+            font-size: 16px;
+            color: var(--text);
+            background-color: var(--background);
+        } 
+        
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'IBM Plex Mono', monospace;
+        }
+        
+        h1 {
+            font-size: 36px;
+            font-weight: 700;
+        }
+        
+        h2 {
+            font-size: 28px;
+            font-weight: 500;
+        }
+        
+        .chart-label, .data-label {
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .btn-primary {
+            background-color: var(--primary);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+            color: var(--primary);
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .btn-secondary {
+            background-color: var(--secondary);
+            color: white;
+            font-family: 'Inter', sans-serif;
+            font-weight: 500;
+            font-size: 14px;
+        }
+        
+        .alert {
+            background-color: var(--alert);
+            color: white;
+        }
+        
+        .footnote {
+            font-family: 'Inter', sans-serif;
+            font-size: 12px;
+        }
+        
+        .navbar {
+            background-color: var(--primary);
+            color: white;
+        }
+        
+        .title-box {
+            border-left: 4px solid var(--secondary);
+            padding-left: 15px;
+        }
+        
+        .card {
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            background-color: white;
+        }
+        
+        .card-header {
+            border-bottom: 1px solid var(--divider);
+            padding: 16px;
+        }
+        
+        .card-body {
+            padding: 16px;
+        }
+        
+        .data-highlight {
+            color: var(--primary);
+            font-weight: 700;
+        }
+        
+        .data-warning {
+            color: var(--alert);
+            font-weight: 500;
+        }
+        
+        .badge {
+            background-color: var(--secondary);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-family: 'Inter', sans-serif;
+        }
+        
+        .badge-alert {
+            background-color: var(--alert);
+        }
+        
+        .badge-accent {
+            background-color: var(--accent);
+            color: var(--primary);
+        }
+
+        .bg-accent{
+            background-color: #FFC107;
+        }
+
+        .bg-divider{
+            background-color: #B0BEC5;
+        }
+
+        .bg-primary {
+            background-color:  #003366;
+        }
+
+        .bg-secondary {
+            background-color: #3E8E41;
+        }
+
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 28px;
+            }
+            
+            h2 {
+                font-size: 22px;
+            }
+            
+            body {
+                font-size: 14px;
+            }
+        }
+    </style>
+    
+    {% block extra_css %}{% endblock %}
+</head>
+<body class="flex flex-col min-h-screen">
+    <!-- Navigation Bar -->
+    <nav class="navbar sticky top-0 z-50 p-4 shadow-md">
+        <div class="container mx-auto flex justify-between items-center">
+            <a href="{% url 'ai:index' %}" class="text-xl font-bold flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+                Earthquake Predictor
+            </a>
+            
+            <div class="hidden md:flex space-x-6">
+                <a href="{% url 'ai:index' %}" class="hover:text-accent transition">Dashboard</a>
+                <a href="{% url 'ai:predict' %}" class="hover:text-accent transition">Predict</a>
+                <a href="{% url 'ai:analytics' %}" class="hover:text-accent transition">Analytics</a>
+                <a href="{% url 'ai:earthquake_data' %}" class="hover:text-accent transition">Data</a>
+                {% if user.is_superuser %}
+                <a href="{% url 'ai:model_metrics' %}" class="hover:text-accent transition">Models</a>
+                <a href="{% url 'ai:train_model' %}" class="hover:text-accent transition">Train</a>
+                <a href="{% url 'ai:import_data' %}" class="hover:text-accent transition">Import</a>
+                {% endif %}
+            </div>
+            
+            <!-- Mobile menu button -->
+            <button id="mobile-menu-button" class="md:hidden flex items-center">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+                </svg>
+            </button>
+        </div>
+        
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-primary-dark absolute top-16 left-0 w-full p-4 shadow-lg">
+            <div class="flex flex-col space-y-3">
+                <a href="{% url 'ai:index' %}" class="block hover:text-accent transition py-2">Dashboard</a>
+                <a href="{% url 'ai:predict' %}" class="block hover:text-accent transition py-2">Predict</a>
+                <a href="{% url 'ai:analytics' %}" class="block hover:text-accent transition py-2">Analytics</a>
+                <a href="{% url 'ai:earthquake_data' %}" class="block hover:text-accent transition py-2">Data</a>
+                {% if user.is_superuser %}
+                <a href="{% url 'ai:model_metrics' %}" class="block hover:text-accent transition py-2">Models</a>
+                <a href="{% url 'ai:train_model' %}" class="block hover:text-accent transition py-2">Train</a>
+                <a href="{% url 'ai:import_data' %}" class="block hover:text-accent transition py-2">Import</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Messages/Alerts -->
+    {% if messages %}
+    <div class="container mx-auto px-4 my-4">
+        {% for message in messages %}
+        <div class="p-4 {% if message.tags == 'error' %}bg-red-600{% elif message.tags == 'success' %}bg-green-600{% else %}bg-blue-600{% endif %} text-white mb-4 rounded shadow">
+            {{ message }}
+            <button class="float-right" onclick="this.parentElement.style.display='none';">&times;</button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-6">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <!-- Footer -->
+    <footer class="bg-primary p-6 text-white">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-center">
+                <div class="mb-4 md:mb-0">
+                    <p>&copy; {% now "Y" %} Earthquake Prediction System</p>
+                    <p class="footnote">All rights reserved!</p>
+                </div>
+                <div class="flex space-x-4">
+                    <a href="#" class="hover:text-accent transition">About</a>
+                    <a href="#" class="hover:text-accent transition">API</a>
+                    <a href="#" class="hover:text-accent transition">Contact</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    
+    <script>
+        // Mobile menu toggle
+        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+            const menu = document.getElementById('mobile-menu');
+            menu.classList.toggle('hidden');
+        });
+    </script>
+    
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

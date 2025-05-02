@@ -1,0 +1,329 @@
+{% extends "ai/base.html" %}
+{% load static %}
+
+{% block title %}Earthquake Analytics Dashboard{% endblock %}
+
+{% block extra_head %}
+<!-- Leaflet for maps -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<!-- Chart.js for visualization -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Heatmap.js for heatmap visualization -->
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+{% endblock %}
+
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4 text-blue-600">Earthquake Analytics Dashboard</h1>
+  
+  <!-- Filter Form -->
+  <div class="bg-gray-100 p-6 rounded-lg mb-6">
+    <form method="GET" action="{% url 'ai:analytics' %}">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+        <div>
+          <label for="latitude" class="block text-sm font-medium text-gray-700">Latitude</label>
+          <input type="number" step="0.0001" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="latitude" name="latitude" 
+                 value="{{ filter.latitude|default_if_none:'' }}" placeholder="-9.0000">
+        </div>
+        <div>
+          <label for="longitude" class="block text-sm font-medium text-gray-700">Longitude</label>
+          <input type="number" step="0.0001" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="longitude" name="longitude"
+                 value="{{ filter.longitude|default_if_none:'' }}" placeholder="33.0000">
+        </div>
+        <div>
+          <label for="radius" class="block text-sm font-medium text-gray-700">Radius (degrees)</label>
+          <input type="number" step="0.1" class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500" id="radius" name="radius"
+                 value="{{ filter.radius|default:'1.0' }}" placeholder="1.0">
+        </div>
+        <div class="flex space-x-2">
+          <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700">Apply Filter</button>
+          <a href="{% url 'ai:analytics' %}" class="px-4 py-2 border border-gray-500 text-gray-500 rounded hover:bg-gray-100">Reset</a>
+        </div>
+      </div>
+    </form>
+  </div>
+  
+  {% if filter %}
+  <div class="bg-blue-100 text-blue-700 p-4 rounded mb-4">
+    <i class="fas fa-filter me-2"></i> Showing data for region: Latitude {{ filter.latitude }}, Longitude {{ filter.longitude }}, Radius {{ filter.radius }} degrees
+  </div>
+  {% endif %}
+  
+  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+    <!-- Regional Stats Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 h-full">
+      <h3 class="text-blue-900 mb-4 font-mono font-semibold border-b-2 border-green-600 pb-2"><i class="fas fa-chart-bar me-2"></i> Regional Statistics</h3>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.count|default:'0' }}</div>
+          <div class="text-sm text-gray-600 font-sans">Total Events</div>
+        </div>
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.avg_magnitude|floatformat:2 }}</div>
+          <div class="text-sm text-gray-600 font-sans">Avg. Magnitude</div>
+        </div>
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.max_magnitude|floatformat:1 }}</div>
+          <div class="text-sm text-gray-600 font-sans">Max Magnitude</div>
+        </div>
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.min_magnitude|floatformat:1 }}</div>
+          <div class="text-sm text-gray-600 font-sans">Min Magnitude</div>
+        </div>
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.std_magnitude|floatformat:2 }}</div>
+          <div class="text-sm text-gray-600 font-sans">Std Deviation</div>
+        </div>
+        <div class="text-center p-4 rounded-md bg-gray-100 transition-all duration-300 hover:shadow-lg hover:-translate-y-[2px]">
+          <div class="text-2xl font-bold text-blue-900">{{ regional_data.recent_events }}</div>
+          <div class="text-sm text-gray-600 font-sans">Recent (5yr)</div>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Risk Assessment Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 h-full">
+      <h3 class="text-blue-900 mb-4 font-mono font-semibold border-b-2 border-green-600 pb-2"><i class="fas fa-exclamation-triangle me-2"></i> Seismic Risk Assessment</h3>
+      {% if regional_data.max_magnitude >= 5.0 %}
+      <div class="bg-red-100 text-red-700 p-4 rounded mb-3">
+        <strong>High Risk Area!</strong> This region has experienced earthquakes of magnitude {{ regional_data.max_magnitude|floatformat:1 }}.
+      </div>
+      {% elif regional_data.max_magnitude >= 4.0 %}
+      <div class="bg-yellow-100 text-yellow-700 p-4 rounded mb-3">
+        <strong>Moderate Risk Area.</strong> This region has experienced earthquakes of magnitude {{ regional_data.max_magnitude|floatformat:1 }}.
+      </div>
+      {% else %}
+      <div class="bg-green-100 text-green-700 p-4 rounded mb-3">
+        <strong>Low Risk Area.</strong> No major earthquakes recorded in this region.
+      </div>
+      {% endif %}
+      
+      <div class="mb-3">
+        <h5>Risk Factors:</h5>
+        <ul>
+          <li>Peak magnitude: <span class="bg-yellow-400 text-gray-800 px-2 py-1 rounded font-medium">{{ regional_data.max_magnitude|floatformat:1 }}</span></li>
+          <li>Event frequency: {{ regional_data.count }} events recorded</li>
+          <li>Recent activity: {{ regional_data.recent_events }} events in past 5 years</li>
+        </ul>
+      </div>
+      
+      <p><i class="fas fa-info-circle me-1"></i> <small>Risk assessment is based on historical data and should not be used as the sole basis for safety decisions.</small></p>
+    </div>
+    
+    <!-- Heatmap Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 h-full">
+      <h3 class="text-blue-900 mb-4 font-mono font-semibold border-b-2 border-green-600 pb-2"><i class="fas fa-map-marked-alt me-2"></i> Earthquake Heatmap</h3>
+      <div id="earthquake-map" class="h-[400px] rounded-lg overflow-hidden"></div>
+      <div class="mt-2 text-center">
+        <small class="text-gray-500">Heatmap shows the concentration of seismic events. Red areas indicate higher activity.</small>
+      </div>
+    </div>
+    
+    <!-- Time Series Card -->
+    <div class="bg-white rounded-lg shadow-md p-6 h-full">
+      <h3 class="text-blue-900 mb-4 font-mono font-semibold border-b-2 border-green-600 pb-2"><i class="fas fa-chart-line me-2"></i> Temporal Analysis</h3>
+      <div class="h-[350px] relative">
+        <canvas id="timeSeriesChart"></canvas>
+      </div>
+      <div class="mt-2 text-center">
+        <small class="text-gray-500">Chart shows earthquake frequency and magnitude distribution over time.</small>
+      </div>
+    </div>
+  </div>
+  
+  <div class="mt-4">
+    <div class="bg-white rounded-lg shadow-md p-6 h-full">
+      <h3 class="text-blue-900 mb-4 font-mono font-semibold border-b-2 border-green-600 pb-2"><i class="fas fa-database me-2"></i> Data Distribution</h3>
+      <div class="h-[350px] relative">
+        <canvas id="magnitudeDistribution"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block extra_scripts %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Initialize map
+  const map = L.map('earthquake-map').setView([{{ filter.latitude|default:'-6.0' }}, {{ filter.longitude|default:'35.0' }}], 6);
+  
+  // Add OpenStreetMap tile layer
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  
+  // Parse heatmap data from Django template
+  const heatmapData = JSON.parse('{{ heatmap_data|escapejs }}');
+  
+  // Convert data format for Leaflet.heat
+  const heatPoints = heatmapData.map(point => [point.lat, point.lon, point.intensity]);
+  
+  // Add heat layer
+  L.heatLayer(heatPoints, {
+    radius: 20,
+    blur: 15,
+    maxZoom: 10,
+    gradient: {0.4: 'blue', 0.65: 'lime', 0.8: 'yellow', 1: 'red'}
+  }).addTo(map);
+  
+  // Add marker for current filter location if set
+  {% if filter %}
+  L.marker([{{ filter.latitude }}, {{ filter.longitude }}])
+    .addTo(map)
+    .bindPopup('Selected location')
+    .openPopup();
+    
+  // Create circle showing radius
+  L.circle([{{ filter.latitude }}, {{ filter.longitude }}], {
+    color: '#3E8E41',
+    fillColor: '#3E8E41',
+    fillOpacity: 0.1,
+    radius: {{ filter.radius|default:'1.0' }} * 111000  // Convert degrees to meters (approx)
+  }).addTo(map);
+  {% endif %}
+  
+  // Parse time series data
+  const timeSeriesData = JSON.parse('{{ time_series|escapejs }}');
+  
+  // Create time series chart
+  const timeSeriesCtx = document.getElementById('timeSeriesChart').getContext('2d');
+  new Chart(timeSeriesCtx, {
+    type: 'line',
+    data: {
+      labels: timeSeriesData.labels,
+      datasets: [
+        {
+          label: 'Earthquake Count',
+          data: timeSeriesData.counts,
+          borderColor: '#003366',
+          backgroundColor: 'rgba(0, 51, 102, 0.1)',
+          borderWidth: 2,
+          fill: true,
+          tension: 0.2,
+          yAxisID: 'y'
+        },
+        {
+          label: 'Avg Magnitude',
+          data: timeSeriesData.magnitudes,
+          borderColor: '#FFC107',
+          backgroundColor: 'rgba(255, 193, 7, 0)',
+          borderWidth: 2,
+          borderDash: [5, 5],
+          pointRadius: 3,
+          pointBackgroundColor: '#FFC107',
+          tension: 0.2,
+          yAxisID: 'y1'
+        }
+      ]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          position: 'top',
+        },
+        tooltip: {
+          mode: 'index',
+          intersect: false
+        }
+      },
+      scales: {
+        x: {
+          title: {
+            display: true,
+            text: 'Year'
+          }
+        },
+        y: {
+          type: 'linear',
+          display: true,
+          position: 'left',
+          title: {
+            display: true,
+            text: 'Event Count'
+          }
+        },
+        y1: {
+          type: 'linear',
+          display: true,
+          position: 'right',
+          grid: {
+            drawOnChartArea: false
+          },
+          title: {
+            display: true,
+            text: 'Magnitude'
+          },
+          min: 0,
+          max: 10
+        }
+      }
+    }
+  });
+  
+  // Create magnitude distribution chart
+  const magDistCtx = document.getElementById('magnitudeDistribution').getContext('2d');
+  new Chart(magDistCtx, {
+    type: 'bar',
+    data: {
+      labels: ['<2.0', '2.0-2.9', '3.0-3.9', '4.0-4.9', '5.0-5.9', '6.0+'],
+      datasets: [{
+        label: 'Earthquake Count by Magnitude Range',
+        data: timeSeriesData.magnitude_distribution || [0, 0, 0, 0, 0, 0],
+        backgroundColor: [
+          'rgba(62, 142, 65, 0.6)',
+          'rgba(62, 142, 65, 0.7)',
+          'rgba(255, 193, 7, 0.6)',
+          'rgba(255, 193, 7, 0.8)',
+          'rgba(211, 47, 47, 0.6)',
+          'rgba(211, 47, 47, 0.8)'
+        ],
+        borderColor: [
+          'rgba(62, 142, 65, 1)',
+          'rgba(62, 142, 65, 1)',
+          'rgba(255, 193, 7, 1)',
+          'rgba(255, 193, 7, 1)',
+          'rgba(211, 47, 47, 1)',
+          'rgba(211, 47, 47, 1)'
+        ],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: {
+          display: false
+        },
+        tooltip: {
+          callbacks: {
+            label: function(tooltipItem) {
+              return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' events';
+            }
+          }
+        }
+      },
+      scales: {
+        y: {
+          beginAtZero: true,
+          title: {
+            display: true,
+            text: 'Number of Events'
+          }
+        },
+        x: {
+          title: {
+            display: true,
+            text: 'Magnitude Range'
+          }
+        }
+      }
+    }
+  });
+});
+</script>
+{% endblock %}

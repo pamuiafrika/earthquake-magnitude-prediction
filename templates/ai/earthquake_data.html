@@ -1,0 +1,257 @@
+{% extends 'ai/base.html' %}
+{% load static %}
+
+{% block title %}Earthquake Data{% endblock %}
+
+{% block content %}
+<div class="container-fluid my-4">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="card border-0 shadow-sm">
+                <div class="card-header bg-gradient" style="background-color: #003366;">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h3 class="card-title text-white mb-0">
+                            <i class="fas fa-database me-2"></i>Earthquake Historical Data
+                        </h3>
+                        <a href="{% url 'ai:import_data' %}" class="btn btn-sm" style="background-color: #FFC107; color: #333333;">
+                            <i class="fas fa-file-import me-1"></i> Import Data
+                        </a>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <form method="get" class="row g-3 align-items-end">
+                                <div class="col-md-4">
+                                    <label for="year" class="form-label">Filter by Year</label>
+                                    <select name="year" id="year" class="form-select">
+                                        <option value="">All Years</option>
+                                        {% for year in years %}
+                                            <option value="{{ year }}" {% if filters.year == year|stringformat:"i" %}selected{% endif %}>{{ year }}</option>
+                                        {% endfor %}
+                                    </select>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="min_mag" class="form-label">Minimum Magnitude</label>
+                                    <input type="number" name="min_mag" id="min_mag" class="form-control" step="0.1" min="0" max="10" 
+                                        value="{{ filters.min_mag }}" placeholder="E.g., 4.0">
+                                </div>
+                                <div class="col-md-4">
+                                    <button type="submit" class="btn btn-primary" style="background-color: #003366; border-color: #003366;">
+                                        <i class="fas fa-filter me-1"></i> Apply Filters
+                                    </button>
+                                    <a href="{% url 'ai:earthquake_data' %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-redo me-1"></i> Reset
+                                    </a>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="table-responsive">
+                                <table class="table table-hover" id="earthquakeTable">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Time</th>
+                                            <th>Latitude</th>
+                                            <th>Longitude</th>
+                                            <th>Depth (km)</th>
+                                            <th>Magnitude</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for eq in earthquakes %}
+                                        <tr>
+                                            <td>{{ eq.Year }}-{{ eq.Month }}-{{ eq.Day }}</td>
+                                            <td>{{ eq.Time }}</td>
+                                            <td>{{ eq.Lat }}</td>
+                                            <td>{{ eq.Lon }}</td>
+                                            <td>{{ eq.Depth }}</td>
+                                            <td>
+                                                <span class="badge rounded-pill 
+                                                    {% if eq.Mag < 4.0 %}bg-success{% elif eq.Mag < 6.0 %}bg-warning text-dark{% else %}bg-danger{% endif %}">
+                                                    {{ eq.Mag }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <div class="btn-group btn-group-sm" role="group">
+                                                    <a href="{% url 'ai:analytics' %}?latitude={{ eq.Lat }}&longitude={{ eq.Lon }}&radius=1.0" 
+                                                       class="btn btn-outline-primary" title="View in Analytics">
+                                                        <i class="fas fa-chart-area"></i>
+                                                    </a>
+                                                    <a href="{% url 'ai:predict' %}?prefill=true&latitude={{ eq.Lat }}&longitude={{ eq.Lon }}&depth={{ eq.Depth }}" 
+                                                       class="btn btn-outline-success" title="Use in Prediction">
+                                                        <i class="fas fa-magic"></i>
+                                                    </a>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="7" class="text-center">No earthquake data found matching your filters.</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <!-- Pagination -->
+                            {% if earthquakes.has_other_pages %}
+                            <nav aria-label="Earthquake data pagination">
+                                <ul class="pagination justify-content-center">
+                                    {% if earthquakes.has_previous %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ earthquakes.previous_page_number }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" aria-label="Previous">
+                                            <span aria-hidden="true">&laquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&laquo;</span>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% if earthquakes.number > 3 %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page=1{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}">1</a>
+                                    </li>
+                                    {% if earthquakes.number > 4 %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                    {% endif %}
+                                    
+                                    {% for i in earthquakes.paginator.page_range %}
+                                        {% if earthquakes.number == i %}
+                                            <li class="page-item active">
+                                                <span class="page-link">{{ i }}</span>
+                                            </li>
+                                        {% elif i > earthquakes.number|add:'-3' and i < earthquakes.number|add:'3' %}
+                                            <li class="page-item">
+                                                <a class="page-link" href="?page={{ i }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}">{{ i }}</a>
+                                            </li>
+                                        {% endif %}
+                                    {% endfor %}
+                                    
+                                    {% if earthquakes.number < earthquakes.paginator.num_pages|add:'-2' %}
+                                    {% if earthquakes.number < earthquakes.paginator.num_pages|add:'-3' %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">...</span>
+                                    </li>
+                                    {% endif %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ earthquakes.paginator.num_pages }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}">{{ earthquakes.paginator.num_pages }}</a>
+                                    </li>
+                                    {% endif %}
+                                    
+                                    {% if earthquakes.has_next %}
+                                    <li class="page-item">
+                                        <a class="page-link" href="?page={{ earthquakes.next_page_number }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" aria-label="Next">
+                                            <span aria-hidden="true">&raquo;</span>
+                                        </a>
+                                    </li>
+                                    {% else %}
+                                    <li class="page-item disabled">
+                                        <span class="page-link">&raquo;</span>
+                                    </li>
+                                    {% endif %}
+                                </ul>
+                            </nav>
+                            {% endif %}
+                            
+                            <div class="mt-3 text-center">
+                                <small class="text-muted">
+                                    Showing {{ earthquakes.start_index }} to {{ earthquakes.end_index }} of 
+                                    {{ earthquakes.paginator.count }} records
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row mt-4">
+                        <div class="col-md-12">
+                            <div class="card bg-light border-0">
+                                <div class="card-body">
+                                    <h5 style="color: #003366;"><i class="fas fa-info-circle me-2"></i>Data Information</h5>
+                                    <p class="mb-0">
+                                        This dataset contains historical earthquake events. Use the filters above to narrow down 
+                                        the records by year or minimum magnitude. Click on the action buttons to analyze a specific 
+                                        earthquake location or use its parameters for new predictions.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+    // Add sorting functionality
+    const table = document.getElementById('earthquakeTable');
+    const headers = table.querySelectorAll('th');
+    
+    headers.forEach((header, index) => {
+        if(index < 6) { // Skip the Actions column
+            header.style.cursor = 'pointer';
+            header.addEventListener('click', () => {
+                sortTable(index);
+            });
+            header.title = 'Click to sort';
+        }
+    });
+    
+    function sortTable(columnIndex) {
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Skip if there's only a "No data" row
+        if(rows.length === 1 && rows[0].cells.length === 1) {
+            return;
+        }
+        
+        // Sort the rows
+        rows.sort((a, b) => {
+            const valueA = a.cells[columnIndex].textContent.trim();
+            const valueB = b.cells[columnIndex].textContent.trim();
+            
+            // Handle numeric columns (magnitude, depth)
+            if(columnIndex === 4 || columnIndex === 5) {
+                return parseFloat(valueA) - parseFloat(valueB);
+            }
+            
+            // Handle date column
+            if(columnIndex === 0) {
+                return new Date(valueA) - new Date(valueB);
+            }
+            
+            // Default string comparison
+            return valueA.localeCompare(valueB);
+        });
+        
+        // Update the table
+        rows.forEach(row => tbody.appendChild(row));
+    }
+    
+    // Highlight rows on hover
+    const dataRows = table.querySelectorAll('tbody tr');
+    dataRows.forEach(row => {
+        row.addEventListener('mouseenter', () => {
+            row.style.backgroundColor = '#f8f9fa';
+        });
+        row.addEventListener('mouseleave', () => {
+            row.style.backgroundColor = '';
+        });
+    });
+});
+{% endblock %}

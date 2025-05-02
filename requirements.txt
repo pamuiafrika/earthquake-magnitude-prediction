@@ -6,3 +6,12 @@ numpy
 pandas
 python-dotenv                 # Env var loader
 gunicorn                      # Production WSGI server
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+tensorflow==2.19.0 
+folium 
+IPython
+keras 

@@ -205,6 +205,7 @@
                 <a href="{% url 'ai:train_model' %}" class="hover:text-accent transition">Train</a>
                 <a href="{% url 'ai:import_data' %}" class="hover:text-accent transition">Import</a>
                 {% endif %}
+                <a href="{% url 'users:home' %}" class="hover:text-accent transition">App</a>
             </div>
             
             <!-- Mobile menu button -->
@@ -216,7 +217,7 @@
         </div>
         
         <!-- Mobile Menu -->
-        <div id="mobile-menu" class="hidden md:hidden bg-primary-dark absolute top-16 left-0 w-full p-4 shadow-lg">
+        <div id="mobile-menu" class="hidden md:hidden bg-gray-600 absolute top-16 left-0 w-full p-4 shadow-lg">
             <div class="flex flex-col space-y-3">
                 <a href="{% url 'ai:index' %}" class="block hover:text-accent transition py-2">Dashboard</a>
                 <a href="{% url 'ai:predict' %}" class="block hover:text-accent transition py-2">Predict</a>
@@ -227,6 +228,7 @@
                 <a href="{% url 'ai:train_model' %}" class="block hover:text-accent transition py-2">Train</a>
                 <a href="{% url 'ai:import_data' %}" class="block hover:text-accent transition py-2">Import</a>
                 {% endif %}
+                <a href="{% url 'users:home' %}" class="block hover:text-accent transition py-2">App</a>
             </div>
         </div>
     </nav>

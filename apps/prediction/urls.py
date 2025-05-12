@@ -8,5 +8,6 @@ urlpatterns = [
     path('dashboard/', views.index, name="dashboard"),
     path('historical-data/', views.historical_data, name="historical_data"),
     path('maps/', views.maps, name="maps"),
+    path('scale/', views.scale, name="scale"),
     path('prediction/', views.prediction, name="prediction"),
 ]

@@ -10,6 +10,10 @@ from django.contrib import messages
 from django.conf import settings
 from django.urls import reverse
 from django.core.paginator import Paginator
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+import csv
 
 from .models import Earthquake, PredictionLog, ModelMetrics
 from .ml_models.data_processor import EarthquakeDataProcessor
@@ -247,6 +251,52 @@ def model_metrics(request):
     }
     return render(request, 'ai/model_metrics.html', context)
 
+
+def api_earthquake_data(request):
+    """View for displaying earthquake data."""
+    if not initialize_prediction_service():
+        messages.error(request, "Data service not available")
+        return redirect('users:home')
+    
+    try:
+        df = prediction_service.data_processor.df
+        
+        # Filter parameters
+        year = request.GET.get('year')
+        min_mag = request.GET.get('min_mag')
+        
+        if year:
+            df = df[df['Year'] == int(year)]
+        
+        if min_mag:
+            df = df[df['Mag'] >= float(min_mag)]
+        
+        # Convert to list of dictionaries for template
+        earthquakes = df.to_dict('records')
+        
+        # Paginate results
+        paginator = Paginator(earthquakes, 50)
+        page = request.GET.get('page', 1)
+        earthquakes_page = paginator.get_page(page)
+        
+        # Get unique years for filter
+        years = sorted(df['Year'].unique(), reverse=True)
+        
+        context = {
+            'earthquakes': earthquakes_page,
+            'years': years,
+            'filters': {
+                'year': year,
+                'min_mag': min_mag,
+            }
+        }
+        
+        return render(request, 'prediction/historical_data.html', context)
+        
+    except Exception as e:
+        messages.error(request, f"Error loading earthquake data: {str(e)}")
+        return redirect('users:home')
+
 def earthquake_data(request):
     """View for displaying earthquake data."""
     if not initialize_prediction_service():
@@ -292,6 +342,49 @@ def earthquake_data(request):
         messages.error(request, f"Error loading earthquake data: {str(e)}")
         return redirect('ai:index')
 
+def export_earthquake_csv(request):
+    """View for exporting earthquake data to CSV."""
+    if not initialize_prediction_service():
+        messages.error(request, "Data service not available")
+        return redirect('users:home')
+        
+    try:
+        import csv
+        from django.http import HttpResponse
+        
+        # Get the data from the prediction service
+        df = prediction_service.data_processor.df
+        
+        # Apply filters if provided
+        year = request.GET.get('year')
+        min_mag = request.GET.get('min_mag')
+        
+        if year:
+            df = df[df['Year'] == int(year)]
+            
+        if min_mag:
+            df = df[df['Mag'] >= float(min_mag)]
+        
+        # Create the HttpResponse object with CSV header
+        response = HttpResponse(content_type='text/csv')
+        response['Content-Disposition'] = 'attachment; filename="earthquake_data.csv"'
+        
+        # Create the CSV writer
+        writer = csv.writer(response)
+        
+        # Write headers
+        writer.writerow(df.columns)
+        
+        # Write data rows
+        for _, row in df.iterrows():
+            writer.writerow(row)
+        
+        return response
+        
+    except Exception as e:
+        messages.error(request, f"Error exporting earthquake data: {str(e)}")
+        return redirect('ai:api_earthquake_data')
+    
 def api_heatmap(request):
     """API endpoint for heatmap data."""
     if not initialize_prediction_service():

@@ -1,0 +1,165 @@
+
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}Ritcher Scale - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+    <header class="bg-primary text-white py-6 text-center mb-3 rounded">
+        <h1 class="text-3xl md:text-4xl font-bold">Richter Earthquake Magnitude Scale</h1>
+        <p class="mt-2 text-lg text-divider">Understand the impact and precautions for each magnitude</p>
+    </header>
+
+    <main class="w-full mx-auto ">
+        <section class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+            <!-- Magnitude 1.0 - 2.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-secondary">
+                <h2 class="text-xl font-semibold text-primary">1.0 - 2.9: Minor</h2>
+                <p class="mt-2 text-gray-200"><strong>Effects:</strong> Usually not felt, detected only by instruments.</p>
+                <p class="mt-2 text-gray-200"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-300">
+                    <li>Stay informed about local seismic activity.</li>
+                    <li>Ensure emergency kits are prepared.</li>
+                    <li>Learn about earthquake safety measures.</li>
+                </ul>
+                <p class="mt-2 text-gray-200"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-300">
+                    <li>Monitor seismic data continuously.</li>
+                    <li>Maintain public awareness campaigns.</li>
+                    <li>Update earthquake preparedness guidelines.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 3.0 - 3.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-secondary">
+                <h2 class="text-xl font-semibold text-primary">3.0 - 3.9: Minor</h2>
+                <p class="mt-2 text-gray-200"><strong>Effects:</strong> Often felt indoors, like a light truck passing.</p>
+                <p class="mt-2 text-gray-200"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-300">
+                    <li>Stay calm and avoid running outdoors.</li>
+                    <li>Secure loose objects on shelves.</li>
+                    <li>Identify safe spots in your home.</li>
+                </ul>
+                <p class="mt-2 text-gray-200"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-300">
+                    <li>Issue public notices if tremors are frequent.</li>
+                    <li>Inspect critical infrastructure.</li>
+                    <li>Ensure emergency communication systems are functional.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 4.0 - 4.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-accent">
+                <h2 class="text-xl font-semibold text-primary">4.0 - 4.9: Light</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Noticeable shaking, minor damage like rattling dishes.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Move away from windows and heavy furniture.</li>
+                    <li>Secure heavy appliances to walls.</li>
+                    <li>Practice "drop, cover, hold" drills.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Conduct structural inspections of buildings.</li>
+                    <li>Prepare for potential aftershocks.</li>
+                    <li>Activate local emergency response teams.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 5.0 - 5.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-accent">
+                <h2 class="text-xl font-semibold text-primary">5.0 - 5.9: Moderate</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Can cause damage to poorly built structures, felt widely.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Drop, cover, and hold under sturdy furniture.</li>
+                    <li>Avoid elevators during and after shaking.</li>
+                    <li>Check for gas leaks post-earthquake.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Assess and repair damaged utilities.</li>
+                    <li>Deploy search and rescue teams if needed.</li>
+                    <li>Establish temporary shelters for affected residents.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 6.0 - 6.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-red-500">
+                <h2 class="text-xl font-semibold text-primary">6.0 - 6.9: Strong</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Destructive in populated areas, significant damage to buildings.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Evacuate unsafe buildings immediately.</li>
+                    <li>Stay in open areas away from structures.</li>
+                    <li>Prepare for aftershocks with emergency supplies.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Shut off gas and electricity in affected areas.</li>
+                    <li>Coordinate rapid response and rescue operations.</li>
+                    <li>Enforce safety zones around damaged buildings.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 7.0 - 7.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-red-500">
+                <h2 class="text-xl font-semibold text-primary">7.0 - 7.9: Major</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Widespread severe damage, potential for collapse of structures.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Follow evacuation orders promptly.</li>
+                    <li>Avoid coastal areas due to tsunami risk.</li>
+                    <li>Stay tuned to emergency broadcasts.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Issue tsunami warnings if near coastlines.</li>
+                    <li>Mobilize national emergency response teams.</li>
+                    <li>Secure funding for immediate relief efforts.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 8.0 - 8.9 -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-red-600">
+                <h2 class="text-xl font-semibold text-primary">8.0 - 8.9: Great</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Catastrophic damage, near-total destruction in affected areas.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Seek immediate safety in open areas.</li>
+                    <li>Prepare for long-term displacement.</li>
+                    <li>Avoid damaged infrastructure like roads.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Request international aid for recovery.</li>
+                    <li>Manage mass evacuations efficiently.</li>
+                    <li>Restore critical services like water and power.</li>
+                </ul>
+            </div>
+
+            <!-- Magnitude 9.0+ -->
+            <div class="bg-white rounded-lg shadow-lg p-6 hover:shadow-xl transition-shadow border-l-4 border-red-600">
+                <h2 class="text-xl font-semibold text-primary">9.0+: Great</h2>
+                <p class="mt-2 text-gray-600"><strong>Effects:</strong> Devastating over large areas, rare and catastrophic.</p>
+                <p class="mt-2 text-gray-600"><strong>Precautions for People:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Survive initial shaking in safe zones.</li>
+                    <li>Prepare for extended loss of services.</li>
+                    <li>Follow government relocation plans.</li>
+                </ul>
+                <p class="mt-2 text-gray-600"><strong>Actions for Authorities:</strong></p>
+                <ul class="list-disc list-inside text-gray-600">
+                    <li>Coordinate global relief and reconstruction.</li>
+                    <li>Rebuild critical infrastructure.</li>
+                    <li>Provide long-term housing solutions.</li>
+                </ul>
+            </div>
+        </section>
+    </main>
+
+{% endblock %}
+
+{% block extra_js %}
+
+{% endblock %}

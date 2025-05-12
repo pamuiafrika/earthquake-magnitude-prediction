@@ -4,179 +4,145 @@
 {% block title %}Model Performance Metrics{% endblock %}
 
 {% block content %}
-<div class="container-fluid my-4">
-    <div class="row">
-        <div class="col-lg-12">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-gradient" style="background-color: #003366;">
-                    <h3 class="card-title text-white mb-0">
-                        <i class="fas fa-chart-bar me-2"></i>Model Performance Metrics
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                        </div>
-                    </div>
-                    
-                    <!-- Active Models Summary -->
-                    <div class="row">
-                        {% for metric in metrics %}
-                            {% if metric.is_active %}
-                                <div class="col-md-12 mb-4">
-                                    <div class="card border-0 shadow-sm" style="border-left: 5px solid #3E8E41 !important;">
-                                        <div class="card-header bg-light">
-                                            <h5 class="mb-0" style="color: #003366;">
-                                                <i class="fas fa-check-circle me-2" style="color: #3E8E41;"></i>
-                                                Active Model: {{ metric.model_name }}
-                                            </h5>
+<div class="container mx-auto px-4 my-4">
+    <div class="bg-white rounded-lg shadow-md">
+        <div class="bg-blue-900 text-white p-4 rounded-t-lg">
+            <h3 class="text-xl font-semibold"><i class="fas fa-chart-bar mr-2"></i>Model Performance Metrics</h3>
+        </div>
+        <div class="p-4">
+            <div class="mb-4">
+                <!-- Placeholder for potential future content -->
+            </div>
+            
+            <!-- Active Models Summary -->
+            <div>
+                {% for metric in metrics %}
+                    {% if metric.is_active %}
+                        <div class="mb-4">
+                            <div class="bg-white rounded-lg shadow-md border-l-4 border-green-600">
+                                <div class="bg-gray-100 p-4 rounded-t-lg">
+                                    <h5 class="text-blue-900 mb-0"><i class="fas fa-check-circle mr-2 text-green-600"></i>Active Model: {{ metric.model_name }}</h5>
+                                </div>
+                                <div class="p-4">
+                                    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+                                        <div class="text-center p-3 rounded bg-gray-50">
+                                            <h5 class="text-gray-500 mb-1 text-sm">RMSE</h5>
+                                            <p class="text-2xl font-bold mb-0 text-blue-900">{{ metric.rmse|floatformat:4 }}</p>
+                                            <small class="text-gray-500">Root Mean Squared Error</small>
                                         </div>
-                                        <div class="card-body">
-                                            <div class="row">
-                                                <div class="col-md-3 text-center mb-3">
-                                                    <div class="p-3 rounded" style="background-color: #F5F5F5;">
-                                                        <h5 class="text-muted mb-1 small">RMSE</h5>
-                                                        <p class="fs-3 fw-bold mb-0" style="color: #003366;">{{ metric.rmse|floatformat:4 }}</p>
-                                                        <small class="text-muted">Root Mean Squared Error</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 text-center mb-3">
-                                                    <div class="p-3 rounded" style="background-color: #F5F5F5;">
-                                                        <h5 class="text-muted mb-1 small">MAE</h5>
-                                                        <p class="fs-3 fw-bold mb-0" style="color: #003366;">{{ metric.mae|floatformat:4 }}</p>
-                                                        <small class="text-muted">Mean Absolute Error</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 text-center mb-3">
-                                                    <div class="p-3 rounded" style="background-color: #F5F5F5;">
-                                                        <h5 class="text-muted mb-1 small">R² Score</h5>
-                                                        <p class="fs-3 fw-bold mb-0" style="color: #003366;">{{ metric.r2_score|floatformat:4 }}</p>
-                                                        <small class="text-muted">Coefficient of Determination</small>
-                                                    </div>
-                                                </div>
-                                                <div class="col-md-3 text-center mb-3">
-                                                    <div class="p-3 rounded" style="background-color: #F5F5F5;">
-                                                        <h5 class="text-muted mb-1 small">Version</h5>
-                                                        <p class="fs-3 fw-bold mb-0" style="color: #003366;">{{ metric.version }}</p>
-                                                        <small class="text-muted">Trained: {{ metric.trained_date|date:"M d, Y" }}</small>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="row mt-2">
-                                                <div class="col-md-6">
-                                                    <p><strong>Features:</strong> {{ metric.feature_count }}</p>
-                                                    <p><strong>Training Samples:</strong> {{ metric.training_samples }}</p>
-                                                </div>
-                                            </div>
+                                        <div class="text-center p-3 rounded bg-gray-50">
+                                            <h5 class="text-gray-500 mb-1 text-sm">MAE</h5>
+                                            <p class="text-2xl font-bold mb-0 text-blue-900">{{ metric.mae|floatformat:4 }}</p>
+                                            <small class="text-gray-500">Mean Absolute Error</small>
+                                        </div>
+                                        <div class="text-center p-3 rounded bg-gray-50">
+                                            <h5 class="text-gray-500 mb-1 text-sm">R² Score</h5>
+                                            <p class="text-2xl font-bold mb-0 text-blue-900">{{ metric.r2_score|floatformat:4 }}</p>
+                                            <small class="text-gray-500">Coefficient of Determination</small>
+                                        </div>
+                                        <div class="text-center p-3 rounded bg-gray-50">
+                                            <h5 class="text-gray-500 mb-1 text-sm">Version</h5>
+                                            <p class="text-2xl font-bold mb-0 text-blue-900">{{ metric.version }}</p>
+                                            <small class="text-gray-500">Trained: {{ metric.trained_date|date:"M d, Y" }}</small>
                                         </div>
                                     </div>
+                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-2">
+                                        <p><strong>Features:</strong> {{ metric.feature_count }}</p>
+                                        <p><strong>Training Samples:</strong> {{ metric.training_samples }}</p>
+                                    </div>
                                 </div>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+            
+            <!-- All Models Table -->
+            <div>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-collapse">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="p-2 text-left">Model Name</th>
+                                <th class="p-2 text-left">Version</th>
+                                <th class="p-2 text-left">RMSE</th>
+                                <th class="p-2 text-left">MAE</th>
+                                <th class="p-2 text-left">R² Score</th>
+                                <th class="p-2 text-left">Features</th>
+                                <th class="p-2 text-left">Samples</th>
+                                <th class="p-2 text-left">Trained Date</th>
+                                <th class="p-2 text-left">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for metric in metrics %}
+                            <tr class="{% if metric.is_active %}bg-green-100{% else %}hover:bg-gray-50{% endif %}">
+                                <td class="p-2">{{ metric.model_name }}</td>
+                                <td class="p-2">{{ metric.version }}</td>
+                                <td class="p-2">{{ metric.rmse|floatformat:4 }}</td>
+                                <td class="p-2">{{ metric.mae|floatformat:4 }}</td>
+                                <td class="p-2">{{ metric.r2_score|floatformat:4 }}</td>
+                                <td class="p-2">{{ metric.feature_count }}</td>
+                                <td class="p-2">{{ metric.training_samples }}</td>
+                                <td class="p-2">{{ metric.trained_date|date:"M d, Y H:i" }}</td>
+                                <td class="p-2">
+                                    {% if metric.is_active %}
+                                    <span class="bg-green-500 text-white px-2 py-1 rounded">Active</span>
+                                    {% else %}
+                                    <span class="bg-gray-500 text-white px-2 py-1 rounded">Inactive</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="9" class="text-center p-2">No models have been trained yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                
+                <!-- Pagination -->
+                {% if metrics.has_other_pages %}
+                <nav aria-label="Metrics pagination" class="mt-4">
+                    <ul class="flex justify-center space-x-2">
+                        {% if metrics.has_previous %}
+                        <li>
+                            <a href="?page={{ metrics.previous_page_number }}" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">«</a>
+                        </li>
+                        {% else %}
+                        <li class="text-gray-500 px-3 py-1">«</li>
+                        {% endif %}
+                        
+                        {% for i in metrics.paginator.page_range %}
+                            {% if metrics.number == i %}
+                            <li class="bg-blue-500 text-white px-3 py-1 rounded">{{ i }}</li>
+                            {% else %}
+                            <li>
+                                <a href="?page={{ i }}" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">{{ i }}</a>
+                            </li>
                             {% endif %}
                         {% endfor %}
-                    </div>
-                    
-                    <!-- All Models Table -->
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Model Name</th>
-                                            <th>Version</th>
-                                            <th>RMSE</th>
-                                            <th>MAE</th>
-                                            <th>R² Score</th>
-                                            <th>Features</th>
-                                            <th>Samples</th>
-                                            <th>Trained Date</th>
-                                            <th>Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for metric in metrics %}
-                                        <tr {% if metric.is_active %}class="table-success"{% endif %}>
-                                            <td>{{ metric.model_name }}</td>
-                                            <td>{{ metric.version }}</td>
-                                            <td>{{ metric.rmse|floatformat:4 }}</td>
-                                            <td>{{ metric.mae|floatformat:4 }}</td>
-                                            <td>{{ metric.r2_score|floatformat:4 }}</td>
-                                            <td>{{ metric.feature_count }}</td>
-                                            <td>{{ metric.training_samples }}</td>
-                                            <td>{{ metric.trained_date|date:"M d, Y H:i" }}</td>
-                                            <td>
-                                                {% if metric.is_active %}
-                                                <span class="badge bg-success">Active</span>
-                                                {% else %}
-                                                <span class="badge bg-secondary">Inactive</span>
-                                                {% endif %}
-                                            </td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="9" class="text-center">No models have been trained yet.</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                            
-                            <!-- Pagination -->
-                            {% if metrics.has_other_pages %}
-                            <nav aria-label="Metrics pagination">
-                                <ul class="pagination justify-content-center">
-                                    {% if metrics.has_previous %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ metrics.previous_page_number }}" aria-label="Previous">
-                                            <span aria-hidden="true">&laquo;</span>
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&laquo;</span>
-                                    </li>
-                                    {% endif %}
-                                    
-                                    {% for i in metrics.paginator.page_range %}
-                                        {% if metrics.number == i %}
-                                        <li class="page-item active">
-                                            <span class="page-link">{{ i }}</span>
-                                        </li>
-                                        {% else %}
-                                        <li class="page-item">
-                                            <a class="page-link" href="?page={{ i }}">{{ i }}</a>
-                                        </li>
-                                        {% endif %}
-                                    {% endfor %}
-                                    
-                                    {% if metrics.has_next %}
-                                    <li class="page-item">
-                                        <a class="page-link" href="?page={{ metrics.next_page_number }}" aria-label="Next">
-                                            <span aria-hidden="true">&raquo;</span>
-                                        </a>
-                                    </li>
-                                    {% else %}
-                                    <li class="page-item disabled">
-                                        <span class="page-link">&raquo;</span>
-                                    </li>
-                                    {% endif %}
-                                </ul>
-                            </nav>
-                            {% endif %}
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-12 text-center">
-                            <a href="{% url 'ai:train_model' %}" class="btn btn-primary" style="background-color: #3E8E41; border-color: #3E8E41;">
-                                <i class="fas fa-cogs me-1"></i> Train New Model
-                            </a>
-                            <a href="{% url 'ai:analytics' %}" class="btn btn-secondary ms-2">
-                                <i class="fas fa-chart-area me-1"></i> View Analytics
-                            </a>
-                        </div>
-                    </div>
-                </div>
+                        
+                        {% if metrics.has_next %}
+                        <li>
+                            <a href="?page={{ metrics.next_page_number }}" class="px-3 py-1 bg-white border border-gray-300 rounded hover:bg-gray-100">»</a>
+                        </li>
+                        {% else %}
+                        <li class="text-gray-500 px-3 py-1">»</li>
+                        {% endif %}
+                    </ul>
+                </nav>
+                {% endif %}
+            </div>
+            
+            <div class="mt-4 text-center">
+                <a href="{% url 'ai:train_model' %}" class="bg-green-600 text-white px-4 py-2 rounded hover:bg-green-700 mr-2">
+                    <i class="fas fa-cogs mr-1"></i> Train New Model
+                </a>
+                <a href="{% url 'ai:analytics' %}" class="border border-gray-500 text-gray-500 px-4 py-2 rounded hover:bg-gray-100 ml-2">
+                    <i class="fas fa-chart-area mr-1"></i> View Analytics
+                </a>
             </div>
         </div>
     </div>
@@ -187,7 +153,7 @@
 <script>
     // Highlight active model row
     document.addEventListener('DOMContentLoaded', function() {
-        const activeRow = document.querySelector('tr.table-success');
+        const activeRow = document.querySelector('tr.bg-green-100');
         if(activeRow) {
             activeRow.style.transition = 'background-color 0.3s';
             

@@ -1,9 +1,59 @@
+
 {% extends "prediction/base.html" %}
 {% load static %}
 
 {% block title %}Prediction Model - Earthquake Magnitude Prediction System{% endblock %}
 
 {% block content %}
+
+<style>
+    .prediction-card {
+        background: linear-gradient(to right, #f8f9fa, #e9ecef);
+        transition: transform 0.3s ease;
+    }
+    .prediction-card:hover {
+        transform: translateY(-5px);
+    }
+    .magnitude-display {
+        font-size: 3rem;
+        font-weight: 700;
+        background: linear-gradient(90deg, #4f46e5, #8b5cf6);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+    .alert-ring {
+        animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+        0% {
+            box-shadow: 0 0 0 0 rgba(79, 70, 229, 0.4);
+        }
+        70% {
+            box-shadow: 0 0 0 10px rgba(79, 70, 229, 0);
+        }
+        100% {
+            box-shadow: 0 0 0 0 rgba(79, 70, 229, 0);
+        }
+    }
+    .richter-item {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border-left: 4px solid;
+    }
+    .richter-item.active {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        font-weight: 600;
+    }
+    .recommendation-item {
+        padding: 12px;
+        border-radius: 8px;
+        margin-bottom: 8px;
+        border-left: 4px solid #4f46e5;
+        background-color: #f3f4f6;
+    }
+</style>
+
 <!-- Page Header -->
 <div class="mb-6">
     <h2 class="text-2xl font-bold text-primary">Earthquake Magnitude Prediction</h2>
@@ -22,25 +72,20 @@
                 <div>
                     <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="number" step="0.000001" name="latitude" id="latitude" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. 37.7749" required>
+                        <input type="number" step="0.000001" name="latitude" id="latitude" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. -6.3690" required>
                     </div>
                 </div>
                 <div>
                     <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
                     <div class="relative rounded-md shadow-sm">
-                        <input type="number" step="0.000001" name="longitude" id="longitude" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. -122.4194" required>
+                        <input type="number" step="0.000001" name="longitude" id="longitude" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500" placeholder="e.g. 34.8888" required>
                     </div>
                 </div>
             </div>
             
             <div class="mb-4">
                 <label for="map-selector" class="block text-sm font-medium text-gray-700 mb-1">Or Select Location on Map</label>
-                <div id="map-selector" class="h-64 bg-gray-100 rounded-md border border-gray-300">
-                    <!-- Map selector will be initialized here via JavaScript -->
-                    <div class="h-full w-full flex items-center justify-center">
-                        <p class="text-gray-500">Map loading...</p>
-                    </div>
-                </div>
+                <div id="map-selector" class="h-96 bg-gray-100 rounded-md border border-gray-300"></div>
             </div>
         </div>
         
@@ -50,70 +95,6 @@
             <div class="mb-4">
                 <label for="depth" class="block text-sm font-medium text-gray-700 mb-1">Depth (km): <span id="depth-value">10</span></label>
                 <input type="range" name="depth" id="depth" min="0" max="700" value="10" step="1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="tectonic_plate" class="block text-sm font-medium text-gray-700 mb-1">Tectonic Plate</label>
-                    <select name="tectonic_plate" id="tectonic_plate" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Select Plate</option>
-                        <option value="pacific">Pacific</option>
-                        <option value="north_american">North American</option>
-                        <option value="eurasian">Eurasian</option>
-                        <option value="indo_australian">Indo-Australian</option>
-                        <option value="african">African</option>
-                        <option value="antarctic">Antarctic</option>
-                        <option value="south_american">South American</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="fault_type" class="block text-sm font-medium text-gray-700 mb-1">Fault Type</label>
-                    <select name="fault_type" id="fault_type" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Select Fault Type</option>
-                        <option value="normal">Normal</option>
-                        <option value="reverse">Reverse</option>
-                        <option value="strike_slip">Strike-slip</option>
-                        <option value="oblique">Oblique</option>
-                    </select>
-                </div>
-            </div>
-        </div>
-        
-        <div class="mb-6">
-            <h3 class="text-xl font-semibold text-primary mb-4">Advanced Parameters (Optional)</h3>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                <div>
-                    <label for="p_wave" class="block text-sm font-medium text-gray-700 mb-1">P-Wave Velocity (km/s): <span id="p-wave-value">5.8</span></label>
-                    <input type="range" name="p_wave" id="p_wave" min="4" max="8" value="5.8" step="0.1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                </div>
-                <div>
-                    <label for="s_wave" class="block text-sm font-medium text-gray-700 mb-1">S-Wave Velocity (km/s): <span id="s-wave-value">3.2</span></label>
-                    <input type="range" name="s_wave" id="s_wave" min="2" max="5" value="3.2" step="0.1" class="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer">
-                </div>
-            </div>
-            
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                    <label for="historical_activity" class="block text-sm font-medium text-gray-700 mb-1">Historical Activity Level</label>
-                    <select name="historical_activity" id="historical_activity" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Select Level</option>
-                        <option value="low">Low</option>
-                        <option value="moderate">Moderate</option>
-                        <option value="high">High</option>
-                        <option value="very_high">Very High</option>
-                    </select>
-                </div>
-                <div>
-                    <label for="stress_accumulation" class="block text-sm font-medium text-gray-700 mb-1">Stress Accumulation</label>
-                    <select name="stress_accumulation" id="stress_accumulation" class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                        <option value="">Select Level</option>
-                        <option value="low">Low</option>
-                        <option value="moderate">Moderate</option>
-                        <option value="high">High</option>
-                        <option value="critical">Critical</option>
-                    </select>
-                </div>
             </div>
         </div>
         
@@ -125,93 +106,432 @@
     </form>
 </div>
 
-<!-- Prediction Results (initially hidden) -->
-<div id="prediction-results" class="max-w-xl mx-auto p-6 bg-white rounded-2xl shadow-lg hidden animate__animated">
-    <div class="text-center mb-6">
-        <h3 class="text-xl font-semibold text-primary mb-2">Prediction Results</h3>
-        <div class="flex flex-col items-center justify-center">
-            <div class="text-5xl font-bold text-primary mb-2">{{ prediction.magnitude }}</div>
-            <div class="text-sm text-gray-500">Predicted Magnitude</div>
-        </div>
+<!-- Prediction Results -->
+<div id="prediction-results" class="hidden mt-8 p-6 bg-white rounded-2xl shadow-lg">
+    <div id="loading" class="flex justify-center items-center">
+        <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+        <span class="ml-2">Predicting...</span>
     </div>
-    
-    <div class="flex justify-center mb-6">
-        <span class="px-4 py-2 rounded-full {% if prediction.confidence < 70 %}bg-yellow-100 text-yellow-800{% else %}bg-green-100 text-green-800{% endif %}">
-            Confidence: <span class="font-bold">{{ prediction.confidence }}%</span>
-        </span>
-    </div>
-    
-    <div class="mb-6">
-        <h4 class="text-lg font-medium text-primary mb-3">Prediction Breakdown</h4>
-        <div id="prediction-chart" class="h-48 bg-gray-100 rounded-md">
-            <!-- Chart will be rendered here via JavaScript -->
-            <div class="h-full w-full flex items-center justify-center">
-                <p class="text-gray-500">Chart loading...</p>
-            </div>
-        </div>
-    </div>
-    
-    <div class="mb-4">
-        <h4 class="text-lg font-medium text-primary mb-2">Risk Assessment</h4>
-        <div class="bg-gray-50 p-4 rounded-md">
-            <div class="mb-2">
-                <span class="font-medium">Potential Damage:</span>
-                <span class="ml-2 {% if prediction.risk.damage == 'Low' %}text-green-600{% elif prediction.risk.damage == 'Moderate' %}text-yellow-600{% else %}text-red-600{% endif %}">
-                    {{ prediction.risk.damage }}
-                </span>
-            </div>
-            <div class="mb-2">
-                <span class="font-medium">Tsunami Risk:</span>
-                <span class="ml-2 {% if prediction.risk.tsunami == 'Low' %}text-green-600{% elif prediction.risk.tsunami == 'Moderate' %}text-yellow-600{% else %}text-red-600{% endif %}">
-                    {{ prediction.risk.tsunami }}
-                </span>
-            </div>
-            <div>
-                <span class="font-medium">Secondary Effects:</span>
-                <span class="ml-2 {% if prediction.risk.secondary == 'Low' %}text-green-600{% elif prediction.risk.secondary == 'Moderate' %}text-yellow-600{% else %}text-red-600{% endif %}">
-                    {{ prediction.risk.secondary }}
-                </span>
-            </div>
-        </div>
-    </div>
-    
-    <div class="text-center">
-        <a href="{% url 'prediction:prediction' %}" class="text-primary hover:text-blue-700 text-sm font-medium">
-            Make a new prediction
-        </a>
-    </div>
+    <div id="results-content" class="hidden"></div>
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        // Update range slider values
-        document.getElementById('depth').addEventListener('input', function() {
-            document.getElementById('depth-value').textContent = this.value;
+        // Map initialization with bounds restricted to Tanzania
+        var mapContainer = document.getElementById('map-selector');
+        var tanzaniaBounds = L.latLngBounds([-12, 29], [-1, 41]);
+        var map = L.map(mapContainer, {
+            maxBounds: tanzaniaBounds,
+            maxBoundsViscosity: 1.0,
+            minZoom: 6
+        }).setView([-6.5, 35], 6);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+        
+        var marker;
+        map.on('click', function(e) {
+            var lat = e.latlng.lat;
+            var lon = e.latlng.lng;
+            document.getElementById('latitude').value = lat.toFixed(6);
+            document.getElementById('longitude').value = lon.toFixed(6);
+            if (marker) {
+                marker.setLatLng(e.latlng);
+            } else {
+                marker = L.marker(e.latlng).addTo(map);
+            }
         });
         
-        document.getElementById('p_wave').addEventListener('input', function() {
-            document.getElementById('p-wave-value').textContent = this.value;
+        function updateMarker() {
+            var lat = parseFloat(document.getElementById('latitude').value);
+            var lon = parseFloat(document.getElementById('longitude').value);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                var latlng = L.latLng(lat, lon);
+                if (marker) {
+                    marker.setLatLng(latlng);
+                } else {
+                    marker = L.marker(latlng).addTo(map);
+                }
+                map.setView(latlng, 10);
+            }
+        }
+        
+        document.getElementById('latitude').addEventListener('change', updateMarker);
+        document.getElementById('longitude').addEventListener('change', updateMarker);
+        
+        // Depth value update
+        var depthInput = document.getElementById('depth');
+        var depthValue = document.getElementById('depth-value');
+        depthInput.addEventListener('input', function() {
+            depthValue.textContent = this.value;
         });
         
-        document.getElementById('s_wave').addEventListener('input', function() {
-            document.getElementById('s-wave-value').textContent = this.value;
-        });
+        // Form submission
+        var form = document.getElementById('prediction-form');
+        var resultsPanel = document.getElementById('prediction-results');
+        var loading = document.getElementById('loading');
+        var resultsContent = document.getElementById('results-content');
+        var apiUrl = '{% url "ai:api_predict" %}';
+        var csrftoken = '{{ csrf_token }}';
         
-        // Example form submission handling - in a real app this would be an AJAX call
-        document.getElementById('prediction-form').addEventListener('submit', function(e) {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // In a real app, you'd send the form data to the server here
-            // For demo, we'll just show the results panel
-            const resultsPanel = document.getElementById('prediction-results');
-            resultsPanel.classList.remove('hidden');
-            resultsPanel.classList.add('animate__fadeIn');
+            var latitude = parseFloat(document.getElementById('latitude').value);
+            var longitude = parseFloat(document.getElementById('longitude').value);
             
-            // Scroll to results
-            resultsPanel.scrollIntoView({ behavior: 'smooth' });
+            // Validate coordinates are within Tanzania
+            if (latitude < -12 || latitude > -1 || longitude < 29 || longitude > 41) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Invalid Location',
+                    text: 'Please select a location within Tanzania.',
+                    toast: true,
+                    position: 'top-end',
+                    showConfirmButton: false,
+                    timer: 3000
+                });
+                return;
+            }
+            
+            // Show results panel and loading
+            resultsPanel.classList.remove('hidden');
+            loading.classList.remove('hidden');
+            resultsContent.classList.add('hidden');
+            
+            // Get form data
+            var depth = document.getElementById('depth').value;
+            
+            // Make API call
+            fetch(apiUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken
+                },
+                body: JSON.stringify({
+                    latitude: latitude,
+                    longitude: longitude,
+                    depth: parseFloat(depth)
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('API request failed');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error);
+                }
+                
+                // Get Richter scale interpretation and safety recommendations
+                var richterInfo = getRichterScaleInfo(data.magnitude);
+                var recommendations = getSafetyRecommendations(data.magnitude);
+                
+                // Hide loading
+                loading.classList.add('hidden');
+                // Show results with restyled layout
+                resultsContent.classList.remove('hidden');
+                resultsContent.innerHTML = `
+                <div class="p-6">
+                    <div class="flex flex-col md:flex-row">
+                        <!-- Primary Prediction -->
+                        <div class="w-full md:w-1/2 mb-6 md:mb-0 md:pr-6">
+                            <h3 class="text-lg text-center font-semibold text-blue-700 mb-4 flex items-center justify-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                                Predicted Magnitude
+                            </h3>
+
+                            <div class="flex items-center justify-center mb-6">
+                                <div class="alert-ring rounded-full p-6 ${getMagnitudeColorClass(data.magnitude)} flex items-center justify-center">
+                                    <span class="magnitude-display">${data.magnitude.toFixed(1)}</span>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mb-6">
+                                <span class="font-semibold text-lg ${getMagnitudeTextClass(data.magnitude)}">${richterInfo.category}</span>
+                            </div>
+                            
+                            <div class="space-y-3">
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">AI Model Used</p>
+                                        <p class="font-medium">${data.model_version || 'Tanzania Seismic Model v1.0'}</p>
+                                    </div>
+                                </div>
+
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Location</p>
+                                        <p class="font-medium">${data.latitude.toFixed(6)}, ${data.longitude.toFixed(6)}</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Depth</p>
+                                        <p class="font-medium">${data.depth} km</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex items-center">
+                                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center mr-3">
+                                        <svg class="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                        </svg>
+                                    </div>
+                                    <div>
+                                        <p class="text-sm text-gray-500">Timestamp</p>
+                                        <p class="font-medium">${data.timestamp || new Date().toLocaleString()}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- Regional Analysis -->
+                        <div class="w-full md:w-1/2 md:pl-6 md:border-l border-gray-200">
+                            <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+                                </svg>
+                                Regional Analysis
+                            </h3>
+                            
+                            <div class="bg-white rounded-lg p-4 shadow-sm border border-gray-100">
+                                <div class="space-y-4">
+                                    <div>
+                                        <p class="text-sm text-gray-500">Earthquake Count</p>
+                                        <div class="flex items-center">
+                                            <span class="text-xl font-bold text-gray-800">${data.regional_data?.count || 'N/A'}</span>
+                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">events</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <p class="text-sm text-gray-500">Average Magnitude</p>
+                                        <div class="flex items-center">
+                                            <span class="text-xl font-bold text-gray-800">${data.regional_data?.avg_magnitude || 'N/A'}</span>
+                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">Richter</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div>
+                                        <p class="text-sm text-gray-500">Maximum Magnitude</p>
+                                        <div class="flex items-center">
+                                            <span class="text-xl font-bold text-gray-800">${data.regional_data?.max_magnitude?.toFixed(2) || 'N/A'}</span>
+                                            <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded ml-2">Richter</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="mt-4">
+                                <h4 class="text-md font-semibold text-gray-700 mb-2 flex items-center">
+                                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                    </svg>
+                                    Richter Scale Interpretation
+                                </h4>
+
+                                
+                                <div class="space-y-2">
+                                    ${generateRichterScaleDisplay(data.magnitude)}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Safety Recommendations -->
+                    <div class="mt-8 border-t border-gray-200 pt-6">
+                        <h3 class="text-lg font-semibold text-blue-700 mb-4 flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+                            </svg>
+                            Safety Recommendations
+                        </h3>
+                        
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            ${recommendations.map(rec => `
+                                <div class="recommendation-item">
+                                    <div class="flex items-start">
+                                        <div class="flex-shrink-0 w-6 h-6 text-blue-600 mt-1">
+                                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                                            </svg>
+                                        </div>
+                                        <div class="ml-3">
+                                            <p class="text-sm">${rec}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                </div>
+                `;
+            })
+            .catch(error => {
+                // Hide loading
+                loading.classList.add('hidden');
+                // Show error
+                resultsContent.classList.remove('hidden');
+                resultsContent.innerHTML = `<p class="text-red-500">Error: ${error.message}</p>`;
+            });
         });
+        
+        // Function to get Richter scale information
+        function getRichterScaleInfo(magnitude) {
+            const scale = [
+                { min: 0, max: 1.9, category: "Micro", description: "Not felt by people, only detected by seismographs." },
+                { min: 2.0, max: 2.9, category: "Minor", description: "Felt slightly by some people, no building damage." },
+                { min: 3.0, max: 3.9, category: "Minor", description: "Felt by many people, no significant damage." },
+                { min: 4.0, max: 4.9, category: "Light", description: "Felt by all, minor damage possible, objects shake." },
+                { min: 5.0, max: 5.9, category: "Moderate", description: "Can cause major damage to poorly constructed buildings." },
+                { min: 6.0, max: 6.9, category: "Strong", description: "Can be destructive in areas up to 160km across." },
+                { min: 7.0, max: 7.9, category: "Major", description: "Can cause serious damage over larger areas." },
+                { min: 8.0, max: 9.9, category: "Great", description: "Can cause serious damage in areas several hundred km across." },
+                { min: 10.0, max: 999, category: "Massive", description: "Catastrophic damage, significant impact globally." }
+            ];
+            
+            for (let i = 0; i < scale.length; i++) {
+                if (magnitude >= scale[i].min && magnitude <= scale[i].max) {
+                    return scale[i];
+                }
+            }
+            
+            return { category: "Unknown", description: "Unable to classify this magnitude." };
+        }
+        // Function to generate the Richter scale display (horizontal)
+        function generateRichterScaleDisplay(magnitude) {
+            const scales = [
+            { min: 0, max: 1.9, category: "Micro", color: "border-green-300", textColor: "text-green-700" },
+            { min: 2.0, max: 3.9, category: "Minor", color: "border-green-400", textColor: "text-green-700" },
+            { min: 4.0, max: 4.9, category: "Light", color: "border-yellow-300", textColor: "text-yellow-700" },
+            { min: 5.0, max: 5.9, category: "Moderate", color: "border-yellow-500", textColor: "text-yellow-700" },
+            { min: 6.0, max: 6.9, category: "Strong", color: "border-orange-400", textColor: "text-orange-700" },
+            { min: 7.0, max: 7.9, category: "Major", color: "border-red-400", textColor: "text-red-700" },
+            { min: 8.0, max: 9.9, category: "Great", color: "border-red-500", textColor: "text-red-700" },
+            { min: 10.0, max: 999, category: "Massive", color: "border-purple-600", textColor: "text-purple-700" }
+            ];
+
+            let html = `
+            <div class="flex flex-row items-stretch justify-between w-full overflow-x-auto space-x-2 pb-2">
+            `;
+
+            scales.forEach((scale, idx) => {
+            const isActive = magnitude >= scale.min && magnitude <= scale.max;
+            html += `
+            <div class="flex-1 min-w-[120px] max-w-[160px] flex flex-col items-center">
+                <div class="richter-item ${scale.color} ${isActive ? 'active' : ''} bg-white w-full text-center mb-2 ${isActive ? 'ring-2 ring-blue-400' : ''}" style="border-left:0;border-top:4px solid;min-height:60px;">
+                <span class="font-medium ${scale.textColor}">${scale.category}</span>
+                <div class="text-xs text-gray-500">${scale.min}-${scale.max === 999 ? '10+' : scale.max}</div>
+                ${isActive ? `
+                <div class="bg-blue-100 text-blue-800 text-xs px-2 py-1 rounded mt-2">
+                    Current Prediction
+                </div>
+                ` : ''}
+                </div>
+            </div>
+            `;
+            });
+
+            html += `</div>`;
+            return html;
+        }
+        
+        // Function to get magnitude color class
+        function getMagnitudeColorClass(magnitude) {
+            if (magnitude < 2.0) return 'text-green-300';
+            if (magnitude < 4.0) return 'text-green-500';
+            if (magnitude < 6.0) return 'text-yellow-400';
+            if (magnitude < 8.0) return 'text-red-500';
+            return 'text-blue-600';
+        }
+        
+        // Function to get magnitude text class
+        function getMagnitudeTextClass(magnitude) {
+            if (magnitude < 2.0) return 'text-green-700';
+            if (magnitude < 4.0) return 'text-green-700';
+            if (magnitude < 6.0) return 'text-yellow-700';
+            if (magnitude < 8.0) return 'text-red-700';
+            return 'text-blue-700';
+        }
+        
+        // Function to get safety recommendations
+        function getSafetyRecommendations(magnitude) {
+            // Base recommendations for any magnitude
+            const baseRecommendations = [
+                "Stay informed through official channels and local authorities",
+                "Have emergency contacts readily available"
+            ];
+            
+            // Add specific recommendations based on magnitude
+            if (magnitude < 2.0) {
+                return [
+                    ...baseRecommendations,
+                    "No specific precautions needed for micro earthquakes",
+                    "These are typically only detected by seismographs"
+                ];
+            } else if (magnitude < 4.0) {
+                return [
+                    ...baseRecommendations,
+                    "No significant damage expected, but remain alert",
+                    "Secure loose items that may fall during minor shaking"
+                ];
+            } else if (magnitude < 6.0) {
+                return [
+                    ...baseRecommendations,
+                    "Be prepared for moderate shaking and potential light damage",
+                    "Keep a basic emergency kit with water, food, and first aid",
+                    "Know how to turn off gas, water, and electricity",
+                    "Identify safe spots in each room (under sturdy furniture or against interior walls)"
+                ];
+            } else if (magnitude < 7.0) {
+                return [
+                    ...baseRecommendations,
+                    "Prepare for potentially strong shaking and significant damage",
+                    "Create a comprehensive emergency plan with your family",
+                    "Secure heavy furniture and appliances to walls",
+                    "Have emergency supplies for at least 72 hours",
+                    "Know evacuation routes if necessary"
+                ];
+            } else {
+                return [
+                    ...baseRecommendations,
+                    "Prepare for severe shaking and widespread damage",
+                    "Develop a comprehensive family emergency plan",
+                    "Maintain emergency supplies for at least one week",
+                    "Identify community emergency shelters",
+                    "Be prepared for possible evacuations and infrastructure disruptions",
+                    "Secure all heavy objects and reinforce your home if possible"
+                ];
+            }
+        }
     });
 </script>
 {% endblock %}

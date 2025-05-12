@@ -1,204 +1,311 @@
-{% extends "prediction/base.html" %}
+{% extends 'prediction/base.html' %}
 {% load static %}
 
-{% block title %}Historical Data - Earthquake Magnitude Prediction System{% endblock %}
+{% block title %}Earthquake Data{% endblock %}
 
 {% block content %}
-<!-- Page Header -->
-<div class="mb-8">
-    <h2 class="text-3xl font-bold text-primary mb-2 animate__animated animate__fadeIn">Historical Earthquake Data</h2>
-    <p class="text-gray-600">Analyze past seismic events to identify patterns and trends</p>
-</div>
-
-<!-- Date Range Selector -->
-<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
-    <h3 class="text-xl font-semibold text-primary mb-4">Select Time Period</h3>
-    <form method="get" action="{% url 'prediction:historical_data' %}" class="flex flex-wrap gap-4 items-end">
-        <div class="flex-grow">
-            <label for="start_date" class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
-            <input type="date" id="start_date" name="start_date" value="{{ start_date|default:'' }}" 
-                   class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        <div class="flex-grow">
-            <label for="end_date" class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
-            <input type="date" id="end_date" name="end_date" value="{{ end_date|default:'' }}"
-                   class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-        </div>
-        <div class="flex-grow md:flex-grow-0">
-            <label for="min_magnitude" class="block text-sm font-medium text-gray-700 mb-1">Min Magnitude</label>
-            <select id="min_magnitude" name="min_magnitude" 
-                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option value="0" {% if min_magnitude == 0 %}selected{% endif %}>All</option>
-                <option value="2" {% if min_magnitude == 2 %}selected{% endif %}>2.0+</option>
-                <option value="3" {% if min_magnitude == 3 %}selected{% endif %}>3.0+</option>
-                <option value="4" {% if min_magnitude == 4 %}selected{% endif %}>4.0+</option>
-                <option value="5" {% if min_magnitude == 5 %}selected{% endif %}>5.0+</option>
-                <option value="6" {% if min_magnitude == 6 %}selected{% endif %}>6.0+</option>
-                <option value="7" {% if min_magnitude == 7 %}selected{% endif %}>7.0+</option>
-            </select>
-        </div>
-        <div class="flex-grow md:flex-grow-0">
-            <label for="region" class="block text-sm font-medium text-gray-700 mb-1">Region</label>
-            <select id="region" name="region" 
-                    class="w-full px-3 py-4 border border-gray-300 rounded-md focus:outline-none focus:ring-blue-500 focus:border-blue-500">
-                <option value="all" {% if region == 'all' %}selected{% endif %}>All</option>
-                <option value="dodoma" {% if region == 'dodoma' %}selected{% endif %}>Dodoma</option>
-            </select>
-        </div>
-        <div>
-            <button type="submit" class="bg-primary text-white py-4 px-6 rounded-lg hover:bg-[#002244] transition duration-300">
-                Apply Filters
-            </button>
-        </div>
-    </form>
-</div>
-
-<!-- Charts & Stats -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-    <!-- Timeline Chart -->
-    <div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
-        <h3 class="text-xl font-semibold text-primary mb-4">Earthquake Frequency Over Time</h3>
-        <div id="timeline-chart" class="w-full h-64 bg-gray-50 rounded-lg">
-            <!-- Chart will be rendered here via JavaScript -->
-            <div class="flex items-center justify-center h-full text-gray-500">
-                <p>Chart loading...</p>
+<div class="animate__animated animate__fadeIn">
+    <div class="bg-white rounded-xl shadow-md overflow-hidden">
+        <!-- Header -->
+        <div class="bg-primary px-6 py-6">
+            <div class="flex justify-between items-center">
+                <h3 class="text-2xl font-primary font-semibold text-white flex items-center">
+                    <span class="inline-block mr-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
+                        </svg>
+                    </span>
+                    Earthquake Historical Data
+                </h3>
+                <button id="exportButton" class="bg-accent hover:bg-yellow-500 text-gray-800 px-4 py-4 rounded text-sm font-medium transition-colors flex items-center">
+                  <span class="inline-block mr-1.5">
+                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                  </svg>
+                  </span>
+                  Export to CSV
+                </button>
             </div>
         </div>
-    </div>
-    
-    <!-- Magnitude Distribution Chart -->
-    <div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
-        <h3 class="text-xl font-semibold text-primary mb-4">Magnitude Distribution</h3>
-        <div id="magnitude-chart" class="w-full h-64 bg-gray-50 rounded-lg">
-            <!-- Chart will be rendered here via JavaScript -->
-            <div class="flex items-center justify-center h-full text-gray-500">
-                <p>Chart loading...</p>
+
+        <div class="p-6">
+            <!-- Filter Section -->
+            <div class="mb-8">
+                <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
+                    <div>
+                        <label for="year" class="block text-sm font-medium text-gray-800 mb-1">Filter by Year</label>
+                        <select name="year" id="year" class="w-full rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">All Years</option>
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if filters.year == year|stringformat:"i" %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="min_mag" class="block text-sm font-medium text-gray-800 mb-1">Minimum Magnitude</label>
+                        <input type="number" name="min_mag" id="min_mag" class="w-full rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                            step="0.1" min="0" max="10" value="{{ filters.min_mag }}" placeholder="E.g., 4.0">
+                    </div>
+                    <div class="flex space-x-2">
+                        <button type="submit" class="bg-primary hover:bg-blue-900 text-white px-4 py-4 rounded-md text-sm font-medium transition-colors">
+                            <span class="inline-block mr-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>
+                                </svg>
+                            </span>
+                            Apply Filters
+                        </button>
+                        <a href="{% url 'ai:api_earthquake_data' %}" class="border border-gray-700 text-gray-800 px-4 py-4 rounded-md text-sm font-medium hover:bg-gray-50 transition-colors">
+                            <span class="inline-block mr-1.5">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                                </svg>
+                            </span>
+                            Reset
+                        </a>
+                    </div>
+                </form>
             </div>
-        </div>
-    </div>
-</div>
 
-<!-- Heatmap -->
-<div class="bg-white rounded-xl shadow-md p-6 mb-8 animate__animated animate__fadeIn">
-    <h3 class="text-xl font-semibold text-primary mb-4">Regional Earthquake Density</h3>
-    <div id="heatmap" class="w-full h-96 bg-gray-50 rounded-lg">
-        <!-- Heatmap will be rendered here via JavaScript -->
-        <div class="flex items-center justify-center h-full text-gray-500">
-            <p>Heatmap loading...</p>
-        </div>
-    </div>
-</div>
-
-<!-- Data Table -->
-<div class="bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
-    <div class="flex justify-between items-center mb-4">
-        <h3 class="text-xl font-semibold text-primary">Detailed Historical Data</h3>
-        <div>
-            <button class="bg-[#3E8E41] text-white py-2 px-4 rounded-lg hover:bg-[#2D6A30] transition duration-300 mr-2">
-                <span class="flex items-center">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                    </svg>
-                    Export CSV
+            <!-- Table Section -->
+            <div class="overflow-x-auto">
+                <table id="earthquakeTable" class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Date</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Time</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Latitude</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Longitude</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Depth (km)</th>
+                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-800 uppercase tracking-wider">Magnitude</th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for eq in earthquakes %}
+                        <tr class="hover:bg-gray-50 transition-colors">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ eq.Year }}-{{ eq.Month }}-{{ eq.Day }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ eq.Time }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ eq.Lat }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ eq.Lon }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-800">{{ eq.Depth }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
+                                    {% if eq.Mag < 4.0 %}bg-green-100 text-green-800{% elif eq.Mag < 6.0 %}bg-yellow-100 text-yellow-800{% else %}bg-red-100 text-red-800{% endif %}">
+                                    {{ eq.Mag }}
+                                </span>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="7" class="px-6 py-4 text-center text-sm text-gray-800">No earthquake data found matching your filters.</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            
+            <!-- Pagination -->
+            {% if earthquakes.has_other_pages %}
+            <nav class="flex justify-center my-6" aria-label="Earthquake data pagination">
+                <ul class="flex space-x-1">
+                    {% if earthquakes.has_previous %}
+                    <li>
+                        <a href="?page={{ earthquakes.previous_page_number }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" 
+                           class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800 hover:bg-gray-50" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <span class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-300">&laquo;</span>
+                    </li>
+                    {% endif %}
+                    
+                    {% if earthquakes.number > 3 %}
+                    <li>
+                        <a href="?page=1{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" 
+                           class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800 hover:bg-gray-50">1</a>
+                    </li>
+                    {% if earthquakes.number > 4 %}
+                    <li>
+                        <span class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800">...</span>
+                    </li>
+                    {% endif %}
+                    {% endif %}
+                    
+                    {% for i in earthquakes.paginator.page_range %}
+                        {% if earthquakes.number == i %}
+                        <li>
+                            <span class="px-3 py-2 rounded-md border border-indigo-500 bg-indigo-50 text-indigo-600">{{ i }}</span>
+                        </li>
+                        {% elif i > earthquakes.number|add:'-3' and i < earthquakes.number|add:'3' %}
+                        <li>
+                            <a href="?page={{ i }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" 
+                               class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800 hover:bg-gray-50">{{ i }}</a>
+                        </li>
+                        {% endif %}
+                    {% endfor %}
+                    
+                    {% if earthquakes.number < earthquakes.paginator.num_pages|add:'-2' %}
+                    {% if earthquakes.number < earthquakes.paginator.num_pages|add:'-3' %}
+                    <li>
+                        <span class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800">...</span>
+                    </li>
+                    {% endif %}
+                    <li>
+                        <a href="?page={{ earthquakes.paginator.num_pages }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" 
+                           class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800 hover:bg-gray-50">{{ earthquakes.paginator.num_pages }}</a>
+                    </li>
+                    {% endif %}
+                    
+                    {% if earthquakes.has_next %}
+                    <li>
+                        <a href="?page={{ earthquakes.next_page_number }}{% if filters.year %}&year={{ filters.year }}{% endif %}{% if filters.min_mag %}&min_mag={{ filters.min_mag }}{% endif %}" 
+                           class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-800 hover:bg-gray-50" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                        </a>
+                    </li>
+                    {% else %}
+                    <li>
+                        <span class="px-3 py-2 rounded-md border border-gray-700 bg-white text-gray-300">&raquo;</span>
+                    </li>
+                    {% endif %}
+                </ul>
+            </nav>
+            {% endif %}
+            
+            <div class="text-center mt-3">
+                <span class="text-sm text-gray-800">
+                    Showing {{ earthquakes.start_index }} to {{ earthquakes.end_index }} of 
+                    {{ earthquakes.paginator.count }} records
                 </span>
-            </button>
-        </div>
-    </div>
-    <div class="overflow-x-auto">
-        <table class="min-w-full bg-white">
-            <thead class="bg-gray-100">
-                <tr>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Date/Time</th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Location</th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Lat/Lon</th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Depth</th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Magnitude</th>
-                    <th class="py-3 px-4 text-left text-sm font-semibold text-gray-700">Tectonic Plate</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for quake in historical_data %}
-                <tr class="border-b hover:bg-gray-50">
-                    <td class="py-3 px-4 text-sm">{{ quake.datetime }}</td>
-                    <td class="py-3 px-4 text-sm">{{ quake.location }}</td>
-                    <td class="py-3 px-4 text-sm">{{ quake.latitude }}, {{ quake.longitude }}</td>
-                    <td class="py-3 px-4 text-sm">{{ quake.depth }} km</td>
-                    <td class="py-3 px-4 text-sm">
-                        <span class="px-2 py-1 rounded-full text-white font-medium
-                        {% if quake.magnitude >= 7.0 %}bg-red-600
-                        {% elif quake.magnitude >= 5.0 %}bg-orange-500
-                        {% elif quake.magnitude >= 3.0 %}bg-yellow-500
-                        {% else %}bg-green-500{% endif %}">
-                            {{ quake.magnitude }}
+            </div>
+            
+            <!-- Info Section -->
+            <div class="mt-6">
+                <div class="bg-blue-50 rounded-lg p-4">
+                    <h5 class="text-primary font-primary font-medium flex items-center">
+                        <span class="inline-block mr-2">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
                         </span>
-                    </td>
-                    <td class="py-3 px-4 text-sm">{{ quake.tectonic_plate }}</td>
-                </tr>
-                {% empty %}
-                <tr>
-                    <td colspan="6" class="py-4 px-4 text-gray-500 text-center">No data available for the selected filters</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                        Data Information
+                    </h5>
+                    <p class="text-gray-800 text-sm mt-1">
+                        This dataset contains historical earthquake events. Use the filters above to narrow down 
+                        the records by year or minimum magnitude. Click on the action buttons to analyze a specific 
+                        earthquake location or use its parameters for new predictions. You can also export the current filtered data to CSV.
+                    </p>
+                </div>
+            </div>
+        </div>
     </div>
-    
-    <!-- Pagination -->
-    {% if historical_data.has_other_pages %}
-    <div class="flex justify-center mt-6">
-        <nav class="inline-flex rounded-md shadow">
-            {% if historical_data.has_previous %}
-            <a href="?page={{ historical_data.previous_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
-               class="py-2 px-4 border border-r-0 border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                Previous
-            </a>
-            {% else %}
-            <span class="py-2 px-4 border border-r-0 border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
-                Previous
-            </span>
-            {% endif %}
-            
-            {% for i in historical_data.paginator.page_range %}
-                {% if historical_data.number == i %}
-                <span class="py-2 px-4 border border-r-0 border-blue-600 bg-primary text-sm font-medium text-white">
-                    {{ i }}
-                </span>
-                {% else %}
-                <a href="?page={{ i }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
-                   class="py-2 px-4 border border-r-0 border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                    {{ i }}
-                </a>
-                {% endif %}
-            {% endfor %}
-            
-            {% if historical_data.has_next %}
-            <a href="?page={{ historical_data.next_page_number }}&start_date={{ start_date }}&end_date={{ end_date }}&min_magnitude={{ min_magnitude }}&region={{ region }}" 
-               class="py-2 px-4 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
-                Next
-            </a>
-            {% else %}
-            <span class="py-2 px-4 border border-gray-300 bg-gray-100 text-sm font-medium text-gray-400">
-                Next
-            </span>
-            {% endif %}
-        </nav>
-    </div>
-    {% endif %}
 </div>
 {% endblock %}
 
 {% block extra_js %}
+<!-- Include SweetAlert2 -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
-    // Placeholder for chart initialization
     document.addEventListener('DOMContentLoaded', function() {
-        // Timeline chart initialization would go here
-        console.log('Timeline chart initialization would occur here');
+        // Add sorting functionality
+        const table = document.getElementById('earthquakeTable');
+        const headers = table.querySelectorAll('thead th');
         
-        // Magnitude distribution chart initialization would go here
-        console.log('Magnitude chart initialization would occur here');
+        headers.forEach((header, index) => {
+            if(index < 6) { // Skip the Actions column
+                header.classList.add('cursor-pointer');
+                header.addEventListener('click', () => {
+                    sortTable(index);
+                });
+                header.title = 'Click to sort';
+            }
+        });
         
-        // Heatmap initialization would go here
-        console.log('Heatmap initialization would occur here');
+        function sortTable(columnIndex) {
+            const tbody = table.querySelector('tbody');
+            const rows = Array.from(tbody.querySelectorAll('tr'));
+            
+            // Skip if there's only a "No data" row
+            if(rows.length === 1 && rows[0].cells.length === 1) {
+                return;
+            }
+            
+            // Sort the rows
+            rows.sort((a, b) => {
+                const valueA = a.cells[columnIndex].textContent.trim();
+                const valueB = b.cells[columnIndex].textContent.trim();
+                
+                // Handle numeric columns (magnitude, depth)
+                if(columnIndex === 4 || columnIndex === 5) {
+                    return parseFloat(valueA) - parseFloat(valueB);
+                }
+                
+                // Handle date column
+                if(columnIndex === 0) {
+                    return new Date(valueA) - new Date(valueB);
+                }
+                
+                // Default string comparison
+                return valueA.localeCompare(valueB);
+            });
+            
+            // Update the table
+            rows.forEach(row => tbody.appendChild(row));
+        }
+        
+        // Export to CSV functionality
+        document.getElementById('exportButton').addEventListener('click', function() {
+            // Get current filter parameters
+            const urlParams = new URLSearchParams(window.location.search);
+            const year = urlParams.get('year') || '';
+            const minMag = urlParams.get('min_mag') || '';
+            
+            // Construct export URL
+            let exportUrl = "{% url 'ai:export_earthquake_csv' %}";
+            const params = [];
+            if (year) params.push(`year=${year}`);
+            if (minMag) params.push(`min_mag=${minMag}`);
+            if (params.length > 0) {
+                exportUrl += '?' + params.join('&');
+            }
+            
+            // Show confirmation
+            Swal.fire({
+                title: 'Export Data',
+                text: 'Do you want to export the current filtered earthquake data to CSV?',
+                icon: 'question',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, export it!'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    // Show loading state
+                    Swal.fire({
+                        title: 'Exporting...',
+                        text: 'Please wait while we prepare your CSV file.',
+                        allowOutsideClick: false,
+                        didOpen: () => {
+                            Swal.showLoading();
+                        }
+                    });
+                    
+                    // Download the file
+                    window.location.href = exportUrl;
+                    
+                    // Show success message after a short delay
+                    setTimeout(() => {
+                        Swal.fire(
+                            'Exported!',
+                            'Your earthquake data has been exported to CSV.',
+                            'success'
+                        );
+                    }, 1500);
+                }
+            });
+        });
     });
 </script>
 {% endblock %}

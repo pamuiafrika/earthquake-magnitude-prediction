@@ -145,185 +145,189 @@
 
 {% block extra_scripts %}
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Initialize map
-  const map = L.map('earthquake-map').setView([{{ filter.latitude|default:'-6.0' }}, {{ filter.longitude|default:'35.0' }}], 6);
-  
-  // Add OpenStreetMap tile layer
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
-  
-  // Parse heatmap data from Django template
-  const heatmapData = JSON.parse('{{ heatmap_data|escapejs }}');
-  
-  // Convert data format for Leaflet.heat
-  const heatPoints = heatmapData.map(point => [point.lat, point.lon, point.intensity]);
-  
-  // Add heat layer
-  L.heatLayer(heatPoints, {
-    radius: 20,
-    blur: 15,
-    maxZoom: 10,
-    gradient: {0.4: 'blue', 0.65: 'lime', 0.8: 'yellow', 1: 'red'}
-  }).addTo(map);
-  
-  // Add marker for current filter location if set
-  {% if filter %}
-  L.marker([{{ filter.latitude }}, {{ filter.longitude }}])
-    .addTo(map)
-    .bindPopup('Selected location')
-    .openPopup();
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('earthquake-map').setView([{{ filter.latitude|default:'-6.0' }}, {{ filter.longitude|default:'35.0' }}], 6);
     
-  // Create circle showing radius
-  L.circle([{{ filter.latitude }}, {{ filter.longitude }}], {
-    color: '#3E8E41',
-    fillColor: '#3E8E41',
-    fillOpacity: 0.1,
-    radius: {{ filter.radius|default:'1.0' }} * 111000  // Convert degrees to meters (approx)
-  }).addTo(map);
-  {% endif %}
-  
-  // Parse time series data
-  const timeSeriesData = JSON.parse('{{ time_series|escapejs }}');
-  
-  // Create time series chart
-  const timeSeriesCtx = document.getElementById('timeSeriesChart').getContext('2d');
-  new Chart(timeSeriesCtx, {
-    type: 'line',
-    data: {
-      labels: timeSeriesData.labels,
-      datasets: [
-        {
-          label: 'Earthquake Count',
-          data: timeSeriesData.counts,
-          borderColor: '#003366',
-          backgroundColor: 'rgba(0, 51, 102, 0.1)',
-          borderWidth: 2,
-          fill: true,
-          tension: 0.2,
-          yAxisID: 'y'
-        },
-        {
-          label: 'Avg Magnitude',
-          data: timeSeriesData.magnitudes,
-          borderColor: '#FFC107',
-          backgroundColor: 'rgba(255, 193, 7, 0)',
-          borderWidth: 2,
-          borderDash: [5, 5],
-          pointRadius: 3,
-          pointBackgroundColor: '#FFC107',
-          tension: 0.2,
-          yAxisID: 'y1'
-        }
-      ]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-        tooltip: {
-          mode: 'index',
-          intersect: false
-        }
-      },
-      scales: {
-        x: {
-          title: {
-            display: true,
-            text: 'Year'
-          }
-        },
-        y: {
-          type: 'linear',
-          display: true,
-          position: 'left',
-          title: {
-            display: true,
-            text: 'Event Count'
-          }
-        },
-        y1: {
-          type: 'linear',
-          display: true,
-          position: 'right',
-          grid: {
-            drawOnChartArea: false
-          },
-          title: {
-            display: true,
-            text: 'Magnitude'
-          },
-          min: 0,
-          max: 10
-        }
-      }
+    // Add OpenStreetMap tile layer
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Parse heatmap data from Django template
+    const heatmapDataRaw = '{{ heatmap_data|escapejs }}';
+    let heatmapData;
+    try {
+      heatmapData = JSON.parse(heatmapDataRaw);
+      console.log('Heatmap Data:', heatmapData);
+    } catch (e) {
+      console.error('Error parsing heatmap data:', e, 'Raw data:', heatmapDataRaw);
+      heatmapData = [];
     }
-  });
   
-  // Create magnitude distribution chart
-  const magDistCtx = document.getElementById('magnitudeDistribution').getContext('2d');
-  new Chart(magDistCtx, {
-    type: 'bar',
-    data: {
-      labels: ['<2.0', '2.0-2.9', '3.0-3.9', '4.0-4.9', '5.0-5.9', '6.0+'],
-      datasets: [{
-        label: 'Earthquake Count by Magnitude Range',
-        data: timeSeriesData.magnitude_distribution || [0, 0, 0, 0, 0, 0],
-        backgroundColor: [
-          'rgba(62, 142, 65, 0.6)',
-          'rgba(62, 142, 65, 0.7)',
-          'rgba(255, 193, 7, 0.6)',
-          'rgba(255, 193, 7, 0.8)',
-          'rgba(211, 47, 47, 0.6)',
-          'rgba(211, 47, 47, 0.8)'
-        ],
-        borderColor: [
-          'rgba(62, 142, 65, 1)',
-          'rgba(62, 142, 65, 1)',
-          'rgba(255, 193, 7, 1)',
-          'rgba(255, 193, 7, 1)',
-          'rgba(211, 47, 47, 1)',
-          'rgba(211, 47, 47, 1)'
-        ],
-        borderWidth: 1
-      }]
-    },
-    options: {
-      responsive: true,
-      maintainAspectRatio: false,
-      plugins: {
-        legend: {
-          display: false
+    // Add heatmap layer if data is valid
+    if (Array.isArray(heatmapData) && heatmapData.length > 0) {
+      const heatPoints = heatmapData.map(point => {
+        if (point.lat && point.lon && point.intensity) {
+          return [point.lat, point.lon, point.intensity];
+        } else {
+          console.warn('Invalid heatmap point:', point);
+          return null;
+        }
+      }).filter(point => point !== null);
+      
+      if (heatPoints.length > 0) {
+        L.heatLayer(heatPoints, {
+          radius: 20,
+          blur: 15,
+          maxZoom: 10,
+          gradient: {0.4: 'blue', 0.65: 'lime', 0.8: 'yellow', 1: 'red'}
+        }).addTo(map);
+      } else {
+        console.warn('No valid heatmap points to display');
+        document.getElementById('earthquake-map').innerHTML = '<p class="text-red-500 text-center">No heatmap data available</p>';
+      }
+    } else {
+      console.warn('Heatmap data is empty or not an array');
+      document.getElementById('earthquake-map').innerHTML = '<p class="text-red-500 text-center">No heatmap data available</p>';
+    }
+    
+    // Add marker and circle for filter location if set
+    {% if filter %}
+    L.marker([{{ filter.latitude }}, {{ filter.longitude }}])
+      .addTo(map)
+      .bindPopup('Selected location')
+      .openPopup();
+      
+    L.circle([{{ filter.latitude }}, {{ filter.longitude }}], {
+      color: '#3E8E41',
+      fillColor: '#3E8E41',
+      fillOpacity: 0.1,
+      radius: {{ filter.radius|default:'1.0' }} * 111000  // Convert degrees to meters (approx)
+    }).addTo(map);
+    {% endif %}
+    
+    // Parse time series data
+    const timeSeriesDataRaw = '{{ time_series|escapejs }}';
+    let timeSeriesData;
+    try {
+      timeSeriesData = JSON.parse(timeSeriesDataRaw);
+      console.log('Time Series Data:', timeSeriesData);
+    } catch (e) {
+      console.error('Error parsing time series data:', e, 'Raw data:', timeSeriesDataRaw);
+      timeSeriesData = {};
+    }
+  
+    // Create time series chart if data is valid
+    const timeSeriesCtx = document.getElementById('timeSeriesChart').getContext('2d');
+    if (timeSeriesData && timeSeriesData.labels && timeSeriesData.counts && timeSeriesData.magnitudes) {
+      new Chart(timeSeriesCtx, {
+        type: 'line',
+        data: {
+          labels: timeSeriesData.labels,
+          datasets: [
+            {
+              label: 'Earthquake Count',
+              data: timeSeriesData.counts,
+              borderColor: '#003366',
+              backgroundColor: 'rgba(0, 51, 102, 0.1)',
+              borderWidth: 2,
+              fill: true,
+              tension: 0.2,
+              yAxisID: 'y'
+            },
+            {
+              label: 'Avg Magnitude',
+              data: timeSeriesData.magnitudes,
+              borderColor: '#FFC107',
+              backgroundColor: 'rgba(255, 193, 7, 0)',
+              borderWidth: 2,
+              borderDash: [5, 5],
+              pointRadius: 3,
+              pointBackgroundColor: '#FFC107',
+              tension: 0.2,
+              yAxisID: 'y1'
+            }
+          ]
         },
-        tooltip: {
-          callbacks: {
-            label: function(tooltipItem) {
-              return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' events';
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { position: 'top' },
+            tooltip: { mode: 'index', intersect: false }
+          },
+          scales: {
+            x: { title: { display: true, text: 'Year' } },
+            y: { 
+              type: 'linear', 
+              display: true, 
+              position: 'left', 
+              title: { display: true, text: 'Event Count' }
+            },
+            y1: { 
+              type: 'linear', 
+              display: true, 
+              position: 'right', 
+              grid: { drawOnChartArea: false },
+              title: { display: true, text: 'Magnitude' },
+              min: 0,
+              max: 10
             }
           }
         }
-      },
-      scales: {
-        y: {
-          beginAtZero: true,
-          title: {
-            display: true,
-            text: 'Number of Events'
-          }
+      });
+    } else {
+      console.warn('Invalid or missing time series data');
+      document.getElementById('timeSeriesChart').parentElement.innerHTML = '<p class="text-red-500 text-center">No temporal data available</p>';
+    }
+  
+    // Create magnitude distribution chart
+    const magDistCtx = document.getElementById('magnitudeDistribution').getContext('2d');
+    if (timeSeriesData && timeSeriesData.magnitude_distribution) {
+      new Chart(magDistCtx, {
+        type: 'bar',
+        data: {
+          labels: ['<2.0', '2.0-2.9', '3.0-3.9', '4.0-4.9', '5.0-5.9', '6.0+'],
+          datasets: [{
+            label: 'Earthquake Count by Magnitude Range',
+            data: timeSeriesData.magnitude_distribution,
+            backgroundColor: [
+              'rgba(62, 142, 65, 0.6)', 'rgba(62, 142, 65, 0.7)',
+              'rgba(255, 193, 7, 0.6)', 'rgba(255, 193, 7, 0.8)',
+              'rgba(211, 47, 47, 0.6)', 'rgba(211, 47, 47, 0.8)'
+            ],
+            borderColor: [
+              'rgba(62, 142, 65, 1)', 'rgba(62, 142, 65, 1)',
+              'rgba(255, 193, 7, 1)', 'rgba(255, 193, 7, 1)',
+              'rgba(211, 47, 47, 1)', 'rgba(211, 47, 47, 1)'
+            ],
+            borderWidth: 1
+          }]
         },
-        x: {
-          title: {
-            display: true,
-            text: 'Magnitude Range'
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(tooltipItem) {
+                  return tooltipItem.dataset.label + ': ' + tooltipItem.raw + ' events';
+                }
+              }
+            }
+          },
+          scales: {
+            y: { beginAtZero: true, title: { display: true, text: 'Number of Events' } },
+            x: { title: { display: true, text: 'Magnitude Range' } }
           }
         }
-      }
+      });
+    } else {
+      console.warn('Invalid or missing magnitude distribution data');
+      document.getElementById('magnitudeDistribution').parentElement.innerHTML = '<p class="text-red-500 text-center">No distribution data available</p>';
     }
   });
-});
-</script>
+  </script>
 {% endblock %}

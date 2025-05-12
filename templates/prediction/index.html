@@ -1,141 +1,447 @@
-{% extends "prediction/base.html" %}
-{% load static %}
+{% extends "prediction/base.html" %} {% load static %} {% block title %}Home -
+Earthquake Magnitude Prediction System{% endblock %} {% block content %}
 
-{% block title %}Home - Earthquake Magnitude Prediction System{% endblock %}
-
-{% block content %}
-
-<div class="w-full mx-auto p-6 bg-white rounded-2xl shadow-lg animate__animated animate__fadeIn mb-8">
-
+<div
+  class="w-full mx-auto p-6 bg-white rounded-2xl shadow-lg animate__animated animate__fadeIn mb-8"
+>
 <!-- Hero Section -->
-<section class="mb-8 bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn">
+<section
+    class="mb-8 bg-white rounded-xl shadow-md p-6 animate__animated animate__fadeIn relative"
+>
+    <button 
+        onclick="this.parentElement.style.display='none'" 
+        class="absolute top-2 right-2 text-gray-500 hover:text-gray-700 transition-colors"
+    >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+    </button>
     <div class="flex flex-col lg:flex-row items-center">
         <div class="lg:w-1/2 mb-6 lg:mb-0 lg:pr-6">
-            <h2 class="text-3xl font-bold text-primary mb-4">Earthquake Magnitude Prediction </h2>
+            <h2 class="text-3xl font-bold text-primary mb-4">
+                Earthquake Magnitude Prediction
+            </h2>
             <p class="text-gray-600 mb-6 text-primary">
-                Our advanced system combines historical seismic data with machine learning models to predict 
-                earthquake magnitudes with unprecedented accuracy. Monitor seismic activity, analyze 
-                historical patterns, and stay ahead with our predictive insights.
+                Our advanced system combines historical seismic data with machine
+                learning models to predict earthquake magnitudes with unprecedented
+                accuracy. Monitor seismic activity, analyze historical patterns, and
+                stay ahead with our predictive insights.
             </p>
             <div class="flex flex-wrap gap-3">
-                <a href="" class="bg-blue-600 py-4 hover:bg-blue-800 text-white font-medium py-2 px-4 rounded-lg transition-colors">
+                <button
+                    id="predict-button"
+                    class="bg-blue-600 hover:bg-blue-800 text-white font-medium py-4 px-4 rounded-lg transition-colors"
+                >
                     Make Prediction
-                </a>
+                </button>
             </div>
         </div>
         <div class="lg:w-1/2 animate__animated animate__fadeInRight">
-            <div class="bg-gray-100 rounded-lg p-4 relative overflow-hidden h-64">
-                <div class="absolute inset-0 flex items-center justify-center">
-                    <div class="seismic-wave animate__animated animate__pulse animate__infinite">
-                        <img src="{% static 'images/logo.png' %}" alt="Seismic Wave" class="h-full w-full" onerror="this.src='images/logo.png'; this.onerror=null;">
-                    </div>
-                </div>
-            </div>
+            <div id="map" class="h-64 w-full bg-gray-100 rounded-lg"></div>
         </div>
     </div>
 </section>
 
-<!-- Quick Stats -->
-<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+  <!-- Quick Stats -->
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
     <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="text-sm font-medium text-gray-500 mb-1">Total Earthquakes Today</h4>
-        <p class="text-2xl font-bold text-primary">2{{ stats.total_today }}</p>
+      <h4 class="text-sm font-medium text-gray-500 mb-1">Total Earthquakes</h4>
+      <p class="text-2xl font-bold text-primary" id="total-earthquakes">
+        Loading...
+      </p>
     </div>
     <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="text-sm font-medium text-gray-500 mb-1">Significant Events (M4.5+)</h4>
-        <p class="text-2xl font-bold text-gray-500">3{{ stats.significant }}</p>
+      <h4 class="text-sm font-medium text-gray-500 mb-1">Average Magnitude</h4>
+      <p class="text-2xl font-bold text-gray-500" id="avg-magnitude">
+        Loading...
+      </p>
     </div>
     <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="text-sm font-medium text-gray-500 mb-1">Predictions Accuracy</h4>
-        <p class="text-2xl font-bold text-secondary">97{{ stats.accuracy }}%</p>
+      <h4 class="text-sm font-medium text-gray-500 mb-1">Maximum Magnitude</h4>
+      <p class="text-2xl font-bold text-secondary" id="max-magnitude">
+        Loading...
+      </p>
     </div>
     <div class="bg-white rounded-xl shadow-md p-4">
-        <h4 class="text-sm font-medium text-gray-500 mb-1">Active Alerts</h4>
-        <p class="text-2xl font-bold text-blue-500">5{{ stats.active_alerts }}</p>
+      <h4 class="text-sm font-medium text-gray-500 mb-1">
+        Recent Earthquakes (Last Year)
+      </h4>
+      <p class="text-2xl font-bold text-blue-500" id="recent-count">
+        Loading...
+      </p>
     </div>
-</div>
+  </div>
 
-<!-- Dashboard Grid -->
-<div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-    <!-- Interactive Map -->
+  <!-- Dashboard Grid -->
+  <div class="grid grid-cols-1 lg:grid-cols-1 gap-6 mb-8">
+    {% comment %} <!-- Interactive Map -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="p-4 bg-gray-50 border-b">
-            <h3 class="text-xl font-semibold text-primary">Global Seismic Activity</h3>
+      <div class="p-4 bg-gray-50 border-b">
+        <h3 class="text-xl font-semibold text-primary">
+          Global Seismic Activity
+        </h3>
+      </div>
+      <div id="map" class="h-96 w-full bg-gray-100">
+        <div class="h-full w-full flex items-center justify-center">
+          <p class="text-gray-500">Loading map data...</p>
         </div>
-        <div id="map" class="h-96 w-full bg-gray-100">
-            <!-- Map will be rendered here via JavaScript -->
-            <div class="h-full w-full flex items-center justify-center">
-                <p class="text-gray-500">Loading map data...</p>
-            </div>
-        </div>
-    </div>
-    
+      </div>
+    </div> {% endcomment %}
+
     <!-- Recent Earthquakes -->
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
-            <h3 class="text-xl font-semibold text-primary">Recent Earthquakes</h3>
-            <span class="px-3 py-1 bg-[#3E8E41] text-white text-sm rounded-full">Live</span>
-        </div>
-        <div class="overflow-x-auto">
-            <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Time</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Depth</th>
-                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Magnitude</th>
-                    </tr>
-                </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                    {% for earthquake in recent_earthquakes %}
-                    <tr class="{% if earthquake.magnitude >= 5.0 %}bg-red-50{% endif %} hover:bg-gray-50">
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ earthquake.timestamp }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                            {{ earthquake.location }}
-                        </td>
-                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                            {{ earthquake.depth }} km
-                        </td>
+      <div class="p-4 bg-gray-50 border-b flex justify-between items-center">
+        <h3 class="text-xl font-semibold text-primary">Recent Earthquakes</h3>
+        <span class="px-3 py-1 bg-[#3E8E41] text-white text-sm rounded-full"
+          >Live</span
+        >
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-200">
+          <thead class="bg-gray-50">
+            <tr>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Date
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Location
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Depth
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+              >
+                Magnitude
+              </th>
+            </tr>
+          </thead>
+          <tbody
+            id="recent-earthquakes-body"
+            class="bg-white divide-y divide-gray-200"
+          >
+            <tr>
+              <td
+                colspan="4"
+                class="px-6 py-4 text-center text-sm text-gray-500"
+              >
+                Loading recent earthquakes...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="p-4 border-t">
+        <a href="" class="text-primary hover:text-blue-700 text-sm font-medium">
+          View all records →
+        </a>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block extra_js %}
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+/>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    fetch("/ai/api/statistics/")
+      .then((response) => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then((data) => {
+        // Check for API error
+        if (data.error) {
+          throw new Error(data.error);
+        }
+
+        // Update quick stats
+        document.getElementById("total-earthquakes").textContent =
+          data.total_earthquakes;
+        document.getElementById("avg-magnitude").textContent =
+          data.avg_magnitude;
+        document.getElementById("max-magnitude").textContent =
+          data.max_magnitude;
+        document.getElementById("recent-count").textContent = data.recent_count;
+
+        // Update recent earthquakes table
+        const tableBody = document.getElementById("recent-earthquakes-body");
+        tableBody.innerHTML = "";
+        if (data.latest_events.length === 0) {
+          tableBody.innerHTML =
+            '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">No recent earthquake data available</td></tr>';
+        } else {
+          data.latest_events.forEach((event) => {
+            const rowClass = event.magnitude >= 5.0 ? "bg-red-50" : "";
+            const magnitudeClass =
+              event.magnitude < 3.0
+                ? "bg-green-100 text-green-800"
+                : event.magnitude < 5.0
+                ? "bg-yellow-100 text-yellow-800"
+                : "bg-red-100 text-red-800";
+            const row = `<tr class="${rowClass} hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.date}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">Lat: ${event.latitude}, Lon: ${event.longitude}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">${event.depth} km</td>
                         <td class="px-6 py-4 whitespace-nowrap">
-                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full 
-                                {% if earthquake.magnitude < 3.0 %}bg-green-100 text-green-800
-                                {% elif earthquake.magnitude < 5.0 %}bg-yellow-100 text-yellow-800
-                                {% else %}bg-red-100 text-red-800{% endif %}">
-                                {{ earthquake.magnitude }}
+                            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full ${magnitudeClass}">
+                                ${event.magnitude}
                             </span>
                         </td>
-                    </tr>
-                    {% empty %}
-                    <tr>
-                        <td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">
-                            No recent earthquake data available
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-        <div class="p-4 border-t">
-            <a href="" class="text-primary hover:text-blue-700 text-sm font-medium">
-                View all records →
-            </a>
-        </div>
-    </div>
-</div>
+                    </tr>`;
+            tableBody.innerHTML += row;
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Error fetching data:", error);
+        document.getElementById("total-earthquakes").textContent = "Error";
+        document.getElementById("avg-magnitude").textContent = "Error";
+        document.getElementById("max-magnitude").textContent = "Error";
+        document.getElementById("recent-count").textContent = "Error";
+        const tableBody = document.getElementById("recent-earthquakes-body");
+        tableBody.innerHTML =
+          '<tr><td colspan="4" class="px-6 py-4 text-center text-sm text-gray-500">Error loading data</td></tr>';
+      });
+  });
+</script>
 
-</div>
-
-
-{% endblock %}
-
-{% block extra_js %}
 <script>
-    // Map initialization would go here
-    document.addEventListener('DOMContentLoaded', function() {
-        console.log('Map initialization would happen here');
-        // In a real implementation, you'd initialize your map library here
+  document.addEventListener("DOMContentLoaded", function () {
+    // Initialize map centered on Tanzania
+    const map = L.map("map").setView([-6.369, 34.8888], 6);
+    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      attribution: "&copy; OpenStreetMap contributors",
+    }).addTo(map);
+
+    // Restrict selections to Tanzania bounds
+    const tanzaniaBounds = L.latLngBounds(
+      [-11.7457, 29.3385],
+      [-0.9855, 40.441]
+    );
+    map.setMaxBounds(tanzaniaBounds);
+
+    let selectedLatLng = null;
+    map.on("click", function (e) {
+      if (tanzaniaBounds.contains(e.latlng)) {
+        selectedLatLng = e.latlng;
+        map.eachLayer((layer) => {
+          if (layer instanceof L.Marker) map.removeLayer(layer);
+        });
+        L.marker(e.latlng).addTo(map);
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Invalid Selection",
+          text: "Please select a location within Tanzania.",
+          toast: true,
+          position: "top-end",
+          showConfirmButton: false,
+          timer: 3000,
+          timerProgressBar: true,
+          didOpen: (toast) => {
+            toast.addEventListener("mouseenter", Swal.stopTimer);
+            toast.addEventListener("mouseleave", Swal.resumeTimer);
+          },
+        });
+      }
     });
+
+    // Handle prediction button click
+    document
+      .getElementById("predict-button")
+      .addEventListener("click", function () {
+        if (!selectedLatLng) {
+          Swal.fire({
+            icon: "error",
+            title: "No Location Selected",
+            text: "Please select a location on the map.",
+          });
+          return;
+        }
+
+        Swal.fire({
+          title: "Enter Depth",
+          input: "number",
+          inputLabel: "Depth (km)",
+          inputPlaceholder: "Enter depth in kilometers",
+          showCancelButton: true,
+          confirmButtonText: "Predict",
+          preConfirm: (depth) => {
+            if (!depth || depth <= 0) {
+              Swal.showValidationMessage("Please enter a valid depth");
+            }
+            return depth;
+          },
+        }).then((result) => {
+          if (result.isConfirmed) {
+            const depth = result.value;
+            Swal.fire({
+              title: "Predicting...",
+              text: "Please wait while we process your request.",
+              allowOutsideClick: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
+            });
+
+        fetch("/ai/api/predict/", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": "{{ csrf_token }}",
+          },
+          body: JSON.stringify({
+            latitude: selectedLatLng.lat,
+            longitude: selectedLatLng.lng,
+            depth: depth,
+          }),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.error) {
+              Swal.fire({
+                icon: "error",
+                title: "Prediction Error",
+                text: data.error,
+              });
+            } else {
+              // Determine earthquake category and color based on magnitude
+              let category, categoryColor, recommendations;
+              
+              if (data.magnitude < 2.5) {
+                category = "Micro";
+                categoryColor = "bg-gray-100 text-gray-800";
+                recommendations = "Usually not felt, but can be recorded by seismographs. No action required.";
+              } else if (data.magnitude < 4.0) {
+                category = "Minor";
+                categoryColor = "bg-green-100 text-green-800";
+                recommendations = "Often felt, but rarely causes damage. No special precautions needed.";
+              } else if (data.magnitude < 5.0) {
+                category = "Light";
+                categoryColor = "bg-blue-100 text-blue-800";
+                recommendations = "Noticeable shaking of indoor items, rattling noises. Significant damage unlikely. Secure loose items in your home.";
+              } else if (data.magnitude < 6.0) {
+                category = "Moderate";
+                categoryColor = "bg-yellow-100 text-yellow-800";
+                recommendations = "Can cause damage to poorly constructed buildings. Stay away from windows and heavy furniture. Identify safe spots in each room.";
+              } else if (data.magnitude < 7.0) {
+                category = "Strong";
+                categoryColor = "bg-orange-100 text-orange-800";
+                recommendations = "Can be destructive in areas up to 100 miles across. Prepare emergency kits. Have evacuation plans ready.";
+              } else if (data.magnitude < 8.0) {
+                category = "Major";
+                categoryColor = "bg-red-100 text-red-800";
+                recommendations = "Can cause serious damage over larger areas. Ensure buildings meet seismic standards. Communities should have emergency response plans.";
+              } else {
+                category = "Great";
+                categoryColor = "bg-purple-100 text-purple-800";
+                recommendations = "Can cause severe damage in areas several hundred miles across. Comprehensive disaster preparedness essential for communities.";
+              }
+
+              Swal.fire({
+                icon: "success",
+                title: "Prediction Result",
+                html: `
+                  <div class="space-y-4 text-left p-4 mt-6 rounded-lg shadow-md">
+                      <div class="grid grid-cols-2 gap-4 bg-gray-50 p-4 rounded-lg">
+                          <div class="col-span-1">
+                              <p class="text-lg font-bold text-blue-600">Magnitude</p>
+                              <p class="text-3xl font-bold">${data.magnitude}</p>
+                          </div>
+                          <div class="col-span-1">
+                              <p class="text-lg font-bold text-blue-600">Category</p>
+                              <p class="px-3 py-1 inline-flex text-lg leading-5 font-semibold rounded-full ${categoryColor}">
+                                  ${category}
+                              </p>
+                          </div>
+                          <div class="col-span-2">
+                              <p class="text-sm text-blue-600">Model Version</p>
+                              <p class="font-medium">${data.model_version}</p>
+                          </div>
+                      </div>
+                      
+                      <div class="bg-white p-4 rounded-lg shadow-sm">
+                          <div class="grid grid-cols-2 gap-4">
+                              <div>
+                                  <p class="text-sm text-blue-600">Latitude</p>
+                                  <p class="font-medium">${data.latitude}</p>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-blue-600">Longitude</p>
+                                  <p class="font-medium">${data.longitude}</p>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-blue-600">Depth</p>
+                                  <p class="font-medium">${data.depth} km</p>
+                              </div>
+                              <div>
+                                  <p class="text-sm text-blue-600">Timestamp</p>
+                                  <p class="font-medium">${data.timestamp}</p>
+                              </div>
+                          </div>
+                      </div>
+
+                      <div class="bg-blue-50 p-4 rounded-lg">
+                          <h3 class="text-lg font-semibold text-blue-800 mb-2 text-center text-primary">Regional Data</h3>
+                          <div class="grid grid-cols-3 gap-4">
+                              <div class="text-center">
+                                  <p class="text-sm text-blue-600">Count</p>
+                                  <p class="font-bold">${data.regional_data.count}</p>
+                              </div>
+                              <div class="text-center">
+                                  <p class="text-sm text-blue-600">Avg Magnitude</p>
+                                  <p class="font-bold">${data.regional_data.avg_magnitude}</p>
+                              </div>
+                              <div class="text-center">
+                                  <p class="text-sm text-blue-600">Max Magnitude</p>
+                                  <p class="font-bold">${data.regional_data.max_magnitude}</p>
+                              </div>
+                          </div>
+                      </div>
+                      
+                      <div class="bg-yellow-50 p-4 rounded-lg">
+                          <h3 class="text-lg font-semibold text-yellow-800 mb-2 text-center">Recommendations</h3>
+                          <p class="text-sm">${recommendations}</p>
+                      </div>
+                  </div>
+                      
+                  <div class="text-right text-italic text-blue-500 my-3">
+                      <span class="text-sm text-blue-600">Prediction No: </span>
+                      <span class="text-sm">${data.id}</span>
+                  </div>
+                `,
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Prediction Error",
+              text: "An error occurred while making the prediction.",
+            });
+          });
+          }
+        });
+      });
+  });
 </script>
 {% endblock %}

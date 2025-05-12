@@ -4422,3 +4422,285 @@ django.template.exceptions.TemplateDoesNotExist: predictionscales.html
 [INFO] 2025-05-12 10:06:37,832 django.server (basehttp:213) - "GET /ai/api/earthquake-data/ HTTP/1.1" 200 93760
 [WARNING] 2025-05-12 10:06:37,944 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
 [WARNING] 2025-05-12 10:06:37,944 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 10:28:35,388 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-12 10:28:42,792 django.server (basehttp:213) - "GET /app/scale/ HTTP/1.1" 200 33542
+[WARNING] 2025-05-12 10:28:42,968 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 10:28:42,981 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 10:29:22,880 django.server (basehttp:213) - "GET /app/maps/ HTTP/1.1" 200 34531
+[WARNING] 2025-05-12 10:29:23,038 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 10:29:23,080 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:48:26,998 django.utils.autoreload (autoreload:667) - Watching for file changes with StatReloader
+[INFO] 2025-05-12 11:48:58,769 django.server (basehttp:213) - "GET / HTTP/1.1" 200 3571
+[INFO] 2025-05-12 11:48:59,956 django.server (basehttp:213) - "GET /static/images/logo-transparent.png HTTP/1.1" 200 150996
+[WARNING] 2025-05-12 11:49:05,726 django.request (log:248) - Not Found: /favicon.ico
+[WARNING] 2025-05-12 11:49:05,727 django.server (basehttp:213) - "GET /favicon.ico HTTP/1.1" 404 5166
+[INFO] 2025-05-12 11:49:11,340 django.server (basehttp:213) - "POST / HTTP/1.1" 200 3600
+[INFO] 2025-05-12 11:49:28,274 django.server (basehttp:213) - "POST / HTTP/1.1" 200 3592
+[INFO] 2025-05-12 11:49:40,727 django.server (basehttp:213) - "POST / HTTP/1.1" 200 3586
+[INFO] 2025-05-12 11:49:48,456 django.server (basehttp:213) - "POST / HTTP/1.1" 200 3586
+[INFO] 2025-05-12 11:49:54,534 django.server (basehttp:213) - "POST / HTTP/1.1" 200 3586
+[INFO] 2025-05-12 11:50:03,432 django.server (basehttp:213) - "POST / HTTP/1.1" 302 0
+[INFO] 2025-05-12 11:50:03,477 django.server (basehttp:213) - "GET /dashboard/ HTTP/1.1" 200 43019
+[WARNING] 2025-05-12 11:50:03,569 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[INFO] 2025-05-12 11:50:03,601 django.server (basehttp:213) - "GET /static/images/logo.png HTTP/1.1" 200 1593468
+[WARNING] 2025-05-12 11:50:03,604 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:50:14,051 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-12 11:50:14,121 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-12 11:50:14,144 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-12 11:50:14,146 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-12 11:50:14,147 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-12 11:50:14,250 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-12 11:50:14,250 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-12 11:50:14,268 django.server (basehttp:213) - "GET /ai/api/statistics/ HTTP/1.1" 200 554
+[INFO] 2025-05-12 11:50:29,836 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:50:29,967 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.54 for location (-6.409926778887279, 34.909535127452834) at depth 12.0 km
+[INFO] 2025-05-12 11:50:29,984 prediction_app.ml_models.data_processor (data_processor:315) - Found 78 historical earthquakes within 1.0 degrees of (-6.409926778887279, 34.909535127452834)
+[INFO] 2025-05-12 11:50:30,008 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 247
+[INFO] 2025-05-12 11:51:08,234 django.server (basehttp:213) - "GET /dashboard/ HTTP/1.1" 200 41736
+[WARNING] 2025-05-12 11:51:08,316 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:51:08,316 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:51:08,533 django.server (basehttp:213) - "GET /ai/api/statistics/ HTTP/1.1" 200 554
+[INFO] 2025-05-12 11:51:15,382 prediction_app.ml_models.data_processor (data_processor:41) - Data loaded successfully from D:\FYP\src\prediction_app/static/data/earthquake_data.csv
+[INFO] 2025-05-12 11:51:15,405 prediction_app.ml_models.data_processor (data_processor:78) - Removed 0 duplicate entries
+[INFO] 2025-05-12 11:51:15,412 prediction_app.ml_models.predictor (predictor:70) - Loaded fitted scaler from disk
+[INFO] 2025-05-12 11:51:15,412 prediction_app.ml_models.data_processor (data_processor:336) - Detected 7 hotspot features from loaded model
+[INFO] 2025-05-12 11:51:15,412 prediction_app.ml_models.predictor (predictor:83) - Loaded 20 feature names from disk
+[INFO] 2025-05-12 11:51:15,510 prediction_app.ml_models.model_trainer (model_trainer:286) - Loaded best model (random_forest) from D:\FYP\src\prediction_app/ml_models/models\best_model.pkl
+[INFO] 2025-05-12 11:51:15,510 prediction_app.ml_models.predictor (predictor:93) - Prediction service components initialized successfully
+[INFO] 2025-05-12 11:51:15,578 django.server (basehttp:213) - "GET /ai/api/earthquake-data/ HTTP/1.1" 200 93760
+[WARNING] 2025-05-12 11:51:15,657 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:51:15,670 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:51:21,915 django.server (basehttp:213) - "GET /dashboard/ HTTP/1.1" 200 41736
+[WARNING] 2025-05-12 11:51:22,016 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:51:22,018 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:51:22,289 django.server (basehttp:213) - "GET /ai/api/statistics/ HTTP/1.1" 200 554
+[INFO] 2025-05-12 11:51:23,818 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 52345
+[WARNING] 2025-05-12 11:51:24,298 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:51:24,348 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:52:03,433 django.server (basehttp:213) - "GET /dashboard/ HTTP/1.1" 200 41736
+[WARNING] 2025-05-12 11:52:03,498 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:52:03,498 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:52:03,678 django.server (basehttp:213) - "GET /ai/api/statistics/ HTTP/1.1" 200 554
+[INFO] 2025-05-12 11:52:20,497 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:52:20,619 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.59 for location (-5.295180308115803, 33.634199426245) at depth 13.0 km
+[INFO] 2025-05-12 11:52:20,643 prediction_app.ml_models.data_processor (data_processor:315) - Found 95 historical earthquakes within 1.0 degrees of (-5.295180308115803, 33.634199426245)
+[INFO] 2025-05-12 11:52:20,658 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 244
+[INFO] 2025-05-12 11:52:32,599 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 52345
+[WARNING] 2025-05-12 11:52:32,700 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:52:32,704 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:52:43,993 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:52:44,091 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.62 for location (-7.340675, 34.936523) at depth 13.0 km
+[INFO] 2025-05-12 11:52:44,116 prediction_app.ml_models.data_processor (data_processor:315) - Found 47 historical earthquakes within 1.0 degrees of (-7.340675, 34.936523)
+[INFO] 2025-05-12 11:52:44,120 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 11:53:24,407 django.server (basehttp:213) - "GET /ai/api/earthquake-data/ HTTP/1.1" 200 93760
+[WARNING] 2025-05-12 11:53:24,524 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:53:24,525 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:53:31,357 django.server (basehttp:213) - "GET /app/maps/ HTTP/1.1" 200 34531
+[WARNING] 2025-05-12 11:53:31,466 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:53:31,467 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:53:33,424 django.server (basehttp:213) - "GET /app/scale/ HTTP/1.1" 200 33542
+[WARNING] 2025-05-12 11:53:33,604 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:53:33,605 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:54:41,392 django.server (basehttp:213) - "GET /app/scale/ HTTP/1.1" 200 33542
+[WARNING] 2025-05-12 11:54:41,492 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:54:41,493 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:54:43,695 django.server (basehttp:213) - "GET /app/scale/ HTTP/1.1" 200 33542
+[WARNING] 2025-05-12 11:54:43,780 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:54:43,781 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:54:57,454 django.server (basehttp:213) - "GET /ai/api/earthquake-data/ HTTP/1.1" 200 93760
+[WARNING] 2025-05-12 11:54:57,540 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:54:57,541 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:54:59,678 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 52345
+[WARNING] 2025-05-12 11:54:59,763 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:54:59,763 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:55:11,081 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:11,177 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.54 for location (-6.489983, 34.892578) at depth 10.0 km
+[INFO] 2025-05-12 11:55:11,194 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:11,203 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 11:55:27,403 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:27,496 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 35.0 km
+[INFO] 2025-05-12 11:55:27,518 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:27,525 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 11:55:36,012 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:36,103 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 431.0 km
+[INFO] 2025-05-12 11:55:36,122 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:36,125 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 11:55:39,852 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:39,969 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 288.0 km
+[INFO] 2025-05-12 11:55:39,993 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:40,004 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 11:55:43,761 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:43,854 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 114.0 km
+[INFO] 2025-05-12 11:55:43,873 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:43,884 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 11:55:47,202 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:47,290 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 298.0 km
+[INFO] 2025-05-12 11:55:47,306 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:47,317 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 11:55:53,370 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:53,478 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-6.489983, 34.892578) at depth 16.0 km
+[INFO] 2025-05-12 11:55:53,495 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:53,512 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 11:55:59,232 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:55:59,348 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.67 for location (-6.489983, 34.892578) at depth 7.0 km
+[INFO] 2025-05-12 11:55:59,370 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:55:59,379 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 228
+[INFO] 2025-05-12 11:56:31,735 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 11:56:31,915 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.67 for location (-6.489983, 34.892578) at depth 1.0 km
+[INFO] 2025-05-12 11:56:31,935 prediction_app.ml_models.data_processor (data_processor:315) - Found 74 historical earthquakes within 1.0 degrees of (-6.489983, 34.892578)
+[INFO] 2025-05-12 11:56:31,952 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 228
+[ERROR] 2025-05-12 11:56:56,980 django.request (log:248) - Internal Server Error: /app/prediction/
+Traceback (most recent call last):
+  File "D:\FYP\src\venv\Lib\site-packages\django\urls\base.py", line 81, in reverse
+    extra, resolver = resolver.namespace_dict[ns]
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^
+KeyError: 'i'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\FYP\src\venv\Lib\site-packages\django\core\handlers\exception.py", line 55, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\core\handlers\base.py", line 197, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\apps\prediction\views.py", line 17, in prediction
+    return render(request, 'prediction/prediction.html')
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\shortcuts.py", line 25, in render
+    content = loader.render_to_string(template_name, context, request, using=using)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\loader.py", line 62, in render_to_string
+    return template.render(context, request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\backends\django.py", line 107, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 171, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 1016, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\base.py", line 977, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\template\defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\FYP\src\venv\Lib\site-packages\django\urls\base.py", line 92, in reverse
+    raise NoReverseMatch("%s is not a registered namespace" % key)
+django.urls.exceptions.NoReverseMatch: 'i' is not a registered namespace
+[ERROR] 2025-05-12 11:56:57,012 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 500 155198
+[INFO] 2025-05-12 11:57:14,155 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 52345
+[WARNING] 2025-05-12 11:57:14,260 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:57:14,261 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 11:57:39,182 django.server (basehttp:213) - "GET /app/maps/ HTTP/1.1" 200 34531
+[WARNING] 2025-05-12 11:57:39,293 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 11:57:39,294 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:00:27,883 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 13506
+[INFO] 2025-05-12 12:01:15,373 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 42068
+[WARNING] 2025-05-12 12:01:15,455 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:01:15,471 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:03:22,826 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 52345
+[WARNING] 2025-05-12 12:03:22,937 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:03:22,938 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:04:32,345 django.server (basehttp:213) - "GET /app/maps/ HTTP/1.1" 200 34531
+[WARNING] 2025-05-12 12:04:32,469 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:04:32,470 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:05:29,289 django.server (basehttp:213) - "GET /app/maps/ HTTP/1.1" 200 34531
+[WARNING] 2025-05-12 12:05:29,389 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:05:29,391 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:05:37,865 django.server (basehttp:213) - "GET /ai/api/earthquake-data/ HTTP/1.1" 200 93760
+[WARNING] 2025-05-12 12:05:37,977 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:05:37,978 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:05:39,481 django.server (basehttp:213) - "GET /ai/ HTTP/1.1" 200 15711
+[INFO] 2025-05-12 12:05:48,913 django.server (basehttp:213) - "GET /ai/analytics/ HTTP/1.1" 200 15753
+[INFO] 2025-05-12 12:10:21,425 django.server (basehttp:213) - "GET /dashboard/ HTTP/1.1" 200 41736
+[WARNING] 2025-05-12 12:10:21,551 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:10:21,553 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:10:22,208 django.server (basehttp:213) - "GET /ai/api/statistics/ HTTP/1.1" 200 554
+[INFO] 2025-05-12 12:10:24,473 django.server (basehttp:213) - "GET /app/prediction/ HTTP/1.1" 200 53071
+[WARNING] 2025-05-12 12:10:24,595 django.request (log:248) - Not Found: /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg
+[WARNING] 2025-05-12 12:10:24,599 django.server (basehttp:213) - "GET /users/profile_pics/WhatsApp_Image_2024-12-13_at_11.44.54_2d91b602.jpg HTTP/1.1" 404 5340
+[INFO] 2025-05-12 12:10:35,579 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:10:35,748 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.57 for location (-7.740023, 35.112305) at depth 10.0 km
+[INFO] 2025-05-12 12:10:35,759 prediction_app.ml_models.data_processor (data_processor:315) - Found 44 historical earthquakes within 1.0 degrees of (-7.740023, 35.112305)
+[INFO] 2025-05-12 12:10:35,773 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:10:40,187 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:10:40,307 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-7.740023, 35.112305) at depth 27.0 km
+[INFO] 2025-05-12 12:10:40,321 prediction_app.ml_models.data_processor (data_processor:315) - Found 44 historical earthquakes within 1.0 degrees of (-7.740023, 35.112305)
+[INFO] 2025-05-12 12:10:40,337 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:10:44,617 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:10:44,769 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-7.740023, 35.112305) at depth 56.0 km
+[INFO] 2025-05-12 12:10:44,782 prediction_app.ml_models.data_processor (data_processor:315) - Found 44 historical earthquakes within 1.0 degrees of (-7.740023, 35.112305)
+[INFO] 2025-05-12 12:10:44,810 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:10:48,229 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:10:48,337 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-7.740023, 35.112305) at depth 179.0 km
+[INFO] 2025-05-12 12:10:48,356 prediction_app.ml_models.data_processor (data_processor:315) - Found 44 historical earthquakes within 1.0 degrees of (-7.740023, 35.112305)
+[INFO] 2025-05-12 12:10:48,362 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 12:10:52,958 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:10:53,079 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-7.740023, 35.112305) at depth 0.0 km
+[INFO] 2025-05-12 12:10:53,091 prediction_app.ml_models.data_processor (data_processor:315) - Found 44 historical earthquakes within 1.0 degrees of (-7.740023, 35.112305)
+[INFO] 2025-05-12 12:10:53,091 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 228
+[INFO] 2025-05-12 12:11:01,650 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:01,791 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.77 for location (-9.102097, 38.317514) at depth 0.0 km
+[INFO] 2025-05-12 12:11:01,817 prediction_app.ml_models.data_processor (data_processor:315) - Found 51 historical earthquakes within 1.0 degrees of (-9.102097, 38.317514)
+[INFO] 2025-05-12 12:11:01,841 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 228
+[INFO] 2025-05-12 12:11:05,441 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:05,536 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-9.102097, 38.317514) at depth 16.0 km
+[INFO] 2025-05-12 12:11:05,547 prediction_app.ml_models.data_processor (data_processor:315) - Found 51 historical earthquakes within 1.0 degrees of (-9.102097, 38.317514)
+[INFO] 2025-05-12 12:11:05,569 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:11:08,762 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:08,884 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-9.102097, 38.317514) at depth 182.0 km
+[INFO] 2025-05-12 12:11:08,895 prediction_app.ml_models.data_processor (data_processor:315) - Found 51 historical earthquakes within 1.0 degrees of (-9.102097, 38.317514)
+[INFO] 2025-05-12 12:11:08,912 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 12:11:12,829 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:12,940 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.66 for location (-9.102097, 38.317514) at depth 700.0 km
+[INFO] 2025-05-12 12:11:12,957 prediction_app.ml_models.data_processor (data_processor:315) - Found 51 historical earthquakes within 1.0 degrees of (-9.102097, 38.317514)
+[INFO] 2025-05-12 12:11:12,975 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 12:11:16,272 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:16,388 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-9.282851, 33.438312) at depth 700.0 km
+[INFO] 2025-05-12 12:11:16,405 prediction_app.ml_models.data_processor (data_processor:315) - Found 26 historical earthquakes within 1.0 degrees of (-9.282851, 33.438312)
+[INFO] 2025-05-12 12:11:16,430 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 230
+[INFO] 2025-05-12 12:11:19,432 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:19,553 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.51 for location (-9.282851, 33.438312) at depth 11.0 km
+[INFO] 2025-05-12 12:11:19,567 prediction_app.ml_models.data_processor (data_processor:315) - Found 26 historical earthquakes within 1.0 degrees of (-9.282851, 33.438312)
+[INFO] 2025-05-12 12:11:19,585 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:11:42,272 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:42,447 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-9.282851, 33.438312) at depth 91.0 km
+[INFO] 2025-05-12 12:11:42,471 prediction_app.ml_models.data_processor (data_processor:315) - Found 26 historical earthquakes within 1.0 degrees of (-9.282851, 33.438312)
+[INFO] 2025-05-12 12:11:42,480 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:11:53,403 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:11:53,554 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.65 for location (-9.282851, 33.438312) at depth 37.0 km
+[INFO] 2025-05-12 12:11:53,581 prediction_app.ml_models.data_processor (data_processor:315) - Found 26 historical earthquakes within 1.0 degrees of (-9.282851, 33.438312)
+[INFO] 2025-05-12 12:11:53,599 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 229
+[INFO] 2025-05-12 12:12:02,710 prediction_app.ml_models.data_processor (data_processor:155) - Using 7 hotspots for prediction to match training data
+[INFO] 2025-05-12 12:12:02,861 prediction_app.ml_models.predictor (predictor:188) - Predicted magnitude 4.61 for location (-9.282851, 33.438312) at depth 4.0 km
+[INFO] 2025-05-12 12:12:02,876 prediction_app.ml_models.data_processor (data_processor:315) - Found 26 historical earthquakes within 1.0 degrees of (-9.282851, 33.438312)
+[INFO] 2025-05-12 12:12:02,905 django.server (basehttp:213) - "POST /ai/api/predict/ HTTP/1.1" 200 228

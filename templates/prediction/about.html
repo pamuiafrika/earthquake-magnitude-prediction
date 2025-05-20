@@ -1,0 +1,35 @@
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}About - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Earthquake Magnitude Prediction System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<div class="min-h-screen">
+<div class="container mx-auto">
+        <!-- Header -->
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">About Earthquake Magnitude Prediction System</h1>
+            <p class="text-gray-600">Providing seismic data analysis and prediction since 2025</p>
+        </header>
+
+        <!-- About Content -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold text-gray-800 mb-4">Our Mission</h2>
+            <p class="text-gray-600 mb-4">
+                The Earthquake Magnitude Prediction System is dedicated to advancing the understanding and prediction of seismic activity in Tanzania and beyond. Since 2025, our platform has leveraged cutting-edge data analysis and machine learning to provide accurate earthquake predictions and visualizations, empowering communities and researchers with actionable insights.
+            </p>
+            <p class="text-gray-600 mb-4">
+                Our system integrates real-time seismic data with advanced algorithms to generate heatmaps, time-series analyses, and statistical insights. We aim to support disaster preparedness and risk mitigation by making seismic data accessible and understandable to all.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

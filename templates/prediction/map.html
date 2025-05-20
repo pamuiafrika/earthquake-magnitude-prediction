@@ -1,0 +1,438 @@
+{% extends "prediction/base.html" %}
+{% load static %}
+
+{% block title %}Maps & Visualizations - Earthquake Magnitude Prediction System{% endblock %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tanzania Earthquake Analysis Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet.heat Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Chart.js for time series -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
+    <style>
+        #map {
+            height: 500px;
+            width: 100%;
+            border-radius: 0.5rem;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #mapLoading {
+            background: rgba(255, 255, 255, 0.85); /* Increased opacity for better visibility */
+        }
+    </style>
+</head>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Tanzania Earthquake Analysis Dashboard</h1>
+            <p class="text-gray-600">Visualizing earthquake data and predictions</p>
+        </header>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <!-- Map Controls -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Map Controls</h2>
+                <form id="mapForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                        <div>
+                            <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                            <input type="number" id="latitude" name="latitude" value="-6.0" step="0.1" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        <div>
+                            <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                            <input type="number" id="longitude" name="longitude" value="35.0" step="0.1" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                        <div>
+                            <label for="radius" class="block text-sm font-medium text-gray-700 mb-1">Radius (degrees)</label>
+                            <input type="number" id="radius" name="radius" value="5.0" step="0.5" min="0.5" max="10" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-end">
+                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                            Update Map
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Statistics Card -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Earthquake Statistics</h2>
+                <div id="statisticsContent" class="space-y-4">
+                    <div class="flex items-center justify-center h-32">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Map Section -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-4">Earthquake Heatmap</h2>
+            <div id="mapContainer" class="relative">
+                <div id="map"></div>
+                <div id="mapLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70">
+                    <div class="loading-spinner"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Time Series Analysis -->
+        <div class="bg-white p-6 rounded-lg shadow-md mb-8">
+            <h2 class="text-xl font-semibold mb-4">Time Series Analysis</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium">Monthly Earthquake Count</h3>
+                    <div class="relative h-64">
+                        <canvas id="countChart"></canvas>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <h3 class="text-lg font-medium">Monthly Average Magnitude</h3>
+                    <div class="relative h-64">
+                        <canvas id="magnitudeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-6">
+                <h3 class="text-lg font-medium mb-2">Yearly Trends</h3>
+                <div class="relative h-80">
+                    <canvas id="yearlyChart"></canvas>
+                </div>
+            </div>
+            <div id="timeSeriesLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70">
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize map with higher zoom level
+        const map = L.map('map').setView([-6.0, 35.0], 8); // Changed zoom from 6 to 8
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(map);
+
+        let heatLayer = null;
+        let timeSeriesData = null;
+        let heatmapData = null;
+
+        // API endpoints
+        const HEATMAP_API = '/ai/api/heatmap/';
+        const TIME_SERIES_API = '/ai/api/time-series/';
+
+        // Fetch time series data
+        async function fetchTimeSeriesData() {
+            try {
+                document.getElementById('timeSeriesLoading').style.display = 'flex';
+                const response = await fetch(TIME_SERIES_API);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                timeSeriesData = await response.json();
+                renderTimeSeriesCharts(timeSeriesData);
+            } catch (error) {
+                console.error('Error fetching time series data:', error);
+                alert('Failed to load time series data');
+            } finally {
+                document.getElementById('timeSeriesLoading').style.display = 'none';
+            }
+        }
+
+        // Fetch heatmap data
+        async function fetchHeatmapData(lat = null, lon = null, radius = null) {
+            try {
+                document.getElementById('mapLoading').style.display = 'flex';
+                
+                let url = HEATMAP_API;
+                if (lat !== null && lon !== null && radius !== null) {
+                    url += `?lat=${lat}&lon=${lon}&radius=${radius}`;
+                }
+                
+                const response = await fetch(url);
+                const data = await response.json();
+                
+                if (!response.ok) {
+                    throw new Error(data.error || `HTTP error! Status: ${response.status}`);
+                }
+                
+                heatmapData = data;
+                
+                renderHeatmap(heatmapData);
+                updateStatistics(heatmapData);
+            } catch (error) {
+                console.error('Error fetching heatmap data:', error);
+                alert(`Failed to load heatmap data: ${error.message}`);
+                
+                heatmapData = {
+                    data: [],
+                    center: { lat: -6.0, lon: 35.0 },
+                    count: 0
+                };
+                
+                renderHeatmap(heatmapData);
+                updateStatistics(heatmapData);
+            } finally {
+                document.getElementById('mapLoading').style.display = 'none';
+            }
+        }
+
+        // Render heatmap with improved styling
+        function renderHeatmap(data) {
+            if (heatLayer) {
+                map.removeLayer(heatLayer);
+            }
+
+            if (data.data && data.data.length > 0) {
+                // Transform data for heatmap
+                const heatData = data.data.map(point => {
+                    const [lat, lon, mag] = point;
+                    // Weight points by magnitude (intensity)
+                    return [lat, lon, Math.pow(2, mag) / 4];
+                });
+
+                // Calculate dynamic zoom based on radius
+                const radius = parseFloat(document.getElementById('radius').value) || 5.0;
+                const zoomLevel = Math.min(12, Math.max(8, 10 - Math.floor(radius))); // Dynamic zoom: smaller radius = higher zoom
+
+                heatLayer = L.heatLayer(heatData, {
+                    radius: 10, // Reduced from 20 for more precise points
+                    blur: 8,   // Reduced from 15 for sharper heatmap
+                    maxZoom: 12, // Increased from 10 for finer detail
+                    gradient: {
+                        0.2: 'green', // Added green for low intensity
+                        0.4: 'blue',
+                        0.6: 'lime',
+                        0.8: 'yellow',
+                        1.0: 'red'
+                    }
+                }).addTo(map);
+
+                // Center map on data with dynamic zoom
+                map.setView([data.center.lat, data.center.lon], zoomLevel);
+            }
+        }
+
+        // Update statistics
+        function updateStatistics(data) {
+            const statsDiv = document.getElementById('statisticsContent');
+            
+            if (data.data && data.data.length > 0) {
+                // Calculate statistics
+                const magnitudes = data.data.map(point => point[2]);
+                const avgMag = magnitudes.reduce((sum, mag) => sum + mag, 0) / magnitudes.length;
+                const maxMag = Math.max(...magnitudes);
+                
+                // Group by depth (assuming 3rd element is depth)
+                const shallow = data.data.filter(point => point[2] < 5).length;
+                const medium = data.data.filter(point => point[2] >= 5 && point[2] < 7).length;
+                const deep = data.data.filter(point => point[2] >= 7).length;
+                
+                statsDiv.innerHTML = `
+                    <div class="grid grid-cols-2 gap-4">
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <p class="text-sm text-gray-500">Total Earthquakes</p>
+                            <p class="text-2xl font-bold">${data.count}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <p class="text-sm text-gray-500">Average Magnitude</p>
+                            <p class="text-2xl font-bold">${avgMag.toFixed(2)}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <p class="text-sm text-gray-500">Maximum Magnitude</p>
+                            <p class="text-2xl font-bold">${maxMag.toFixed(1)}</p>
+                        </div>
+                        <div class="bg-gray-50 p-4 rounded-md">
+                            <p class="text-sm text-gray-500">Selected Area</p>
+                            <p class="text-2xl font-bold">${document.getElementById('radius').value}°</p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statsDiv.innerHTML = '<p class="text-center text-gray-500">No earthquake data available for the selected region</p>';
+            }
+        }
+
+        // Render time series charts
+        function renderTimeSeriesCharts(data) {
+            if (!data || !data.time_series || !data.yearly_trends) {
+                console.error('Invalid time series data format');
+                return;
+            }
+
+            // Monthly Count Chart
+            const countCtx = document.getElementById('countChart').getContext('2d');
+            new Chart(countCtx, {
+                type: 'line',
+                data: {
+                    labels: data.time_series.labels.slice(-36), // Last 36 months
+                    datasets: [{
+                        label: 'Earthquake Count',
+                        data: data.time_series.count.slice(-36),
+                        borderColor: 'rgb(75, 192, 192)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Count'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Monthly Magnitude Chart
+            const magCtx = document.getElementById('magnitudeChart').getContext('2d');
+            new Chart(magCtx, {
+                type: 'line',
+                data: {
+                    labels: data.time_series.labels.slice(-36), // Last 36 months
+                    datasets: [{
+                        label: 'Average Magnitude',
+                        data: data.time_series.avg_magnitude.slice(-36),
+                        borderColor: 'rgb(255, 99, 132)',
+                        tension: 0.1,
+                        fill: false
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            title: {
+                                display: true,
+                                text: 'Magnitude'
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Month'
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Yearly Trends Chart
+            const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
+            new Chart(yearlyCtx, {
+                type: 'bar',
+                data: {
+                    labels: data.yearly_trends.years,
+                    datasets: [
+                        {
+                            label: 'Yearly Count',
+                            data: data.yearly_trends.count,
+                            backgroundColor: 'rgba(75, 192, 192, 0.5)',
+                            borderColor: 'rgb(75, 192, 192)',
+                            borderWidth: 1,
+                            yAxisID: 'y'
+                        },
+                        {
+                            label: 'Average Magnitude',
+                            data: data.yearly_trends.avg_magnitude,
+                            backgroundColor: 'rgba(255, 99, 132, 0.5)',
+                            borderColor: 'rgb(255, 99, 132)',
+                            borderWidth: 1,
+                            type: 'line',
+                            yAxisID: 'y1'
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Count'
+                            }
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'Magnitude'
+                            },
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        },
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Year'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Form submission handler
+        document.getElementById('mapForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const lat = parseFloat(document.getElementById('latitude').value);
+            const lon = parseFloat(document.getElementById('longitude').value);
+            const radius = parseFloat(document.getElementById('radius').value);
+            
+            if (isNaN(lat) || isNaN(lon) || isNaN(radius)) {
+                alert('Please enter valid coordinates and radius');
+                return;
+            }
+            
+            fetchHeatmapData(lat, lon, radius);
+        });
+
+        // Initial data fetching
+        document.addEventListener('DOMContentLoaded', function() {
+            fetchHeatmapData();
+            fetchTimeSeriesData();
+        });
+    </script>
+</body>
+</html>
+{% endblock %}

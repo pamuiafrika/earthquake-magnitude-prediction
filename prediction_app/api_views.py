@@ -174,6 +174,7 @@ def api_predict(request):
         return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
+
 @api_view(['GET'])
 def api_heatmap(request):
     """API endpoint for heatmap data."""
@@ -183,20 +184,51 @@ def api_heatmap(request):
     try:
         lat = request.query_params.get('lat')
         lon = request.query_params.get('lon')
-        radius = request.query_params.get('radius', 1.0)
+        radius = request.query_params.get('radius')
         
-        if lat and lon:
+        # Default values if parameters are not provided
+        if lat is None or lon is None:
+            # Default center of Tanzania
+            lat, lon = -6.0, 35.0
+        else:
             lat = float(lat)
             lon = float(lon)
-            radius = float(radius)
-            heatmap_data = prediction_service.generate_heatmap(lat, lon, radius)
+        
+        if radius is None:
+            radius = 5.0  # Default radius
         else:
-            heatmap_data = prediction_service.generate_heatmap()
+            radius = float(radius)
+        
+        # Generate heatmap data
+        heatmap_data = prediction_service.generate_heatmap(lat, lon, radius)
+        
+        # Ensure the response has the required structure
+        if 'data' not in heatmap_data:
+            heatmap_data['data'] = []
+        
+        if 'center' not in heatmap_data:
+            heatmap_data['center'] = {'lat': lat, 'lon': lon}
+        
+        if 'count' not in heatmap_data:
+            heatmap_data['count'] = len(heatmap_data['data'])
         
         return Response(heatmap_data)
-        
+    
+    except ValueError as e:
+        return Response({
+            'error': f'Invalid parameter format: {str(e)}',
+            'data': [],
+            'center': {'lat': -6.0, 'lon': 35.0},
+            'count': 0
+        }, status=status.HTTP_400_BAD_REQUEST)
     except Exception as e:
-        return Response({'error': str(e)}, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+        print(f"Heatmap API error: {e}")
+        return Response({
+            'error': f'Internal server error: {str(e)}',
+            'data': [],
+            'center': {'lat': -6.0, 'lon': 35.0},
+            'count': 0
+        }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
 
 
 @api_view(['GET'])

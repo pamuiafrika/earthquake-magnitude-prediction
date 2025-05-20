@@ -8,10 +8,13 @@ def historical_data(request):
     return render(request, 'prediction/historical_data.html')
 
 def maps(request):
-    return render(request, 'prediction/maps.html')
+    return render(request, 'prediction/map.html')
 
 def scale(request):
     return render(request, 'prediction/scale.html')
 
 def prediction(request):
     return render(request, 'prediction/prediction.html')
+
+def about(request):
+    return render(request, 'prediction/about.html')

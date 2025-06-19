@@ -4,29 +4,25 @@
 {% block title %}Earthquake Data{% endblock %}
 
 {% block content %}
+
+<!-- Page Header -->
+<div class="flex justify-between items-center">
+    <div class="mb-6">
+        <h2 class="text-2xl font-bold text-primary">Earthquake Magnitude Prediction</h2>
+        <p class="text-gray-600">Input seismic parameters to predict potential earthquake magnitude</p>
+    </div>
+    <button id="exportButton" class="bg-accent hover:bg-yellow-500 text-gray-800 px-4 py-4 rounded text-sm font-medium transition-colors flex items-center">
+        <span class="inline-block mr-1.5">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        </span>
+        Export to CSV
+    </button>
+</div>
+
 <div class="animate__animated animate__fadeIn">
     <div class="bg-white rounded-xl shadow-md overflow-hidden">
-        <!-- Header -->
-        <div class="bg-primary px-6 py-6">
-            <div class="flex justify-between items-center">
-                <h3 class="text-2xl font-primary font-semibold text-white flex items-center">
-                    <span class="inline-block mr-2">
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4"></path>
-                        </svg>
-                    </span>
-                    Earthquake Historical Data
-                </h3>
-                <button id="exportButton" class="bg-accent hover:bg-yellow-500 text-gray-800 px-4 py-4 rounded text-sm font-medium transition-colors flex items-center">
-                  <span class="inline-block mr-1.5">
-                  <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                  </svg>
-                  </span>
-                  Export to CSV
-                </button>
-            </div>
-        </div>
 
         <div class="p-6">
             <!-- Filter Section -->
@@ -34,7 +30,7 @@
                 <form method="get" class="grid grid-cols-1 md:grid-cols-3 gap-4 items-end">
                     <div>
                         <label for="year" class="block text-sm font-medium text-gray-800 mb-1">Filter by Year</label>
-                        <select name="year" id="year" class="w-full rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                        <select name="year" id="year" class="w-full border rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">All Years</option>
                             {% for year in years %}
                                 <option value="{{ year }}" {% if filters.year == year|stringformat:"i" %}selected{% endif %}>{{ year }}</option>
@@ -43,11 +39,11 @@
                     </div>
                     <div>
                         <label for="min_mag" class="block text-sm font-medium text-gray-800 mb-1">Minimum Magnitude</label>
-                        <input type="number" name="min_mag" id="min_mag" class="w-full rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
+                        <input type="number" name="min_mag" id="min_mag" class="w-full border rounded-md border-gray-700 py-4 px-4 shadow-sm focus:border-indigo-500 focus:ring-indigo-500" 
                             step="0.1" min="0" max="10" value="{{ filters.min_mag }}" placeholder="E.g., 4.0">
                     </div>
                     <div class="flex space-x-2">
-                        <button type="submit" class="bg-primary hover:bg-blue-900 text-white px-4 py-4 rounded-md text-sm font-medium transition-colors">
+                        <button type="submit" class="bg-primary hover:bg-blue-900 border text-white px-4 py-4 rounded-md text-sm font-medium transition-colors">
                             <span class="inline-block mr-1.5">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path>

@@ -1,142 +1,162 @@
-{% extends 'ai/base.html' %}
-
-{% block title %}Earthquake Prediction Dashboard{% endblock %}
-
+{% extends "prediction/base.html" %}
+{% load static %}
+{% block title %}Home - Earthquake Magnitude prediction System{% endblock %}
 {% block content %}
-<div class="mb-6">
-    <div class="title-box">
-        <h1 class="mb-2">Earthquake Prediction System</h1>
-        <p class="text-gray-600">Advanced seismic activity prediction for Tanzania</p>
-    </div>
-</div>
 
-{% if not service_ready %}
-<div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
-    <p class="font-bold">System Error</p>
-    <p>Prediction service is not available. Please contact the administrator.</p>
-</div>
-{% endif %}
+<div class="w-full mx-auto rounded-xl shadow-lg animate-fade-in mb-8">
+  <!-- Hero Section -->
+  <section class="mb-8 bg-white rounded-xl shadow-md p-6 animate-fade-in relative">
+    <div class="mb-6">
+      <div class="text-left">
+        <h1 class="text-2xl font-bold text-blue-900 mb-2">Administrator Dashboard</h1>
+        <p class="text-gray-600 text-sm">Advanced seismic activity prediction for Tanzania</p>
+      </div>
+    </div>
 
-<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-    <!-- Total Earthquakes -->
-    <div class="card">
-        <div class="card-body">
-            <h3 class="text-lg mb-2 font-medium">Total Earthquakes</h3>
-            <p class="text-3xl data-highlight">{{ stats.total_earthquakes|default:"N/A" }}</p>
-            <p class="footnote text-gray-500 mt-2">All recorded events</p>
-        </div>
+    {% if not service_ready %}
+    <div class="bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-6" role="alert">
+      <p class="font-bold">System Error</p>
+      <p>Prediction service is not available. Please contact the administrator.</p>
     </div>
-    
-    <!-- Average Magnitude -->
-    <div class="card">
-        <div class="card-body">
-            <h3 class="text-lg mb-2 font-medium">Average Magnitude</h3>
-            <p class="text-3xl data-highlight">{{ stats.avg_magnitude|floatformat:2|default:"N/A" }}</p>
-            <p class="footnote text-gray-500 mt-2">Richter scale</p>
-        </div>
-    </div>
-    
-    <!-- Maximum Magnitude -->
-    <div class="card">
-        <div class="card-body">
-            <h3 class="text-lg mb-2 font-medium">Maximum Magnitude</h3>
-            <p class="text-3xl {% if stats.max_magnitude >= 6.0 %}data-warning{% else %}data-highlight{% endif %}">
-                {{ stats.max_magnitude|floatformat:1|default:"N/A" }}
-            </p>
-            <p class="footnote text-gray-500 mt-2">Richter scale</p>
-        </div>
-    </div>
-    
-    <!-- Recent Events -->
-    <div class="card">
-        <div class="card-body">
-            <h3 class="text-lg mb-2 font-medium">Recent Events</h3>
-            <p class="text-3xl data-highlight">{{ stats.recent_count|default:"N/A" }}</p>
-            <p class="footnote text-gray-500 mt-2">Last 12 months</p>
-        </div>
-    </div>
-</div>
+    {% endif %}
 
-
-<div class="grid grid-cols-1 gap-6">
-    <!-- Feature Overview -->
-    <div class="card">
-        <div class="card-header">
-            <h2 class="text-primary">System Features</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Total Earthquakes -->
+      <div class="bg-white rounded-lg shadow p-5 border-t-4 border-blue-900">
+        <div>
+          <h3 class="text-gray-700 text-lg mb-2 font-medium">Total Earthquakes</h3>
+          <p class="text-3xl font-bold text-blue-900">{{ stats.total_earthquakes|default:"N/A" }}</p>
+          <p class="text-xs text-gray-500 mt-2">All recorded events</p>
         </div>
-        <div class="card-body">
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                <div>
-                    <div class="flex items-center mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <h3 class="font-medium">Prediction</h3>
-                    </div>
-                    <p>Predict earthquake magnitudes using advanced machine learning models trained on historical data.</p>
-                    <a href="{% url 'ai:predict' %}" class="text-secondary hover:underline block mt-2">Try Prediction →</a>
-                </div>
-                
-                <div>
-                    <div class="flex items-center mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
-                        </svg>
-                        <h3 class="font-medium">Analytics</h3>
-                    </div>
-                    <p>Explore interactive visualizations and analyze seismic patterns across Tanzania.</p>
-                    <a href="{% url 'ai:analytics' %}" class="text-secondary hover:underline block mt-2">View Analytics →</a>
-                </div>
-                
-                <div>
-                    <div class="flex items-center mb-2">
-                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-secondary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
-                        </svg>
-                        <h3 class="font-medium">Data Repository</h3>
-                    </div>
-                    <p>Access comprehensive earthquake data records for research and analysis.</p>
-                    <a href="{% url 'ai:earthquake_data' %}" class="text-secondary hover:underline block mt-2">Browse Data →</a>
-                </div>
+      </div>
+      
+      <!-- Average Magnitude -->
+      <div class="bg-white rounded-lg shadow p-5 border-t-4 border-blue-900">
+        <div>
+          <h3 class="text-gray-700 text-lg mb-2 font-medium">Average Magnitude</h3>
+          <p class="text-3xl font-bold text-blue-900">{{ stats.avg_magnitude|floatformat:2|default:"N/A" }}</p>
+          <p class="text-xs text-gray-500 mt-2">Richter scale</p>
+        </div>
+      </div>
+      
+      <!-- Maximum Magnitude -->
+      <div class="bg-white rounded-lg shadow p-5 border-t-4 border-blue-900">
+        <div>
+          <h3 class="text-gray-700 text-lg mb-2 font-medium">Maximum Magnitude</h3>
+          <p class="text-3xl font-bold {% if stats.max_magnitude >= 6.0 %}text-red-600{% else %}text-blue-900{% endif %}">
+            {{ stats.max_magnitude|floatformat:1|default:"N/A" }}
+          </p>
+          <p class="text-xs text-gray-500 mt-2">Richter scale</p>
+        </div>
+      </div>
+      
+      <!-- Recent Events -->
+      <div class="bg-white rounded-lg shadow p-5 border-t-4 border-blue-900">
+        <div>
+          <h3 class="text-gray-700 text-lg mb-2 font-medium">Recent Events</h3>
+          <p class="text-3xl font-bold text-blue-900">{{ stats.recent_count|default:"N/A" }}</p>
+          <p class="text-xs text-gray-500 mt-2">Last 12 months</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 gap-6">
+      <!-- Feature Overview -->
+      <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="bg-blue-900 text-white p-4">
+          <h2 class="font-semibold text-lg">System Features</h2>
+        </div>
+        <div class="p-5">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="p-4 bg-gray-50 rounded-lg hover:shadow-md transition duration-300">
+              <div class="flex items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <h3 class="font-medium text-gray-800">Prediction</h3>
+              </div>
+              <p class="text-gray-600 text-sm">Predict earthquake magnitudes using advanced machine learning models trained on historical data.</p>
+              <a href="{% url 'ai:predict' %}" class="text-blue-600 hover:text-blue-800 flex items-center text-sm mt-3">
+                Try Prediction 
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
             </div>
+            
+            <div class="p-4 bg-gray-50 rounded-lg hover:shadow-md transition duration-300">
+              <div class="flex items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
+                <h3 class="font-medium text-gray-800">Analytics</h3>
+              </div>
+              <p class="text-gray-600 text-sm">Explore interactive visualizations and analyze seismic patterns across Tanzania.</p>
+              <a href="{% url 'prediction:maps' %}" class="text-blue-600 hover:text-blue-800 flex items-center text-sm mt-3">
+                View Analytics
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+            
+            <div class="p-4 bg-gray-50 rounded-lg hover:shadow-md transition duration-300">
+              <div class="flex items-center mb-3">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-2 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 7v10c0 2.21 3.582 4 8 4s8-1.79 8-4V7M4 7c0 2.21 3.582 4 8 4s8-1.79 8-4M4 7c0-2.21 3.582-4 8-4s8 1.79 8 4m0 5c0 2.21-3.582 4-8 4s-8-1.79-8-4" />
+                </svg>
+                <h3 class="font-medium text-gray-800">Data Repository</h3>
+              </div>
+              <p class="text-gray-600 text-sm">Access comprehensive earthquake data records for research and analysis.</p>
+              <a href="{% url 'ai:earthquake_data' %}" class="text-blue-600 hover:text-blue-800 flex items-center text-sm mt-3">
+                Browse Data
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+                </svg>
+              </a>
+            </div>
+          </div>
         </div>
+      </div>
     </div>
+  </section>
 </div>
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize map
-        const map = L.map('map').setView([-6.3690, 34.8888], 5);
-        
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        }).addTo(map);
-        
-        // Fetch earthquake data for the map
-        fetch("{% url 'ai:api_heatmap' %}")
-            .then(response => response.json())
-            .then(data => {
-                if (data.points) {
-                    data.points.forEach(point => {
-                        const color = point.magnitude >= 6 ? '#D32F2F' : 
-                                     point.magnitude >= 5 ? '#FFC107' : 
-                                     point.magnitude >= 4 ? '#3E8E41' : '#003366';
-                                     
-                        L.circleMarker([point.lat, point.lon], {
-                            radius: Math.max(3, point.magnitude),
-                            fillColor: color,
-                            color: '#fff',
-                            weight: 1,
-                            opacity: 1,
-                            fillOpacity: 0.8
-                        }).addTo(map)
-                        .bindPopup(`Magnitude: ${point.magnitude.toFixed(1)}<br>Depth: ${point.depth.toFixed(1)} km`);
-                    });
-                }
-            })
-            .catch(error => console.error('Error loading map data:', error));
-    });
+  document.addEventListener('DOMContentLoaded', function() {
+    // Initialize map
+    const map = L.map('map').setView([-6.3690, 34.8888], 5);
+    
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+    }).addTo(map);
+    
+    // Fetch earthquake data for the map
+    fetch("{% url 'ai:api_heatmap' %}")
+      .then(response => response.json())
+      .then(data => {
+        if (data.points) {
+          data.points.forEach(point => {
+            const color = point.magnitude >= 6 ? '#DC2626' : // red-600
+                         point.magnitude >= 5 ? '#F59E0B' : // amber-500
+                         point.magnitude >= 4 ? '#10B981' : // emerald-500
+                         '#1E40AF'; // blue-800
+                         
+            L.circleMarker([point.lat, point.lon], {
+              radius: Math.max(3, point.magnitude),
+              fillColor: color,
+              color: '#fff',
+              weight: 1,
+              opacity: 1,
+              fillOpacity: 0.8
+            }).addTo(map)
+            .bindPopup(`Magnitude: ${point.magnitude.toFixed(1)}<br>Depth: ${point.depth.toFixed(1)} km`);
+          });
+        }
+      })
+      .catch(error => console.error('Error loading map data:', error));
+  });
 </script>
 {% endblock %}

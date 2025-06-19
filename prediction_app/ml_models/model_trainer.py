@@ -5,7 +5,7 @@ import pandas as pd
 import logging
 from sklearn.ensemble import RandomForestRegressor, GradientBoostingRegressor
 from sklearn.neural_network import MLPRegressor
-from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score
+from sklearn.metrics import mean_squared_error, mean_absolute_error, r2_score, explained_variance_score, mean_absolute_percentage_error
 import matplotlib.pyplot as plt
 import joblib
 from datetime import datetime
@@ -32,6 +32,7 @@ class EarthquakeModelTrainer:
         self.models = {}
         self.best_model = None
         self.best_model_name = None
+        self.best_model_confidence = None
         self.feature_names = None
         
         # Create models directory if it doesn't exist
@@ -122,16 +123,20 @@ class EarthquakeModelTrainer:
                 rmse = np.sqrt(mse)
                 mae = mean_absolute_error(y_test, y_pred)
                 r2 = r2_score(y_test, y_pred)
-                
+                mape = mean_absolute_percentage_error(y_test, y_pred)
+                explained_var = explained_variance_score(y_test, y_pred)
+
                 results[name] = {
                     'mse': mse,
                     'rmse': rmse,
                     'mae': mae,
-                    'r2': r2
+                    'r2': r2,
+                    'mape': mape,
+                    'explained_variance': explained_var
                 }
-                
-                logger.info(f"{name} evaluation: RMSE={rmse:.4f}, MAE={mae:.4f}, R²={r2:.4f}")
-                
+
+                logger.info(f"{name} evaluation: RMSE={rmse:.4f}, MAE={mae:.4f}, R²={r2:.4f}, MAPE={mape:.4f}, Explained Variance={explained_var:.4f}")
+
                 # Track best model
                 if rmse < best_rmse:
                     best_rmse = rmse
@@ -186,7 +191,8 @@ class EarthquakeModelTrainer:
             
             # Save plot
             os.makedirs('static/img', exist_ok=True)
-            plt.savefig('static/img/model_performance.png')
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            plt.savefig(f'static/img/model_performance_{timestamp}.png')
             plt.close()
             
             # If it's a tree-based model, save feature importance plot
@@ -222,7 +228,8 @@ class EarthquakeModelTrainer:
                 )
             
             plt.tight_layout()
-            plt.savefig('static/img/feature_importance.png')
+            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+            plt.savefig('static/img/feature_importance_{timestamp}.png')
             plt.close()
             
         except Exception as e:
@@ -230,7 +237,7 @@ class EarthquakeModelTrainer:
     
     def save_models(self):
         """
-        Save all trained models and the best model.
+        Save all trained models and the best model with unique versioning.
         
         Returns:
             str: Path to the best model.
@@ -241,21 +248,36 @@ class EarthquakeModelTrainer:
             
             timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
             
-            # Save all models
+            # Save all models with version tracking
             for name, model in self.models.items():
-                model_path = os.path.join(self.models_dir, f"{name}_{timestamp}.pkl")
-                joblib.dump(model, model_path)
-                logger.info(f"Saved {name} model to {model_path}")
+                # Check for existing versions
+                existing_versions = [f for f in os.listdir(self.models_dir) 
+                                   if f.startswith(f"{name}_v")]
+                version = len(existing_versions) + 1
+                
+                model_path = os.path.join(self.models_dir, f"{name}_v{version}_{timestamp}.pkl")
+                joblib.dump({
+                    'model': model,
+                    'name': name,
+                    'version': version,
+                    'timestamp': timestamp
+                }, model_path)
+                logger.info(f"Saved {name} model (v{version}) to {model_path}")
             
-            # Save best model separately
+            # Save best model with version tracking
             if self.best_model:
-                best_model_path = os.path.join(self.models_dir, f"best_model.pkl")
+                existing_best_versions = [f for f in os.listdir(self.models_dir) 
+                                        if f.startswith("best_model_v")]
+                best_version = len(existing_best_versions) + 1
+                
+                best_model_path = os.path.join(self.models_dir, f"best_model_v{best_version}.pkl")
                 joblib.dump({
                     'model': self.best_model,
                     'name': self.best_model_name,
+                    'version': best_version,
                     'timestamp': timestamp
                 }, best_model_path)
-                logger.info(f"Saved best model ({self.best_model_name}) to {best_model_path}")
+                logger.info(f"Saved best model ({self.best_model_name}, v{best_version}) to {best_model_path}")
                 return best_model_path
             else:
                 logger.warning("No best model selected for saving")

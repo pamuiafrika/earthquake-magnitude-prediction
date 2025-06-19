@@ -334,3 +334,5 @@ class EarthquakeDataProcessor:
         if hotspot_features:
             self.hotspot_count = len(hotspot_features)
             logger.info(f"Detected {self.hotspot_count} hotspot features from loaded model")
+            
+            

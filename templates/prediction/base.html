@@ -11,12 +11,23 @@
     
     <!-- Animate.css via CDN -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <!-- Leaflet for maps -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Leaflet.heat Plugin -->
+    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+    <!-- Chart.js for time series -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
+
     
     <!-- Google Fonts: Roboto and Inter -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@100..900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;1,100;1,200;1,300;1,400;1,500;1,600;1,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Google+Sans:wght@400;500;700&display=swap" rel="stylesheet">
     
     <!-- Custom Styles -->
     <style>
@@ -24,7 +35,7 @@
             font-family: 'Space Grotesk', sans-serif;
         }
         h1, h2, h3, h4, h5, h6 {
-            font-family: 'IBM Plex Mono', sans-serif;
+            font-family: 'Google Sans', sans-serif;
         }
 
         .font-primary {
@@ -47,9 +58,6 @@
             color: #B0BEC5;
         }
 
-
-
-
         .bg-primary {
             background-color:  #003366;
         }
@@ -65,8 +73,6 @@
         .bg-divider{
             background-color: #B0BEC5;
         }
-
-
        
         .border-primary {
             background-color:  #003366;
@@ -84,13 +90,35 @@
         .border-divider{
             background-color: #B0BEC5;
         }
+
+        /* Mobile sidebar overlay styles */
+        #sidebar-overlay {
+            transition: opacity 0.3s ease-in-out;
+        }
+        
+        #sidebar {
+            transition: transform 0.3s ease-in-out;
+        }
+        
+        @media (max-width: 768px) {
+            #sidebar {
+                transform: translateX(-100%);
+            }
+            
+            #sidebar.show {
+                transform: translateX(0);
+            }
+        }
     </style>
     
     {% block extra_css %}{% endblock %}
 </head>
 <body class="bg-gray-50 text-gray-800 flex flex-col min-h-screen">
-<!-- Header -->
-    <header class="bg-gray-800 text-white shadow-md border-gray-300 border-b relative">
+    <!-- Mobile Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
+
+    <!-- Header -->
+    <header class="bg-gray-800 text-white shadow-md border-gray-300 border-b relative z-30">
         <div class="container mx-auto px-4 py-4 flex flex-col md:flex-row justify-between items-center">
             <div class="flex items-center space-x-2 w-full md:w-auto mb-4 md:mb-0">
                 {% load static %}
@@ -139,7 +167,7 @@
             </div>
         </div>
 
-        <!-- Toggle and click-outside script -->
+        <!-- Profile dropdown toggle script -->
         <script>
         document.addEventListener('DOMContentLoaded', function() {
             const btn = document.getElementById('profile-button');
@@ -162,9 +190,18 @@
     </header>
   
     
-    <div class="flex flex-grow">
-        <!-- Sidebar Navigation - Hidden on mobile by default -->
-        <aside id="sidebar" class="hidden md:block bg-white w-80 shadow-lg">
+    <div class="flex flex-grow relative">
+        <!-- Sidebar Navigation -->
+        <aside id="sidebar" class="fixed md:static top-0 left-0 h-full md:h-auto bg-white w-80 shadow-lg z-50 md:z-auto">
+            <!-- Mobile close button -->
+            <div class="md:hidden flex justify-end p-4 border-b">
+                <button id="sidebar-close" class="p-2 hover:bg-gray-100 rounded">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                    </svg>
+                </button>
+            </div>
+
             <nav class="p-4">
                 <ul>
                     <li class="mb-2">
@@ -189,14 +226,21 @@
                     </li>
                     {% if user.is_superuser %}
                     <li class="mb-2">
-                        <a href="{% url 'ai:index' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'index' %}bg-gray-300 font-medium{% endif %}">
-                            <span class="inline-block mr-2">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
-                                </svg>
-                            </span>
-                            Prediction Model
-                        </a>
+                        <div class="relative group">
+                            <a href="#" onclick="event.preventDefault(); this.nextElementSibling.classList.toggle('hidden')" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'index' or request.resolver_match.url_name == 'model_metrics' or request.resolver_match.url_name == 'train_model' or request.resolver_match.url_name == 'import_data' %}bg-gray-300 font-medium{% endif %}">
+                                <span class="inline-block mr-2">
+                                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9"></path>
+                                    </svg>
+                                </span>
+                                Prediction Model
+                            </a>
+                            <ul class="hidden lg:group-hover:block absolute left-0 top-full w-48 bg-white shadow-lg rounded-md z-10">
+                                <li><a href="{% url 'ai:model_metrics' %}" class="block px-4 py-2 hover:bg-gray-100">Models</a></li>
+                                <li><a href="{% url 'ai:train_model' %}" class="block px-4 py-2 hover:bg-gray-100">Train Model</a></li>
+                                <li><a href="{% url 'ai:import_data' %}" class="block px-4 py-2 hover:bg-gray-100">Import Data</a></li>
+                            </ul>
+                        </div>
                     </li>
                     {% endif %}
                     <li class="mb-2">
@@ -223,7 +267,7 @@
                         <a href="{% url 'prediction:scale' %}" class="block p-2 py-4 rounded hover:bg-gray-200 {% if request.resolver_match.url_name == 'scale' %}bg-gray-300 font-medium{% endif %}">
                             <span class="inline-block mr-2">
                                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                                 </svg>
                             </span>
                             Magnitude Scale
@@ -254,37 +298,59 @@
             </nav>
             
             <!-- Alerts Section -->
-            {% include "prediction/_alert.html" %}
+            {%comment%}{% include "prediction/_alert.html" %}{%endcomment%}
         </aside>
         
         <!-- Main Content -->
-        <main class="flex-grow p-4 md:p-6">
-            <div class="animate__animated animate__fadeIn">
-                {% if messages %}
-                <div class="space-y-2 my-4">
-                  {% for message in messages %}
-                  <div class="relative animate__animated animate__fadeIn px-4 py-3 rounded-lg {% if message.tags == 'success' %}bg-green-100 border border-green-300 text-green-800{% elif message.tags == 'error' %}bg-red-100 border border-red-300 text-red-800{% else %}bg-blue-100 border border-blue-300 text-blue-800{% endif %} shadow-sm" x-data="{ show: true }" x-show="show">
-                    <button type="button" class="absolute top-4 right-4 text-gray-400 hover:text-gray-700" aria-label="Close" onclick="this.parentElement.style.display='none'">
-                      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
-                      </svg>
-                    </button>
-                    <div class="flex items-center">
-                    {% if message.tags == 'success' %}
-                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
-                    {% elif message.tags == 'error' %}
-                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                    {% else %}
-                      <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
-                    {% endif %}
-                    <p class="font-semibold">{{ message }}</p>
-                    </div>
-                  </div>
-                  {% endfor %}
-                </div>
+        <main class="flex-grow p-2 sm:p-4 md:p-6 lg:p-8 w-full overflow-x-hidden md:ml-0">
+            <div class="animate__animated animate__fadeIn max-w-full">
+            {% if messages %}
+                <div class="space-y-2 my-2 sm:my-4">
+                {% for message in messages %}
+                <div class="relative animate__animated animate__fadeIn px-3 sm:px-4 py-2 sm:py-3 rounded-lg {% if message.tags == 'success' %}bg-green-100 border border-green-300 text-green-800{% elif message.tags == 'error' %}bg-red-100 border border-red-300 text-red-800{% else %}bg-blue-100 border border-blue-300 text-blue-800{% endif %} shadow-sm" x-data="{ show: true }" x-show="show">
+                <button type="button" class="absolute top-2 sm:top-4 right-2 sm:right-4 text-gray-400 hover:text-gray-700" aria-label="Close" onclick="this.parentElement.style.display='none'">
+                <svg class="w-3 h-3 sm:w-4 sm:h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+                </button>
+                <div class="flex items-center flex-wrap sm:flex-nowrap">
+                {% if message.tags == 'success' %}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"></path></svg>
+                {% elif message.tags == 'error' %}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                {% else %}
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2h-1V9a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
                 {% endif %}
+                <p class="font-semibold text-sm sm:text-base break-words">{{ message }}</p>
+                </div>
+                </div>
+                {% endfor %}
+                </div>
+            {% endif %}
 
-                {% block content %}{% endblock %}
+            <div class="w-full">
+                {% block content %}
+                <!-- Demo content for testing -->
+                <div class="bg-white rounded-lg shadow-lg p-6">
+                    <h2 class="text-2xl font-bold mb-4">Dashboard</h2>
+                    <p class="text-gray-600 mb-4">This is the main content area. On mobile devices, the sidebar will now properly overlay this content when opened.</p>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                        <div class="bg-blue-100 p-4 rounded-lg">
+                            <h3 class="font-semibold">Feature 1</h3>
+                            <p class="text-sm text-gray-600">Sample content</p>
+                        </div>
+                        <div class="bg-green-100 p-4 rounded-lg">
+                            <h3 class="font-semibold">Feature 2</h3>
+                            <p class="text-sm text-gray-600">Sample content</p>
+                        </div>
+                        <div class="bg-yellow-100 p-4 rounded-lg">
+                            <h3 class="font-semibold">Feature 3</h3>
+                            <p class="text-sm text-gray-600">Sample content</p>
+                        </div>
+                    </div>
+                </div>
+                {% endblock %}
+            </div>
             </div>
         </main>
     </div>
@@ -314,10 +380,57 @@
     
     <!-- JavaScript -->
     <script>
-        // Mobile menu toggle
-        document.getElementById('menu-toggle').addEventListener('click', function() {
+        document.addEventListener('DOMContentLoaded', function() {
+            const menuToggle = document.getElementById('menu-toggle');
             const sidebar = document.getElementById('sidebar');
-            sidebar.classList.toggle('hidden');
+            const sidebarOverlay = document.getElementById('sidebar-overlay');
+            const sidebarClose = document.getElementById('sidebar-close');
+
+            // Function to open sidebar
+            function openSidebar() {
+                sidebar.classList.add('show');
+                sidebarOverlay.classList.remove('hidden');
+                document.body.style.overflow = 'hidden'; // Prevent body scroll
+            }
+
+            // Function to close sidebar
+            function closeSidebar() {
+                sidebar.classList.remove('show');
+                sidebarOverlay.classList.add('hidden');
+                document.body.style.overflow = ''; // Restore body scroll
+            }
+
+            // Mobile menu toggle
+            menuToggle.addEventListener('click', function() {
+                if (sidebar.classList.contains('show')) {
+                    closeSidebar();
+                } else {
+                    openSidebar();
+                }
+            });
+
+            // Close sidebar when clicking overlay
+            sidebarOverlay.addEventListener('click', closeSidebar);
+
+            // Close sidebar when clicking close button
+            sidebarClose.addEventListener('click', closeSidebar);
+
+            // Handle window resize
+            window.addEventListener('resize', function() {
+                if (window.innerWidth >= 768) { // md breakpoint
+                    closeSidebar();
+                }
+            });
+
+            // Handle sidebar links on mobile
+            const sidebarLinks = sidebar.querySelectorAll('a[href]:not([href="#"])');
+            sidebarLinks.forEach(link => {
+                link.addEventListener('click', function() {
+                    if (window.innerWidth < 768) {
+                        closeSidebar();
+                    }
+                });
+            });
         });
     </script>
     

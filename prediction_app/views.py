@@ -199,7 +199,7 @@ def train_model(request):
     """View for training/retraining ML models."""
     if not request.user.is_superuser:
         messages.error(request, "You don't have permission to train models")
-        return redirect('index')
+        return redirect('users:home')
     
     if request.method == 'POST':
         try:
@@ -219,10 +219,13 @@ def train_model(request):
             for model_name, metrics in results.items():
                 ModelMetrics.objects.create(
                     model_name=model_name,
-                    version=datetime.now().strftime('%Y%m%d'),
+                    version=datetime.now().strftime('%Y%m%d_%H%M%S'),
                     rmse=metrics['rmse'],
                     mae=metrics['mae'],
                     r2_score=metrics['r2'],
+                    mse=metrics['mse'],
+                    mape=metrics['mape'],
+                    explained_variance=metrics['explained_variance'],
                     feature_count=len(prediction_service.data_processor.create_features().columns) - 1,
                     training_samples=int(len(prediction_service.data_processor.df) * (1 - test_size)),
                     is_active=(model_name == prediction_service.model_trainer.best_model_name)
@@ -240,6 +243,7 @@ def train_model(request):
 def model_metrics(request):
     """View for model performance metrics."""
     metrics = ModelMetrics.objects.all().order_by('-trained_date')
+    models = ModelMetrics.objects.all().count()
     
     # Paginate results
     paginator = Paginator(metrics, 10)
@@ -248,6 +252,7 @@ def model_metrics(request):
     
     context = {
         'metrics': metrics_page,
+        'metrics_count': models
     }
     return render(request, 'ai/model_metrics.html', context)
 
@@ -424,7 +429,7 @@ def import_data(request):
     """View for importing earthquake data."""
     if not request.user.is_superuser:
         messages.error(request, "You don't have permission to import data")
-        return redirect('ai:index')
+        return redirect('users:home')
     
     if request.method == 'POST' and request.FILES.get('data_file'):
         try:
@@ -477,10 +482,10 @@ def import_data(request):
             initialize_prediction_service()
             
             messages.success(request, f"Data imported successfully: {count} records")
-            return redirect('ai:earthquake_data')
+            return redirect('ai:api_earthquake_data')
             
         except Exception as e:
             messages.error(request, f"Error importing data: {str(e)}")
-            return redirect('ai:import_data')
+            return redirect('ai:train_model')
     
     return render(request, 'ai/import_data.html')

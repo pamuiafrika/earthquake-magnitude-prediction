@@ -1,81 +1,62 @@
 {% extends "prediction/base.html" %}
 {% load static %}
 
-{% block title %}Maps & Visualizations - Earthquake Magnitude Prediction System{% endblock %}
+{% block title %}Maps & Visualizations - Earthquake Analysis Dashboard{% endblock %}
 
 {% block content %}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Tanzania Earthquake Analysis Dashboard</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Leaflet for maps -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <!-- Leaflet.heat Plugin -->
-    <script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
-    <!-- Chart.js for time series -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.0/chart.umd.min.js"></script>
 
-    <style>
-        #map {
-            height: 500px;
-            width: 100%;
-            border-radius: 0.5rem;
-        }
-        .loading-spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #09f;
-            animation: spin 1s linear infinite;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        #mapLoading {
-            background: rgba(255, 255, 255, 0.85); /* Increased opacity for better visibility */
-        }
-    </style>
-</head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
+<div class="min-h-screen">
+    <div class="mx-auto">
         <header class="mb-8">
-            <h1 class="text-3xl font-bold text-gray-800 mb-2">Tanzania Earthquake Analysis Dashboard</h1>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Earthquake Analysis Dashboard</h1>
             <p class="text-gray-600">Visualizing earthquake data and predictions</p>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
-            <!-- Map Controls -->
+        <!-- First Row: Map Controls and Selection Map -->
+        <div class="mb-8">
             <div class="bg-white p-6 rounded-lg shadow-md">
-                <h2 class="text-xl font-semibold mb-4">Map Controls</h2>
-                <form id="mapForm" class="space-y-4">
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                        <div>
-                            <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
-                            <input type="number" id="latitude" name="latitude" value="-6.0" step="0.1" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
-                            <input type="number" id="longitude" name="longitude" value="35.0" step="0.1" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
-                        </div>
-                        <div>
-                            <label for="radius" class="block text-sm font-medium text-gray-700 mb-1">Radius (degrees)</label>
-                            <input type="number" id="radius" name="radius" value="5.0" step="0.5" min="0.5" max="10" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                <h2 class="text-xl font-semibold mb-4">Select Location</h2>
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                    <!-- Map Controls -->
+                    <div class="space-y-4 relative">
+                        <form id="mapForm" class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                                <div>
+                                    <label for="latitude" class="block text-sm font-medium text-gray-700 mb-1">Latitude</label>
+                                    <input type="number" id="latitude" name="latitude" value="-6.0" step="0.000001" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                </div>
+                                <div>
+                                    <label for="longitude" class="block text-sm font-medium text-gray-700 mb-1">Longitude</label>
+                                    <input type="number" id="longitude" name="longitude" value="35.0" step="0.000001" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                </div>
+                                <div>
+                                    <label for="radius" class="block text-sm font-medium text-gray-700 mb-1">Radius (degrees)</label>
+                                    <input type="number" id="radius" name="radius" value="1.0" step="0.5" min="0.5" max="10" class="block w-full rounded-md border-gray-300 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm p-2 border">
+                                </div>
+                            </div>
+                            <div class="flex items-center justify-end">
+                                <button type="submit" class="inline-flex items-center px-4 py-4 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
+                                    Update Map
+                                </button>
+                            </div>
+                        </form>
+                        <div id="formLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70 hidden">
+                            <div class="loading-spinner"></div>
                         </div>
                     </div>
-                    <div class="flex items-center justify-end">
-                        <button type="submit" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500">
-                            Update Map
-                        </button>
+                    <!-- Selection Map -->
+                    <div class="relative">
+                        <div id="selectionMap"></div>
+                        <div id="selectionMapLoading" class="absolute inset-0 flex items-center justify-center bg-white bg-opacity-70">
+                            <div class="loading-spinner"></div>
+                        </div>
                     </div>
-                </form>
+                </div>
             </div>
+        </div>
 
+        <!-- Second Row: Statistics and Recommendations -->
+        <div id="statsRecommendationsSection" class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
             <!-- Statistics Card -->
             <div class="bg-white p-6 rounded-lg shadow-md">
                 <h2 class="text-xl font-semibold mb-4">Earthquake Statistics</h2>
@@ -85,9 +66,19 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Recommendations Card -->
+            <div class="bg-white p-6 rounded-lg shadow-md">
+                <h2 class="text-xl font-semibold mb-4">Risk Assessment & Recommendations</h2>
+                <div id="recommendationsContent" class="space-y-4">
+                    <div class="flex items-center justify-center h-32">
+                        <div class="loading-spinner"></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Map Section -->
+        <!-- HeatMap Section -->
         <div class="bg-white p-6 rounded-lg shadow-md mb-8">
             <h2 class="text-xl font-semibold mb-4">Earthquake Heatmap</h2>
             <div id="mapContainer" class="relative">
@@ -127,22 +118,200 @@
         </div>
     </div>
 
+    <style>
+        #map, #selectionMap {
+            height: 500px;
+            width: 100%;
+            border-radius: 0.5rem;
+        }
+        .loading-spinner {
+            border: 4px solid rgba(0, 0, 0, 0.1);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border-left-color: #09f;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        #mapLoading, #selectionMapLoading, #formLoading {
+            background: rgba(255, 255, 255, 0.85);
+        }
+        /* Remove the map-marker animation as it’s not used in the first template */
+    </style>
+
+    <!-- Rest of the HTML remains unchanged -->
+
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <script>
-        // Initialize map with higher zoom level
-        const map = L.map('map').setView([-6.0, 35.0], 8); // Changed zoom from 6 to 8
+        // Initialize Toast for SweetAlert2
+        const Toast = Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: (toast) => {
+                toast.addEventListener('mouseenter', Swal.stopTimer);
+                toast.addEventListener('mouseleave', Swal.resumeTimer);
+            }
+        });
+
+        // Initialize maps
+        const map = L.map('map').setView([-6.0, 35.0], 8);
+        const selectionMap = L.map('selectionMap').setView([-6.0, 35.0], 8);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        }).addTo(selectionMap);
+
+        // Restrict selectionMap to Tanzania bounds
+        const tanzaniaBounds = L.latLngBounds(
+            [-11.7457, 29.3385],
+            [-0.9855, 40.441]
+        );
+        selectionMap.setMaxBounds(tanzaniaBounds);
 
         let heatLayer = null;
         let timeSeriesData = null;
         let heatmapData = null;
+        let marker = null;
+        let selectionMarker = null;
 
         // API endpoints
         const HEATMAP_API = '/ai/api/heatmap/';
         const TIME_SERIES_API = '/ai/api/time-series/';
 
-        // Fetch time series data
+        // Tanzania bounds for validation (approximate)
+        const TANZANIA_BOUNDS = {
+            minLat: -11.75,
+            maxLat: -1.0,
+            minLon: 29.0,
+            maxLon: 40.5
+        };
+
+        // Validate coordinates within Tanzania
+        function isWithinTanzania(lat, lon) {
+            return lat >= TANZANIA_BOUNDS.minLat && lat <= TANZANIA_BOUNDS.maxLat &&
+                   lon >= TANZANIA_BOUNDS.minLon && lon <= TANZANIA_BOUNDS.maxLon;
+        }
+
+        // Update markers on both maps
+        function updateMarkers(lat, lon) {
+            if (!isWithinTanzania(lat, lon)) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Invalid location: Coordinates must be within Tanzania.'
+                });
+                // Remove markers if coordinates are invalid
+                if (marker) {
+                    map.removeLayer(marker);
+                    marker = null;
+                }
+                if (selectionMarker) {
+                    selectionMap.removeLayer(selectionMarker);
+                    selectionMarker = null;
+                }
+                return false;
+            }
+
+            // Update main map marker (keep existing custom styling for main map)
+            const markerIcon = L.divIcon({
+                className: 'map-marker',
+                html: `<div style="
+                    background-color: #ff3b30; 
+                    width: 24px; 
+                    height: 24px; 
+                    border-radius: 50%; 
+                    border: 3px solid white;
+                    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+                    position: relative;
+                ">
+                <div style="
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 36px;
+                    height: 36px;
+                    border-radius: 50%;
+                    border: 2px solid rgba(255,59,48,0.5);
+                    transform: translate(-50%, -50%);
+                "></div>
+                </div>`,
+                iconSize: [24, 24],
+                iconAnchor: [12, 12]
+            });
+
+            if (marker) {
+                map.removeLayer(marker);
+            }
+            marker = L.marker([lat, lon], { icon: markerIcon }).addTo(map);
+            if (marker) {
+                marker.setZIndexOffset(1000);
+            }
+
+            // Update selection map marker (use default Leaflet marker to match first template)
+            if (selectionMarker) {
+                selectionMap.removeLayer(selectionMarker);
+            }
+            selectionMarker = L.marker([lat, lon]).addTo(selectionMap);
+            if (selectionMarker) {
+                selectionMarker.setZIndexOffset(1000);
+            }
+
+            // Center selectionMap on the marker
+            selectionMap.setView([lat, lon], 8);
+            
+            return true;
+        }
+
+        // Handle selection map clicks
+        selectionMap.on('click', function(e) {
+            if (tanzaniaBounds.contains(e.latlng)) {
+                const lat = e.latlng.lat.toFixed(2);
+                const lon = e.latlng.lng.toFixed(2);
+
+                // Update form inputs
+                document.getElementById('latitude').value = lat;
+                document.getElementById('longitude').value = lon;
+
+                // Update markers
+                if (updateMarkers(parseFloat(lat), parseFloat(lon))) {
+                    Toast.fire({
+                        icon: 'success',
+                        title: 'Location selected on map.'
+                    });
+                }
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Invalid Selection: Please select a location within Tanzania.'
+                });
+            }
+        });
+
+        // Handle input changes for live validation and marker update
+        document.getElementById('latitude').addEventListener('input', function() {
+            const lat = parseFloat(this.value);
+            const lon = parseFloat(document.getElementById('longitude').value);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                updateMarkers(lat, lon);
+            }
+        });
+
+        document.getElementById('longitude').addEventListener('input', function() {
+            const lat = parseFloat(document.getElementById('latitude').value);
+            const lon = parseFloat(this.value);
+            if (!isNaN(lat) && !isNaN(lon)) {
+                updateMarkers(lat, lon);
+            }
+        });
+
+        // Rest of the script (fetchTimeSeriesData, fetchHeatmapData, renderHeatmap, updateStatistics, updateRecommendations, renderTimeSeriesCharts, form submission) remains unchanged
         async function fetchTimeSeriesData() {
             try {
                 document.getElementById('timeSeriesLoading').style.display = 'flex';
@@ -154,19 +323,25 @@
                 renderTimeSeriesCharts(timeSeriesData);
             } catch (error) {
                 console.error('Error fetching time series data:', error);
-                alert('Failed to load time series data');
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Failed to load time series data'
+                });
             } finally {
                 document.getElementById('timeSeriesLoading').style.display = 'none';
             }
         }
 
-        // Fetch heatmap data
         async function fetchHeatmapData(lat = null, lon = null, radius = null) {
             try {
                 document.getElementById('mapLoading').style.display = 'flex';
+                document.getElementById('formLoading').style.display = 'flex';
                 
                 let url = HEATMAP_API;
                 if (lat !== null && lon !== null && radius !== null) {
+                    if (!isWithinTanzania(lat, lon)) {
+                        throw new Error('Coordinates are outside Tanzania');
+                    }
                     url += `?lat=${lat}&lon=${lon}&radius=${radius}`;
                 }
                 
@@ -181,9 +356,21 @@
                 
                 renderHeatmap(heatmapData);
                 updateStatistics(heatmapData);
+                updateRecommendations(heatmapData);
+                
+                const newLat = lat || data.center.lat;
+                const newLon = lon || data.center.lon;
+                
+                updateMarkers(newLat, newLon);
+                
+                document.getElementById('statsRecommendationsSection').scrollIntoView({ behavior: 'smooth' });
+                
             } catch (error) {
                 console.error('Error fetching heatmap data:', error);
-                alert(`Failed to load heatmap data: ${error.message}`);
+                Toast.fire({
+                    icon: 'error',
+                    title: `Failed to load heatmap data: ${error.message}`
+                });
                 
                 heatmapData = {
                     data: [],
@@ -193,35 +380,34 @@
                 
                 renderHeatmap(heatmapData);
                 updateStatistics(heatmapData);
+                updateRecommendations(heatmapData);
             } finally {
                 document.getElementById('mapLoading').style.display = 'none';
+                document.getElementById('formLoading').style.display = 'none';
+                document.getElementById('selectionMapLoading').style.display = 'none';
             }
         }
 
-        // Render heatmap with improved styling
         function renderHeatmap(data) {
             if (heatLayer) {
                 map.removeLayer(heatLayer);
             }
 
             if (data.data && data.data.length > 0) {
-                // Transform data for heatmap
                 const heatData = data.data.map(point => {
                     const [lat, lon, mag] = point;
-                    // Weight points by magnitude (intensity)
                     return [lat, lon, Math.pow(2, mag) / 4];
                 });
 
-                // Calculate dynamic zoom based on radius
                 const radius = parseFloat(document.getElementById('radius').value) || 5.0;
-                const zoomLevel = Math.min(12, Math.max(8, 10 - Math.floor(radius))); // Dynamic zoom: smaller radius = higher zoom
+                const zoomLevel = Math.min(12, Math.max(8, 10 - Math.floor(radius)));
 
                 heatLayer = L.heatLayer(heatData, {
-                    radius: 10, // Reduced from 20 for more precise points
-                    blur: 8,   // Reduced from 15 for sharper heatmap
-                    maxZoom: 12, // Increased from 10 for finer detail
+                    radius: 10,
+                    blur: 8,
+                    maxZoom: 12,
                     gradient: {
-                        0.2: 'green', // Added green for low intensity
+                        0.2: 'green',
                         0.4: 'blue',
                         0.6: 'lime',
                         0.8: 'yellow',
@@ -229,25 +415,32 @@
                     }
                 }).addTo(map);
 
-                // Center map on data with dynamic zoom
                 map.setView([data.center.lat, data.center.lon], zoomLevel);
+                
+                if (marker) {
+                    map.removeLayer(marker);
+                    marker = null;
+                    updateMarkers(data.center.lat, data.center.lon);
+                }
             }
         }
 
-        // Update statistics
         function updateStatistics(data) {
             const statsDiv = document.getElementById('statisticsContent');
             
             if (data.data && data.data.length > 0) {
-                // Calculate statistics
                 const magnitudes = data.data.map(point => point[2]);
                 const avgMag = magnitudes.reduce((sum, mag) => sum + mag, 0) / magnitudes.length;
                 const maxMag = Math.max(...magnitudes);
                 
-                // Group by depth (assuming 3rd element is depth)
-                const shallow = data.data.filter(point => point[2] < 5).length;
-                const medium = data.data.filter(point => point[2] >= 5 && point[2] < 7).length;
-                const deep = data.data.filter(point => point[2] >= 7).length;
+                const lowMag = data.data.filter(point => point[2] < 4).length;
+                const mediumMag = data.data.filter(point => point[2] >= 4 && point[2] < 6).length;
+                const highMag = data.data.filter(point => point[2] >= 6).length;
+                
+                const totalCount = data.count;
+                const lowPercent = (lowMag / totalCount * 100).toFixed(1);
+                const mediumPercent = (mediumMag / totalCount * 100).toFixed(1);
+                const highPercent = (highMag / totalCount * 100).toFixed(1);
                 
                 statsDiv.innerHTML = `
                     <div class="grid grid-cols-2 gap-4">
@@ -268,25 +461,112 @@
                             <p class="text-2xl font-bold">${document.getElementById('radius').value}°</p>
                         </div>
                     </div>
+                    <div class="mt-4">
+                        <h3 class="text-md font-medium mb-2">Magnitude Distribution</h3>
+                        <div class="flex mb-1">
+                            <div class="text-xs w-24">Low (<4)</div>
+                            <div class="flex-grow bg-gray-200 rounded-full h-4">
+                                <div class="bg-green-500 h-4 rounded-full" style="width: ${lowPercent}%"></div>
+                            </div>
+                            <div class="text-xs w-12 text-right">${lowPercent}%</div>
+                        </div>
+                        <div class="flex mb-1">
+                            <div class="text-xs w-24">Medium (4-6)</div>
+                            <div class="flex-grow bg-gray-200 rounded-full h-4">
+                                <div class="bg-yellow-500 h-4 rounded-full" style="width: ${mediumPercent}%"></div>
+                            </div>
+                            <div class="text-xs w-12 text-right">${mediumPercent}%</div>
+                        </div>
+                        <div class="flex mb-1">
+                            <div class="text-xs w-24">High (>6)</div>
+                            <div class="flex-grow bg-gray-200 rounded-full h-4">
+                                <div class="bg-red-500 h-4 rounded-full" style="width: ${highPercent}%"></div>
+                            </div>
+                            <div class="text-xs w-12 text-right">${highPercent}%</div>
+                        </div>
+                    </div>
                 `;
             } else {
                 statsDiv.innerHTML = '<p class="text-center text-gray-500">No earthquake data available for the selected region</p>';
             }
         }
 
-        // Render time series charts
+        function updateRecommendations(data) {
+            const recsDiv = document.getElementById('recommendationsContent');
+            
+            if (data.data && data.data.length > 0) {
+                const magnitudes = data.data.map(point => point[2]);
+                const avgMag = magnitudes.reduce((sum, mag) => sum + mag, 0) / magnitudes.length;
+                const maxMag = Math.max(...magnitudes);
+                const count = data.count;
+                
+                let riskLevel = "Low";
+                let riskColor = "green";
+                let recommendations = [];
+                
+                if (maxMag >= 7 || (avgMag > 5 && count > 50)) {
+                    riskLevel = "High";
+                    riskColor = "red";
+                    recommendations = [
+                        "Implement stringent building codes and enforce them",
+                        "Establish emergency response plans and evacuation routes",
+                        "Conduct regular earthquake drills",
+                        "Consider earthquake insurance for properties",
+                        "Install seismic monitoring systems"
+                    ];
+                } else if (maxMag >= 5 || (avgMag > 4 && count > 20)) {
+                    riskLevel = "Medium";
+                    riskColor = "yellow";
+                    recommendations = [
+                        "Review building codes for seismic resistance",
+                        "Develop basic emergency response plans",
+                        "Secure heavy furniture and fixtures",
+                        "Educate residents about earthquake safety",
+                        "Consider structural assessments for older buildings"
+                    ];
+                } else {
+                    recommendations = [
+                        "Monitor seismic activity periodically",
+                        "Include basic earthquake awareness in safety programs",
+                        "No urgent structural modifications needed",
+                        "Basic emergency preparedness is sufficient"
+                    ];
+                }
+                
+                recsDiv.innerHTML = `
+                    <div class="flex items-center gap-2 mb-4">
+                        <span class="text-lg font-bold">Risk Level:</span>
+                        <span class="px-3 py-1 rounded-full text-white bg-${riskColor}-500">${riskLevel}</span>
+                    </div>
+                    <div>
+                        <h3 class="font-medium mb-2">Recommendations:</h3>
+                        <ul class="list-disc pl-5 space-y-1">
+                            ${recommendations.map(rec => `<li>${rec}</li>`).join('')}
+                        </ul>
+                    </div>
+                    <div class="mt-4 p-3 bg-blue-50 rounded-md">
+                        <p class="text-sm text-blue-800">
+                            <strong>Note:</strong> These recommendations are based on historical seismic data. 
+                            For official risk assessment, consult with geological survey authorities.
+                        </p>
+                    </div>
+                `;
+            } else {
+                recsDiv.innerHTML = '<p class="text-center text-gray-500">No data available to generate recommendations</p>';
+            }
+        }
+
         function renderTimeSeriesCharts(data) {
             if (!data || !data.time_series || !data.yearly_trends) {
                 console.error('Invalid time series data format');
                 return;
             }
 
-            // Monthly Count Chart
             const countCtx = document.getElementById('countChart').getContext('2d');
             new Chart(countCtx, {
                 type: 'line',
                 data: {
-                    labels: data.time_series.labels.slice(-36), // Last 36 months
+                    labels: data.time_series.labels.slice(-36),
                     datasets: [{
                         label: 'Earthquake Count',
                         data: data.time_series.count.slice(-36),
@@ -301,27 +581,20 @@
                     scales: {
                         y: {
                             beginAtZero: true,
-                            title: {
-                                display: true,
-                                text: 'Count'
-                            }
+                            title: { display: true, text: 'Count' }
                         },
                         x: {
-                            title: {
-                                display: true,
-                                text: 'Month'
-                            }
+                            title: { display: true, text: 'Month' }
                         }
                     }
                 }
             });
 
-            // Monthly Magnitude Chart
             const magCtx = document.getElementById('magnitudeChart').getContext('2d');
             new Chart(magCtx, {
                 type: 'line',
                 data: {
-                    labels: data.time_series.labels.slice(-36), // Last 36 months
+                    labels: data.time_series.labels.slice(-36),
                     datasets: [{
                         label: 'Average Magnitude',
                         data: data.time_series.avg_magnitude.slice(-36),
@@ -334,23 +607,12 @@
                     responsive: true,
                     maintainAspectRatio: false,
                     scales: {
-                        y: {
-                            title: {
-                                display: true,
-                                text: 'Magnitude'
-                            }
-                        },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Month'
-                            }
-                        }
+                        y: { title: { display: true, text: 'Magnitude' } },
+                        x: { title: { display: true, text: 'Month' } }
                     }
                 }
             });
 
-            // Yearly Trends Chart
             const yearlyCtx = document.getElementById('yearlyChart').getContext('2d');
             new Chart(yearlyCtx, {
                 type: 'bar',
@@ -384,35 +646,21 @@
                             type: 'linear',
                             display: true,
                             position: 'left',
-                            title: {
-                                display: true,
-                                text: 'Count'
-                            }
+                            title: { display: true, text: 'Count' }
                         },
                         y1: {
                             type: 'linear',
                             display: true,
                             position: 'right',
-                            title: {
-                                display: true,
-                                text: 'Magnitude'
-                            },
-                            grid: {
-                                drawOnChartArea: false
-                            }
+                            title: { display: true, text: 'Magnitude' },
+                            grid: { drawOnChartArea: false }
                         },
-                        x: {
-                            title: {
-                                display: true,
-                                text: 'Year'
-                            }
-                        }
+                        x: { title: { display: true, text: 'Year' } }
                     }
                 }
             });
         }
 
-        // Form submission handler
         document.getElementById('mapForm').addEventListener('submit', function(event) {
             event.preventDefault();
             const lat = parseFloat(document.getElementById('latitude').value);
@@ -420,19 +668,30 @@
             const radius = parseFloat(document.getElementById('radius').value);
             
             if (isNaN(lat) || isNaN(lon) || isNaN(radius)) {
-                alert('Please enter valid coordinates and radius');
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Please enter valid coordinates and radius'
+                });
+                return;
+            }
+
+            if (!isWithinTanzania(lat, lon)) {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Coordinates must be within Tanzania'
+                });
                 return;
             }
             
             fetchHeatmapData(lat, lon, radius);
         });
 
-        // Initial data fetching
         document.addEventListener('DOMContentLoaded', function() {
             fetchHeatmapData();
             fetchTimeSeriesData();
+            updateMarkers(-6.0, 35.0);
+            document.getElementById('selectionMapLoading').style.display = 'none';
         });
     </script>
-</body>
-</html>
+</div>
 {% endblock %}

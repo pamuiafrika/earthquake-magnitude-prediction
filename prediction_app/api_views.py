@@ -76,9 +76,31 @@ class PredictionLogViewSet(viewsets.ReadOnlyModelViewSet):
 
 class ModelMetricsViewSet(viewsets.ReadOnlyModelViewSet):
     """API endpoint for model metrics."""
-    queryset = ModelMetrics.objects.all().order_by('-trained_date')
+    queryset = ModelMetrics.objects.all().order_by('-is_active', '-trained_date')
     serializer_class = ModelMetricsSerializer
     permission_classes = [IsAdminUser]
+    
+    @action(detail=True, methods=['patch'], permission_classes=[IsAdminUser])
+    def set_active_model(self, request, pk=None):
+        """
+        Endpoint to activate/deactivate a model. When activating, all other models
+        will be automatically deactivated via the ModelMetrics.save() method.
+        """
+        model = self.get_object()
+        
+        # Toggle activation state if no explicit value provided
+        is_active = request.data.get('is_active', not model.is_active)
+        
+        if model.is_active == is_active:
+            return Response({'status': 'no change needed'}, status=status.HTTP_304_NOT_MODIFIED)
+        
+        model.is_active = is_active
+        model.save()
+        
+        return Response({
+            'status': 'model activated' if is_active else 'model deactivated',
+            'model': ModelMetricsSerializer(model).data
+        })
 
 
 @api_view(['GET'])
@@ -304,7 +326,7 @@ def api_train_model(request):
         for model_name, metrics in results.items():
             model_metric = ModelMetrics.objects.create(
                 model_name=model_name,
-                version=datetime.now().strftime('%Y%m%d'),
+                version=datetime.now().strftime('%Y%m%d_%H%M%S'),
                 rmse=metrics['rmse'],
                 mae=metrics['mae'],
                 r2_score=metrics['r2'],

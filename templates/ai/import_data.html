@@ -1,319 +1,482 @@
-{% extends 'ai/base.html' %}
-{% load static %}
-
-{% block title %}Import Earthquake Data{% endblock %}
-
-{% block content %}
-<div class="container-fluid my-4">
-    <div class="row justify-content-center">
-        <div class="col-lg-8">
-            <div class="card border-0 shadow-sm">
-                <div class="card-header bg-gradient" style="background-color: #003366;">
-                    <h3 class="card-title text-white mb-0">
-                        <i class="fas fa-file-import me-2"></i>Import Earthquake Data
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <div class="alert alert-info">
-                                <h5 class="alert-heading"><i class="fas fa-info-circle me-2"></i>Data Import Guidelines</h5>
-                                <p>Upload a CSV file containing earthquake data to update the system's database. The file must include the following columns:</p>
-                                <div class="row mt-3">
-                                    <div class="col-md-6">
-                                        <ul class="list-group">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Year <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Month <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Day <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Time <span class="badge bg-primary">Required</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <ul class="list-group">
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Lat <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Lon <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Depth <span class="badge bg-primary">Required</span>
-                                            </li>
-                                            <li class="list-group-item d-flex justify-content-between align-items-center">
-                                                Mag <span class="badge bg-primary">Required</span>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row">
-                        <div class="col-md-12">
-                            <form method="post" enctype="multipart/form-data" id="importForm">
-                                {% csrf_token %}
-                                <div class="mb-4">
-                                    <div class="card bg-light border-0">
-                                        <div class="card-body">
-                                            <div class="file-upload-container">
-                                                <div class="text-center mb-3">
-                                                    <i class="fas fa-cloud-upload-alt fa-4x" style="color: #003366;"></i>
-                                                </div>
-                                                <div class="custom-file-upload">
-                                                    <input type="file" name="data_file" id="data_file" class="form-control" accept=".csv" required>
-                                                    <label for="data_file" class="form-label text-center mt-2">
-                                                        <span id="file-selected">Choose a CSV file</span>
-                                                    </label>
-                                                </div>
-                                                <div class="text-center text-muted small mt-2">
-                                                    <p>Drag and drop a file here or click to browse</p>
-                                                    <p>Maximum file size: 5MB</p>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-4">
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="checkbox" id="confirm_import" required>
-                                        <label class="form-check-label" for="confirm_import">
-                                            I confirm this data follows the required format and contains valid earthquake records.
-                                        </label>
-                                    </div>
-                                </div>
-                                
-                                <div class="mb-3">
-                                    <div class="d-grid gap-2">
-                                        <button type="submit" class="btn btn-primary" id="submitBtn" style="background-color: #003366; border-color: #003366;">
-                                            <i class="fas fa-upload me-2"></i>Upload and Import Data
-                                        </button>
-                                    </div>
-                                </div>
-                                
-                                <div class="progress d-none" id="importProgress">
-                                    <div class="progress-bar progress-bar-striped progress-bar-animated" role="progressbar" 
-                                        aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" style="width: 0%"></div>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <div class="card bg-light border-0">
-                                <div class="card-body">
-                                    <h5 style="color: #003366;"><i class="fas fa-lightbulb me-2"></i>Example CSV Format</h5>
-                                    <div class="table-responsive">
-                                        <table class="table table-sm table-bordered">
-                                            <thead class="table-light">
-                                                <tr>
-                                                    <th>Year</th>
-                                                    <th>Month</th>
-                                                    <th>Day</th>
-                                                    <th>Time</th>
-                                                    <th>Lat</th>
-                                                    <th>Lon</th>
-                                                    <th>Depth</th>
-                                                    <th>Mag</th>
-                                                </tr>
-                                            </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td>2022</td>
-                                                    <td>3</td>
-                                                    <td>15</td>
-                                                    <td>14:32:45</td>
-                                                    <td>-6.2167</td>
-                                                    <td>35.7500</td>
-                                                    <td>10.5</td>
-                                                    <td>4.2</td>
-                                                </tr>
-                                                <tr>
-                                                    <td>2022</td>
-                                                    <td>3</td>
-                                                    <td>16</td>
-                                                    <td>09:15:22</td>
-                                                    <td>-7.1456</td>
-                                                    <td>36.2145</td>
-                                                    <td>8.3</td>
-                                                    <td>3.7</td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                    <div class="mt-3">
-                                        <p class="small text-muted mb-0">
-                                            <i class="fas fa-info-circle me-1"></i> Note: The system automatically combines duplicate records and updates existing entries.
-                                        </p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="row mt-4">
-                        <div class="col-12 text-center">
-                            <a href="{% url 'ai:earthquake_data' %}" class="btn btn-outline-secondary">
-                                <i class="fas fa-arrow-left me-1"></i> Return to Earthquake Data
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+{% extends 'prediction/base.html' %} {% load static %} {% block title %}Import
+Earthquake Data{% endblock %} {% block content %}
+<!-- Page Header -->
+<div class="flex justify-between items-center">
+  <div class="my-6">
+    <h2 class="text-2xl font-bold text-primary">Import Earthquake Data</h2>
+    <p class="text-gray-600">
+      Upload historical earthquake data to train and improve machine learning
+      models
+    </p>
+  </div>
 </div>
-{% endblock %}
 
-{% block extra_js %}
+<div class="mx-auto pb-8">
+  <div class="w-full mx-auto">
+    <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+      <div class="p-6">
+        <!-- Guidelines -->
+        <div class="mb-8">
+          <div class="bg-blue-50 border-l-4 border-blue-500 p-4 rounded-md">
+            <h5
+              class="font-semibold text-blue-800 flex items-center text-lg mb-2"
+            >
+              <i class="fas fa-info-circle mr-2"></i>Data Import Guidelines
+            </h5>
+            <p class="text-gray-700 mb-4">
+              Upload a CSV file containing earthquake data to update the
+              system's database. The file must include the following columns:
+            </p>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
+              <div>
+                <ul class="bg-white rounded-md shadow-sm overflow-hidden">
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Year</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Month</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Day</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li class="px-4 py-3 flex justify-between items-center">
+                    <span>Time</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                </ul>
+              </div>
+              <div>
+                <ul class="bg-white rounded-md shadow-sm overflow-hidden">
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Lat</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Lon</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li
+                    class="px-4 py-3 border-b flex justify-between items-center"
+                  >
+                    <span>Depth</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                  <li class="px-4 py-3 flex justify-between items-center">
+                    <span>Mag</span>
+                    <span
+                      class="bg-blue-600 text-white text-xs px-2 py-1 rounded"
+                      >Required</span
+                    >
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Example CSV Format -->
+        <div class="bg-gray-50 rounded-lg p-6 mb-6">
+          <h5 class="text-blue-900 font-semibold mb-4 flex items-center">
+            <i class="fas fa-lightbulb mr-2"></i>Example CSV Format
+          </h5>
+          <div class="overflow-x-auto">
+            <table class="min-w-full bg-white border border-gray-200">
+              <thead class="bg-gray-100">
+                <tr>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Year
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Month
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Day
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Time
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Lat
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Lon
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Depth
+                  </th>
+                  <th
+                    class="py-2 px-3 text-sm font-medium text-gray-700 border-b"
+                  >
+                    Mag
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">2022</td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">3</td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">15</td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">
+                    14:32:45
+                  </td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">
+                    -6.2167
+                  </td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">
+                    35.7500
+                  </td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">10.5</td>
+                  <td class="py-2 px-3 text-sm text-gray-600 border-b">4.2</td>
+                </tr>
+                <tr>
+                  <td class="py-2 px-3 text-sm text-gray-600">2022</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">3</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">16</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">09:15:22</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">-7.1456</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">36.2145</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">8.3</td>
+                  <td class="py-2 px-3 text-sm text-gray-600">3.7</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <p class="text-xs text-gray-500 mt-4">
+            <i class="fas fa-info-circle mr-1"></i> Note: The system
+            automatically combines duplicate records and updates existing
+            entries.
+          </p>
+        </div>
+
+        
+        <hr class="my-10 border-t-2 border-dashed border-gray-300">
+
+        <!-- Upload Form -->
+        <form id="importForm" class="mb-8" enctype="multipart/form-data">
+          <div class="mb-6">
+            <div
+              class="bg-gray-50 rounded-lg border-2 border-dashed border-gray-300 transition-all duration-300"
+              id="dropArea"
+            >
+              <div class="p-6 text-center">
+                <i
+                  class="fas fa-cloud-upload-alt text-5xl text-blue-900 mb-4"
+                ></i>
+
+                <div class="relative max-w-sm mx-auto">
+                  <input
+                    type="file"
+                    id="data_file"
+                    name="data_file"
+                    accept=".csv"
+                    class="absolute inset-0 w-full h-full opacity-0 z-10 cursor-pointer"
+                    required
+                  />
+                  <label
+                    for="data_file"
+                    class="block w-full px-4 py-2 bg-blue-50 text-blue-800 rounded-md hover:bg-blue-100 transition-colors duration-300"
+                  >
+                    <span id="file-selected">Choose a CSV file</span>
+                  </label>
+                </div>
+
+                <p class="mt-3 text-sm text-gray-500">
+                  Drag and drop a file here or click to browse
+                </p>
+                <p class="text-sm text-gray-500">Maximum file size: 5MB</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="mb-6">
+            <div class="flex items-center">
+              <input
+                type="checkbox"
+                id="confirm_import"
+                required
+                class="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
+              />
+              <label for="confirm_import" class="ml-2 text-gray-700">
+                I confirm this data follows the required format and contains
+                valid earthquake records.
+              </label>
+            </div>
+          </div>
+
+          <div class="mb-4">
+            <button
+              type="submit"
+              id="submitBtn"
+              class="w-full bg-blue-900 hover:bg-blue-800 text-white py-3 px-4 rounded-md transition-colors duration-300 flex justify-center items-center"
+            >
+              <i class="fas fa-upload mr-2"></i>
+              <span>Upload and Import Data</span>
+            </button>
+          </div>
+
+          <!-- Progress bar container -->
+          <div class="hidden" id="importProgress">
+            <div class="w-full bg-gray-200 rounded-full h-2.5">
+              <div
+                class="bg-blue-600 h-2.5 rounded-full transition-all duration-300"
+                id="progressBar"
+                style="width: 0%"
+              ></div>
+            </div>
+            <div class="flex justify-between mt-2">
+              <span class="text-sm text-gray-500" id="progressStatus"
+                >Processing...</span
+              >
+              <span class="text-sm text-gray-500" id="progressPercentage"
+                >0%</span
+              >
+            </div>
+          </div>
+        </form>
+
+        <!-- Back button -->
+        <div class="mt-8 text-center">
+          <a
+            href="#"
+            id="backButton"
+            class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 transition-colors duration-300"
+          >
+            <i class="fas fa-arrow-left mr-1"></i> Return to Earthquake Data
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Loading overlay -->
+  <div
+    id="loadingOverlay"
+    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden"
+  >
+    <div class="bg-white p-6 rounded-lg shadow-lg text-center">
+      <div
+        class="inline-block animate-spin rounded-full h-12 w-12 border-4 border-blue-600 border-t-transparent mb-4"
+      ></div>
+      <p class="text-gray-800 font-medium" id="loadingText">
+        Processing earthquake data...
+      </p>
+    </div>
+  </div>
+</div>
+
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Update file input display when file is selected
-        const fileInput = document.getElementById('data_file');
-        const fileSelected = document.getElementById('file-selected');
-        const importForm = document.getElementById('importForm');
-        const importProgress = document.getElementById('importProgress');
-        const progressBar = importProgress.querySelector('.progress-bar');
-        const submitBtn = document.getElementById('submitBtn');
-        
-        fileInput.addEventListener('change', function() {
-            if(this.files.length > 0) {
-                const fileName = this.files[0].name;
-                fileSelected.textContent = fileName;
-                
-                // Add a class to show the file is selected
-                fileInput.parentElement.classList.add('file-selected');
-            } else {
-                fileSelected.textContent = 'Choose a CSV file';
-                fileInput.parentElement.classList.remove('file-selected');
-            }
-        });
-        
-        // Drag and drop functionality
-        const dropArea = document.querySelector('.file-upload-container');
-        
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, preventDefaults, false);
-        });
-        
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-        
-        ['dragenter', 'dragover'].forEach(eventName => {
-            dropArea.addEventListener(eventName, highlight, false);
-        });
-        
-        ['dragleave', 'drop'].forEach(eventName => {
-            dropArea.addEventListener(eventName, unhighlight, false);
-        });
-        
-        function highlight() {
-            dropArea.classList.add('highlight');
-        }
-        
-        function unhighlight() {
-            dropArea.classList.remove('highlight');
-        }
-        
-        dropArea.addEventListener('drop', handleDrop, false);
-        
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            
-            if(files.length > 0 && files[0].type === 'text/csv') {
-                fileInput.files = files;
-                fileSelected.textContent = files[0].name;
-                fileInput.parentElement.classList.add('file-selected');
-            }
-        }
-        
-        // Form submission with progress simulation
-        importForm.addEventListener('submit', function(e) {
-            // Only run the simulation in this demo - real implementation would track actual upload progress
-            if(fileInput.files.length > 0) {
-                submitBtn.disabled = true;
-                importProgress.classList.remove('d-none');
-                
-                let progress = 0;
-                const interval = setInterval(() => {
-                    progress += 5;
-                    progressBar.style.width = progress + '%';
-                    progressBar.setAttribute('aria-valuenow', progress);
-                    
-                    if(progress >= 100) {
-                        clearInterval(interval);
-                    }
-                }, 200);
-            }
-        });
-    });
-</script>
+  document.addEventListener("DOMContentLoaded", function () {
+    // Elements
+    const fileInput = document.getElementById("data_file");
+    const fileSelected = document.getElementById("file-selected");
+    const importForm = document.getElementById("importForm");
+    const importProgress = document.getElementById("importProgress");
+    const progressBar = document.getElementById("progressBar");
+    const progressPercentage = document.getElementById("progressPercentage");
+    const progressStatus = document.getElementById("progressStatus");
+    const submitBtn = document.getElementById("submitBtn");
+    const dropArea = document.getElementById("dropArea");
+    const loadingOverlay = document.getElementById("loadingOverlay");
+    const loadingText = document.getElementById("loadingText");
+    const backButton = document.getElementById("backButton");
 
-<style>
-    .file-upload-container {
-        border: 2px dashed #B0BEC5;
-        border-radius: 8px;
-        padding: 30px;
-        transition: all 0.3s ease;
+    // Update file input display when file is selected
+    fileInput.addEventListener("change", function () {
+      if (this.files.length > 0) {
+        const fileName = this.files[0].name;
+        fileSelected.textContent = fileName;
+        dropArea.classList.add("border-blue-500", "bg-blue-50");
+        dropArea.classList.remove("border-gray-300");
+      } else {
+        fileSelected.textContent = "Choose a CSV file";
+        dropArea.classList.remove("border-blue-500", "bg-blue-50");
+        dropArea.classList.add("border-gray-300");
+      }
+    });
+
+    // Drag and drop functionality
+    ["dragenter", "dragover", "dragleave", "drop"].forEach((eventName) => {
+      dropArea.addEventListener(eventName, preventDefaults, false);
+    });
+
+    function preventDefaults(e) {
+      e.preventDefault();
+      e.stopPropagation();
     }
-    
-    .file-upload-container.highlight {
-        border-color: #003366;
-        background-color: rgba(0, 51, 102, 0.05);
+
+    ["dragenter", "dragover"].forEach((eventName) => {
+      dropArea.addEventListener(eventName, highlight, false);
+    });
+
+    ["dragleave", "drop"].forEach((eventName) => {
+      dropArea.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight() {
+      dropArea.classList.add("border-blue-500", "bg-blue-50");
+      dropArea.classList.remove("border-gray-300");
     }
-    
-    .custom-file-upload {
-        position: relative;
-        margin: 0 auto;
-        max-width: 400px;
+
+    function unhighlight() {
+      if (!fileInput.files.length) {
+        dropArea.classList.remove("border-blue-500", "bg-blue-50");
+        dropArea.classList.add("border-gray-300");
+      }
     }
-    
-    .custom-file-upload input[type="file"] {
-        opacity: 0;
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        cursor: pointer;
-        z-index: 2;
+
+    dropArea.addEventListener("drop", handleDrop, false);
+
+    function handleDrop(e) {
+      const dt = e.dataTransfer;
+      const files = dt.files;
+
+      if (files.length > 0) {
+        // Check if file is CSV
+        const file = files[0];
+        if (file.type === "text/csv" || file.name.endsWith(".csv")) {
+          fileInput.files = files;
+          fileSelected.textContent = file.name;
+          dropArea.classList.add("border-blue-500", "bg-blue-50");
+        } else {
+          // Show error for invalid file type
+          Swal.fire({
+            title: "Invalid File",
+            text: "Please upload a CSV file",
+            icon: "error",
+            confirmButtonColor: "#1e3a8a",
+          });
+          unhighlight();
+        }
+      }
     }
-    
-    .custom-file-upload label {
-        display: block;
-        padding: 10px 20px;
-        background-color: rgba(0, 51, 102, 0.1);
-        border-radius: 4px;
-        color: #003366;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    
-    .custom-file-upload:hover label {
-        background-color: rgba(0, 51, 102, 0.2);
-    }
-    
-    .file-selected label {
-        background-color: rgba(62, 142, 65, 0.1);
-        color: #3E8E41;
-    }
-    
-    .progress {
-        height: 8px;
-        margin-top: 15px;
-    }
-</style>
+
+    // Form submission with actual AJAX request
+    importForm.addEventListener("submit", function (e) {
+      e.preventDefault();
+
+      if (fileInput.files.length > 0) {
+        const formData = new FormData();
+        formData.append('data_file', fileInput.files[0]);
+        formData.append('csrfmiddlewaretoken', '{{ csrf_token }}');
+
+        // Disable submit button and show progress
+        submitBtn.disabled = true;
+        submitBtn.classList.add("opacity-70", "cursor-not-allowed");
+        loadingOverlay.classList.remove("hidden");
+
+        fetch("{% url 'ai:import_data' %}", {
+          method: 'POST',
+          body: formData,
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(response => {
+          if (response.redirected) {
+            window.location.href = response.url;
+            return;
+          }
+          return response.json();
+        })
+        .then(data => {
+          if (data && data.error) {
+            throw new Error(data.error);
+          }
+        })
+        .catch(error => {
+          loadingOverlay.classList.add("hidden");
+          submitBtn.disabled = false;
+          submitBtn.classList.remove("opacity-70", "cursor-not-allowed");
+          
+          Swal.fire({
+            title: "Import Failed",
+            text: error.message || "An error occurred during import",
+            icon: "error",
+            confirmButtonColor: "#1e3a8a",
+          });
+        });
+      } else {
+        Swal.fire({
+          title: "No File Selected",
+          text: "Please select a CSV file to import",
+          icon: "warning",
+          confirmButtonColor: "#1e3a8a",
+        });
+      }
+    });
+
+    // Back button functionality
+    backButton.addEventListener("click", function (e) {
+      e.preventDefault();
+
+      // Check if form is being submitted
+      if (submitBtn.disabled) {
+        Swal.fire({
+          title: "Import in Progress",
+          text: "Please wait until the import process is complete before navigating away.",
+          icon: "warning",
+          confirmButtonColor: "#1e3a8a",
+        });
+      } else {
+        // You'd normally navigate here, but for the demo we'll just show a message
+        Swal.fire({
+          title: "Navigation",
+          text: "Returning to Earthquake Data page...",
+          icon: "info",
+          confirmButtonColor: "#1e3a8a",
+        });
+      }
+    });
+  });
+</script>
 {% endblock %}

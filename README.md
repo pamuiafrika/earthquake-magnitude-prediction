@@ -1,1 +1,2 @@
-# earthquake-magnitude-prediction
+# Earthquake Magnitude Prediction using Machine Learning
+
